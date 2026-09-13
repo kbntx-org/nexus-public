@@ -70,8 +70,7 @@ graph LR
 
 **Templating is the strong point.** An `ExternalSecret`'s `target.template` isn't limited to a flat
 key/value `Secret`. It can also be useful to inject a sensitive variable in a template that is
-committed in git. Karpenter and the ARC runner pools use exactly this to render a whole cloud-init
-`userData` document (see
+committed in git. Karpenter uses exactly this to render a whole cloud-init `userData` document (see
 <a href="https://github.com/kbntx-org/nexus/blob/main/platform/core/karpenter/templates/secrets.yaml" target="_blank" rel="noopener"><code>karpenter/templates/secrets.yaml</code></a>):
 a Vault-sourced join token and registry credentials are injected in a template that is saved in git.
 

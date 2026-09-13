@@ -133,19 +133,18 @@ declare `background` steps internally, and a `parallel:` group cannot be used in
 action. Each entry in a `parallel:` list is exactly one step (one `run:` or `uses:`) — there is no
 nested sequential sub-chain per lane, so independent multi-command lanes need either a single
 consolidated `run:` script or to accept some serialization for steps that must precede the parallel
-block. Prefer this over spinning up one job (one ARC runner pod) per independent unit of work when
-the units are cheap enough to share a runner — e.g. [`build.yml`](.github/workflows/build.yml)
-builds the portfolio and documentation images as parallel steps in one job instead of two separate
-jobs.
+block. Prefer this over spinning up one job (one runner) per independent unit of work when the units
+are cheap enough to share a runner — e.g. [`build.yml`](.github/workflows/build.yml) builds the
+portfolio and documentation images as parallel steps in one job instead of two separate jobs.
 
 ### Composite actions over reusable workflows for single-consumer step sequences
 
 If a `workflow_call` reusable workflow has exactly one caller, prefer converting it to a composite
 action (`.github/actions/<name>/action.yaml`) instead. A reusable workflow always gets its own job
-(its own ARC runner pod); a composite action's steps run inline in the caller's job, so invoking it
-is just one more step. See [`compute-affected`](.github/actions/compute-affected/action.yaml),
-inlined as a step in [`build.yml`](.github/workflows/build.yml) rather than a separate `affected`
-job. Two gotchas when doing this conversion:
+(its own runner); a composite action's steps run inline in the caller's job, so invoking it is just
+one more step. See [`compute-affected`](.github/actions/compute-affected/action.yaml), inlined as a
+step in [`build.yml`](.github/workflows/build.yml) rather than a separate `affected` job. Two
+gotchas when doing this conversion:
 
 - Composite actions have **no implicit access to the `secrets` context** (no `secrets: inherit`
   equivalent). Any secret the action's steps need must be declared as an explicit `inputs:` entry
@@ -153,6 +152,19 @@ job. Two gotchas when doing this conversion:
   action silently resolves to empty.
 - Composite action `run:` steps need an explicit `shell:` on every step (no job-level
   `defaults: run: shell:` to inherit from).
+
+### Buildx builder setup for newer Dockerfile frontend features
+
+[`build.yml`](.github/workflows/build.yml) runs
+[`setup-buildx`](.github/actions/setup-buildx/action.yaml) (wrapping `docker/setup-buildx-action`)
+before any image build. GitHub-hosted runners' out-of-the-box `default` Buildx builder uses the
+`docker` driver, which runs BuildKit inside the Docker Engine daemon and doesn't support newer
+Dockerfile frontend syntax — e.g. `COPY --parents` (used by the portfolio and kiln Dockerfiles to
+preserve directory structure when copying multiple workspace `package.json` files) fails on it with
+an unrecognized-flag error. `setup-buildx-action` creates a `docker-container` builder and sets it
+as the job's default, which does support it. Any future workflow that runs
+`docker build`/`docker buildx build` on a Dockerfile using newer BuildKit features needs this step
+too.
 
 ### Self-invalidating fail-safe on pipeline-critical files
 
@@ -169,13 +181,10 @@ rather than trusting incremental affected-detection.
 
 The root [`mise.toml`](mise.toml) is the single source of truth for every language runtime version
 in this repo (Node.js, pnpm, Go, ...) and for the minimum required `mise` CLI version
-(`min_version`). The CI toolkit image
-([`base-image/Dockerfile`](platform/core/github-arc-runners/base-image/Dockerfile)) only bakes in
-generic, version-insensitive pipeline utilities that nearly every job needs regardless of which
-project it's touching — `jq` and `git` via `apt`, `yq` copied from its upstream image, the Docker
-CLI/Buildx/Compose plugins — plus the Docker/GH Actions runner scaffolding itself. It does **not**
-bake in `mise` or any other `mise.toml`-tracked tool (Node.js, pnpm, Go, the GitHub CLI,
-golangci-lint, s5cmd, ...) — it's deliberately agnostic to this repo's state otherwise. Every
+(`min_version`). CI runs on GitHub-hosted `ubuntu-latest` runners, which already bake in generic,
+version-insensitive pipeline utilities that nearly every job needs regardless of which project it's
+touching — `jq`, `git`, `yq`, and the Docker CLI/Buildx/Compose plugins. They do **not** bake in any
+`mise.toml`-tracked tool (Node.js, pnpm, Go, the GitHub CLI, golangci-lint, s5cmd, ...) — every
 pipeline resolves those on demand via the [`mise-install`](.github/actions/mise-install/action.yaml)
 composite action, which installs `mise` itself first if the runner doesn't already have one (pinned
 to a version hardcoded in the action, since bootstrapping `mise` can't itself depend on reading
@@ -219,6 +228,29 @@ listing exactly the tools that job's steps invoke — e.g. `tools: node pnpm` fo
 [`lint-and-format.yml`](.github/workflows/lint-and-format.yml) since a Go project's `lint` target
 shells out to both. Don't list every `mise.toml` tool "to be safe" — only what that job actually
 runs, so jobs stay fast.
+
+### Go projects: `lint` and `format-check` Nx targets
+
+Every Go project (`cloudflare-controller`, `kiln`'s `server/`, ...) declares two Nx targets
+alongside `build`:
+
+- `lint`: `golangci-lint run --config <relative-path-to-root>/.golangci.yml ./...`, with `cwd` set
+  to the module's own directory. `cwd` is required, not optional — each Go project is its own module
+  with no root `go.mod`, so `golangci-lint`/`go build` refuse to target it from outside (confirmed:
+  `directory prefix ... does not contain main module`). The `--config` flag is explicit rather than
+  relying on `golangci-lint`'s own upward directory search, even though that search already resolves
+  the root file correctly on its own.
+- `format-check`: `golangci-lint fmt --config <same path> --diff ./...` — exits non-zero if
+  `gofmt`/`goimports` (declared under `formatters` in [`.golangci.yml`](.golangci.yml)) would change
+  anything, without rewriting files. This is the non-Prettier counterpart to Nx's `format:check`,
+  which only covers JS/TS.
+
+[`affected.yml`](.github/workflows/affected.yml) computes a `formatCheckProjectsCsv` output the same
+way it does for `lintProjectsCsv` (`nx show projects --affected --with-target format-check`), and
+[`lint-and-format.yml`](.github/workflows/lint-and-format.yml) runs it as its own parallel step
+(`nx run-many --target format-check`) alongside `Lint` and `Check formatting`. Adding a new Go
+project means adding both targets to its `project.json` — Nx's affected-detection then wires it into
+CI automatically, no workflow changes needed.
 
 ## Package Management
 

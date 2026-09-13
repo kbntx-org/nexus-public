@@ -231,38 +231,6 @@ argocd-apps:
         syncOptions:
           - CreateNamespace=true
 
-    github-arc-runners-controller:
-      project: default
-      source:
-        repoURL: https://github.com/kbntx-org/nexus.git
-        path: platform/core/github-arc-runners/controller
-        targetRevision: main
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: arc-systems
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
-
-    github-arc-runners-generator:
-      project: default
-      source:
-        repoURL: https://github.com/kbntx-org/nexus.git
-        path: platform/core/github-arc-runners/runners-generator
-        targetRevision: main
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: argocd
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
-
     system-upgrade-controller:
       project: default
       source:

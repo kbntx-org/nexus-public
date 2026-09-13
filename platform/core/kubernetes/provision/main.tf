@@ -34,21 +34,10 @@ module "nexus_cluster" {
       server_type = "cx33"
       location    = "fsn1"
     }
-    "ci-runners" = {
+    "default-nbg1" = {
       count       = 1
       server_type = "cx33"
       location    = "nbg1"
-      labels = {
-        "pool"           = "ci-runners"
-        "sysbox-install" = "yes"
-      }
-      taints = [
-        {
-          key    = "ci-runners"
-          value  = "true"
-          effect = "NoSchedule"
-        }
-      ]
     }
   }
 }

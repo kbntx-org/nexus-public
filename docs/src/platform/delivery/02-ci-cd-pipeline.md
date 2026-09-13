@@ -3,96 +3,32 @@ title: CI/CD pipeline
 ---
 
 CI/CD runs on <a href="https://docs.github.com/en/actions" target="_blank" rel="noopener">GitHub
-Actions</a>, colocated with the source, and executes on **self-hosted runners inside the cluster** —
-CI compute is just another GitOps-managed workload, not an external provider with per-minute
-billing.
+Actions</a>, colocated with the source.
 
 ## Runners
 
-<a href="https://github.com/actions/actions-runner-controller" target="_blank" rel="noopener">Actions
-Runner Controller (ARC)</a> creates an **ephemeral runner pod** per job and deletes it when the job
-finishes. A workflow opts in by targeting a registered runner scale set
-(`runs-on: nexus-org-runners`); the runner pod itself runs the CI toolkit image, so no per-job
-`container:` override or tool install is needed.
+Every workflow runs on GitHub-hosted `ubuntu-latest` runners (`runs-on: ubuntu-latest`). No pipeline
+step needs to reach the cluster, Vault, or any other internal network directly: images are built and
+pushed to the registry, and a deploy is a commit to `nexus-manifests` — ArgoCD is what actually
+reconciles the cluster from that repo, not this pipeline (see
+[GitOps deploys](03-gitops-deploys.md)). Since nothing in the pipeline needs privileged network
+access or in-cluster compute, hosted runners avoid the operational cost of running and isolating
+CI's own compute (an ephemeral-pod controller, dedicated node pools, network policies) for no
+corresponding benefit.
 
-```mermaid
-%%{init: {'theme':'dark'}}%%
-graph LR
-    GitHub[GitHub<br/>job queued]
-    Listener[Listener pod<br/>long-poll]
-    Controller[ARC controller]
-    Pod[Runner pod<br/>ephemeral]
+## Toolchain provisioning
 
-    GitHub -->|notify| Listener
-    Listener -->|create EphemeralRunner| Controller
-    Controller -->|render + run| Pod
-    Pod -->|register, run, exit| GitHub
-```
-
-The pod is single-use — no shared state, no warm caches, no risk of one job leaking into the next.
-
-### Runner pools
-
-Runner pods are organized into pools — one Helm release of the
-<a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/github-arc-runners/runner-scale-set" target="_blank" rel="noopener">runner-scale-set</a>
-chart per pool, generated from a pool list in
-<a href="https://github.com/kbntx-org/nexus/blob/main/platform/core/github-arc-runners/runners-generator/values.yaml" target="_blank" rel="noopener">runners-generator's
-values</a> by an ArgoCD `ApplicationSet`. Each pool sets a distinct `nodeSelector` and tolerates a
-matching taint, so CI and application workloads never compete for the same nodes and pools don't
-contend with each other.
-
-Most pools provision their nodes on demand via
-[Karpenter](../cluster/01-overview.md#core-components), scaling node count with runner demand. One
-pool (`ci-runners`) still runs on a statically provisioned Terraform node, for workloads that want
-dedicated, always-on compute instead of a cold start.
-
-### Docker-in-Docker, without `privileged: true`
-
-Each runner pod is two containers on a shared volume: `runner` (the job) and a `dind` sidecar, with
-`DOCKER_HOST` pointed at the sidecar's socket. `docker build`, Docker actions, and service
-containers all work without either container running privileged — that's possible because the pod's
-`runtimeClassName` is
-<a href="https://github.com/nestybox/sysbox" target="_blank" rel="noopener">Sysbox</a>'s
-`sysbox-runc`, not the default. Sysbox gives the container its own user-namespaced kernel-level
-isolation, so a compromised build can't escalate off the node the way a privileged Docker-in-Docker
-pod could — worth the extra isolation because runner pods execute arbitrary user-authored code
-(workflow YAML, pulled actions, build scripts) and are treated as untrusted by default.
-
-That untrusted-by-default posture extends to the network: a
-<a href="https://github.com/kbntx-org/nexus/blob/main/platform/core/github-arc-runners/runner-scale-set/templates/network-policy.yaml" target="_blank" rel="noopener"><code>CiliumNetworkPolicy</code></a>
-(one per pool) selects runner pods by label and restricts their egress to DNS and the public
-internet — every other in-cluster namespace is denied. A runner can pull from GitHub, push to a
-registry, or call ArgoCD over its public ingress; it cannot reach Vault, other apps, or anything
-else on the cluster network directly.
-
-## CI toolkit image
-
-Every workflow runs on
-<a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/github-arc-runners/base-image" target="_blank" rel="noopener"><code>kbntx-org/nexus-ci-toolkit</code></a>,
-built on the <a href="https://github.com/actions/runner" target="_blank" rel="noopener">official
-GitHub Actions runner image</a> and layered with `pnpm`, Go, `yq`, the Docker CLI, and everything
-else the pipelines need. It **is** the runner's image, not a separate job container, so tools are
-already there when the pod starts — no `setup-node`, no per-job installs. The Node.js, pnpm, and Go
-versions it's built with come from the root
-<a href="https://github.com/kbntx-org/nexus/blob/main/mise.toml" target="_blank" rel="noopener"><code>mise.toml</code></a>
-— every `build-ci` target that needs one of these versions as a Docker build-arg resolves it with
-`yq '.tools.<name>' mise.toml` instead of hardcoding or re-deriving it, so there's a single place to
-bump a runtime version. <a href="https://mise.jdx.dev/" target="_blank" rel="noopener">mise</a>
-itself is a local-dev tool for activating these same pinned versions in a contributor's shell (see
-[Local Development](../../getting-started/02-local-development.md)) — CI reads its config file but
-never installs or invokes the CLI.
-
-The toolkit image is built the same way as any other image-shipping project — a `build-ci` Nx target
-— alongside other standalone base images that have no running Kubernetes workload (the Sysbox
-installer, for one); an edit to one of their Dockerfiles rebuilds it through the normal affected
-pipeline described below, on `nexus-org-runners` like every other build, the same current toolkit
-image building its own next version. `nexus-ci-toolkit` is tagged `:latest` and overwritten on every
-rebuild — pinning it to a semver-style tag and bumping it by hand on every Dockerfile change wasn't
-worth the churn, since it's the runner's own image rather than something another manifest pins a
-version of. Other standalone base images may still pin a tag that mirrors an upstream release
-version instead (the Sysbox installer's tag tracks the Sysbox version it bundles, for one) — bump
-that alongside a Dockerfile change so the next rebuild doesn't silently overwrite the current tag
-with new content under the old version.
+Each job installs exactly the
+<a href="https://mise.jdx.dev/" target="_blank" rel="noopener">mise</a>-tracked tools it needs — via
+the
+<a href="https://github.com/kbntx-org/nexus/blob/main/.github/actions/mise-install/action.yaml" target="_blank" rel="noopener"><code>mise-install</code></a>
+composite action right after checkout — instead of running on a pre-baked image, listing only the
+tools that job's steps actually invoke (e.g. `node pnpm` for a plain Nx job,
+`node pnpm go golangci-lint` for a job whose `lint` target shells out to both). Versions come from
+the root
+<a href="https://github.com/kbntx-org/nexus/blob/main/mise.toml" target="_blank" rel="noopener"><code>mise.toml</code></a>,
+the single source of truth for every pinned runtime — the same file a contributor's shell reads
+locally (see [Local Development](../../getting-started/02-local-development.md)).
 
 ## Pipeline shape
 
@@ -205,18 +141,10 @@ already makes the newer commit's tag win.
 
 ## References
 
-- <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/github-arc-runners" target="_blank" rel="noopener"><code>platform/core/github-arc-runners/</code></a>
-  — ARC controller and runner Helm charts
-- <a href="https://github.com/kbntx-org/nexus/blob/main/platform/core/github-arc-runners/runners-generator/values.yaml" target="_blank" rel="noopener"><code>platform/core/github-arc-runners/runners-generator/values.yaml</code></a>
-  — the pool list
-- <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/sysbox" target="_blank" rel="noopener"><code>platform/core/sysbox/</code></a>
-  — Sysbox installer + `runtimeClassName`
-- <a href="https://github.com/kbntx-org/nexus/blob/main/platform/core/github-arc-runners/runner-scale-set/templates/network-policy.yaml" target="_blank" rel="noopener"><code>platform/core/github-arc-runners/runner-scale-set/templates/network-policy.yaml</code></a>
-  — runner-pod egress restriction
-- <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/github-arc-runners/runner-scale-set" target="_blank" rel="noopener"><code>platform/core/github-arc-runners/runner-scale-set/</code></a>
-  — chart deployed once per pool (runner spec, node pool, network policy)
-- <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/github-arc-runners/base-image" target="_blank" rel="noopener"><code>platform/core/github-arc-runners/base-image/</code></a>
-  — CI toolkit image
+- <a href="https://github.com/kbntx-org/nexus/blob/main/.github/actions/mise-install/action.yaml" target="_blank" rel="noopener"><code>.github/actions/mise-install/action.yaml</code></a>
+  — per-job toolchain provisioning
+- <a href="https://github.com/kbntx-org/nexus/blob/main/mise.toml" target="_blank" rel="noopener"><code>mise.toml</code></a>
+  — pinned runtime versions
 - <a href="https://github.com/kbntx-org/nexus/tree/main/.github/workflows" target="_blank" rel="noopener"><code>.github/workflows/</code></a>
   — workflow definitions
 - <a href="https://github.com/kbntx-org/nexus/blob/main/.github/workflows/checks.yml" target="_blank" rel="noopener"><code>.github/workflows/checks.yml</code></a>

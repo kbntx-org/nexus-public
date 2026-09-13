@@ -2,6 +2,15 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "npm.packageManager": "pnpm",
   "editor.formatOnSave": true,
+  "go.lintTool": "golangci-lint-v2",
+  "go.lintFlags": ["--path-mode=abs", "--fast-only", "--config=${workspaceFolder}/.golangci.yml"],
+  "go.formatTool": "custom",
+  "go.alternateTools": {
+    "customFormatter": "~/.local/share/mise/shims/golangci-lint",
+    "golangci-lint-v2": "/Users/kenny/.local/share/mise/shims/golangci-lint",
+    "golangci-lint": "/Users/kenny/.local/share/mise/shims/golangci-lint"
+  },
+  "go.formatFlags": ["fmt", "--stdin"],
   "[go]": {
     "editor.defaultFormatter": "golang.go"
   },
@@ -17,11 +26,8 @@
   "vs-kubernetes": {
     "disable-linters": ["resource-limits"]
   },
-  "typescript.tsdk": "node_modules/typescript/lib",
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
   "yaml.format.enable": false,
-  "go.alternateTools": {
-    "go": "/Users/kenny/.goenv/shims/go"
-  },
   "files.associations": {
     "Tiltfile": "tiltfile",
     "*.tilt": "tiltfile"

@@ -29,7 +29,7 @@ concurrency:
 jobs:
   deploy:
     name: Deploy
-    runs-on: nexus-org-runners
+    runs-on: ubuntu-latest
     timeout-minutes: 20
     defaults:
       run:

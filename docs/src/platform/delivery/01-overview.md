@@ -26,7 +26,7 @@ graph LR
 
 **Config change** (a Helm value, a new manifest, a workflow tweak) — no CI involved. ArgoCD picks it
 up and syncs directly. This is most of the platform: Traefik, ArgoCD itself, External Secrets, the
-monitoring stack, ARC runners, and so on are all configured this way.
+monitoring stack, and so on are all configured this way.
 
 **Source change** — anything this repo builds an image for — goes through CI first: build the image,
 then hand ArgoCD a new tag. See [CI/CD pipeline](02-ci-cd-pipeline.md) and

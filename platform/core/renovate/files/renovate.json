@@ -43,14 +43,6 @@
     },
     {
       "matchManagers": ["helmv3"],
-      "matchFileNames": [
-        "platform/core/github-arc-runners/controller/Chart.yaml",
-        "platform/core/github-arc-runners/runners/Chart.yaml"
-      ],
-      "groupName": "github-arc-runners sub-charts"
-    },
-    {
-      "matchManagers": ["helmv3"],
       "matchFileNames": ["platform/core/hetzner-cloud-controller/Chart.yaml"],
       "groupName": "hetzner-cloud-controller sub-charts"
     },
@@ -58,8 +50,7 @@
       "matchFileNames": [
         "platform/core/karpenter/values.yaml",
         "platform/core/renovate/values.yaml",
-        "platform/core/kubernetes/upgrades/plans/values.yaml",
-        "platform/core/github-arc-runners/runners-generator/values.yaml"
+        "platform/core/kubernetes/upgrades/plans/values.yaml"
       ],
       "matchUpdateTypes": ["minor", "major"],
       "enabled": false
@@ -68,8 +59,7 @@
       "matchFileNames": [
         "platform/core/karpenter/values.yaml",
         "platform/core/renovate/values.yaml",
-        "platform/core/kubernetes/upgrades/plans/values.yaml",
-        "platform/core/github-arc-runners/runners-generator/values.yaml"
+        "platform/core/kubernetes/upgrades/plans/values.yaml"
       ],
       "matchUpdateTypes": ["patch"],
       "automerge": false
@@ -81,8 +71,7 @@
       "fileMatch": [
         "^platform/core/karpenter/values\\.yaml$",
         "^platform/core/renovate/values\\.yaml$",
-        "^platform/core/kubernetes/upgrades/plans/values\\.yaml$",
-        "^platform/core/github-arc-runners/runners-generator/values\\.yaml$"
+        "^platform/core/kubernetes/upgrades/plans/values\\.yaml$"
       ],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\s+k3sVersion:\\s*(?<currentValue>\\S+)"

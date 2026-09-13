@@ -7,7 +7,7 @@ on:
 jobs:
   delete-branch:
     name: Delete pr-${{ github.event.pull_request.number }} from nexus-manifests
-    runs-on: nexus-org-runners
+    runs-on: ubuntu-latest
     timeout-minutes: 2
     defaults:
       run:
