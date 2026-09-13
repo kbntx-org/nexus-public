@@ -28,6 +28,15 @@
   },
   "js/ts.tsdk.path": "node_modules/typescript/lib",
   "yaml.format.enable": false,
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false,
+  "explorer.fileNesting.patterns": {
+    "package.json": "pnpm-lock.yaml, pnpm-workspace.yaml, .pnpmfile.mjs",
+    "Tiltfile": ".tiltignore",
+    "README.md": "LICENSE, CLAUDE.md",
+    "mise.toml": "mise.lock",
+    ".prettierrc": ".prettierignore"
+  },
   "files.associations": {
     "Tiltfile": "tiltfile",
     "*.tilt": "tiltfile"

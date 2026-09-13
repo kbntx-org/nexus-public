@@ -1,0 +1,49 @@
+name: Renovate
+
+on:
+  schedule:
+    - cron: '0 */2 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: renovate
+  cancel-in-progress: true
+
+jobs:
+  renovate:
+    name: Renovate
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Install mise-managed tools
+        uses: ./.github/actions/mise-install
+
+      - name: Mint Renovate GitHub App token
+        id: renovate_token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ vars.RENOVATE_APP_ID }}
+          private-key: ${{ secrets.RENOVATE_APP_PRIVATE_KEY }}
+          owner: kbntx-org
+          repositories: nexus
+
+      - name: Run Renovate
+        env:
+          RENOVATE_TOKEN: ${{ steps.renovate_token.outputs.token }}
+          RENOVATE_CONFIG_FILE: ${{ github.workspace }}/renovate.json
+          LOG_LEVEL: info
+          RENOVATE_IGNORE_PR_AUTHOR: 'true'
+          RENOVATE_REQUIRE_CONFIG: optional
+          RENOVATE_PLATFORM: github
+          RENOVATE_AUTODISCOVER: 'false'
+          RENOVATE_REPOSITORIES: kbntx-org/nexus
+        run: |
+          npm install -g renovate@44.52.1
+          renovate
