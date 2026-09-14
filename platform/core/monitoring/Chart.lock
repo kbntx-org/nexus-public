@@ -13,9 +13,9 @@ dependencies:
   version: 8.4.1
 - name: prometheus-node-exporter
   repository: https://prometheus-community.github.io/helm-charts
-  version: 4.56.1
+  version: 4.56.3
 - name: victoria-metrics-single
   repository: https://victoriametrics.github.io/helm-charts
   version: 0.45.0
-digest: sha256:2a8c292ebc230a3ebed3847cd51b0e396c2f6a49bd06b986ca40c0a9e94bd472
-generated: "2026-09-11T23:30:49.316284647Z"
+digest: sha256:63ee9336dd1651c9e30548e0932276f78860c5ad592b78280f94dbc3a3b52ac1
+generated: "2026-09-14T09:36:42.541958036Z"
