@@ -59,13 +59,13 @@ importers:
         version: 21.2.23(chokidar@5.0.0)
       '@angular-eslint/eslint-plugin':
         specifier: 21.4.0
-        version: 21.4.0(@typescript-eslint/utils@8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(typescript@6.0.3)
+        version: 21.4.0(@typescript-eslint/utils@8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(typescript@6.0.3)
       '@angular-eslint/eslint-plugin-template':
         specifier: 21.4.0
-        version: 21.4.0(@angular-eslint/template-parser@21.4.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(typescript@6.0.3))(@typescript-eslint/types@8.68.0)(@typescript-eslint/utils@8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(typescript@6.0.3)
+        version: 21.4.0(@angular-eslint/template-parser@21.4.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(typescript@6.0.3))(@typescript-eslint/types@8.68.0)(@typescript-eslint/utils@8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(typescript@6.0.3)
       '@angular-eslint/template-parser':
         specifier: 21.4.0
-        version: 21.4.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(typescript@6.0.3)
+        version: 21.4.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(typescript@6.0.3)
       '@angular/cli':
         specifier: 21.2.23
         version: 21.2.23(@types/node@24.13.3)(chokidar@5.0.0)(supports-color@7.2.0)
@@ -80,16 +80,16 @@ importers:
         version: 3.3.6(supports-color@7.2.0)
       '@eslint/js':
         specifier: ^10.0.0
-        version: 10.0.1(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))
+        version: 10.0.1(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))
       '@nx/angular':
         specifier: 22.7.9
-        version: 22.7.9(7ca035216cd3c689a7a0f4ff96e45fc8)
+        version: 22.7.9(069b5556c11437af2905d907b816faaf)
       '@nx/eslint':
         specifier: 22.7.9
-        version: 22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@zkochan/js-yaml@0.0.7)(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0)
+        version: 22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@zkochan/js-yaml@0.0.7)(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0)
       '@nx/eslint-plugin':
         specifier: 22.7.9
-        version: 22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@typescript-eslint/parser@8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint-config-prettier@10.1.8(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0)))(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3)
+        version: 22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@typescript-eslint/parser@8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint-config-prettier@10.1.8(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0)))(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3)
       '@schematics/angular':
         specifier: 21.2.23
         version: 21.2.23(chokidar@5.0.0)
@@ -104,10 +104,10 @@ importers:
         version: 19.2.7(@types/react@19.2.18)
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.38.0
-        version: 8.68.0(@typescript-eslint/parser@8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
+        version: 8.68.0(@typescript-eslint/parser@8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
       '@typescript-eslint/parser':
         specifier: ^8.38.0
-        version: 8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
+        version: 8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
       '@vitejs/plugin-react':
         specifier: ^6.1.1
         version: 6.1.1(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.1)(jiti@1.21.7)(less@4.9.0(supports-color@7.2.0))(sass-embedded@1.97.1)(sass@1.97.3)(terser@5.46.0)(yaml@2.9.0))
@@ -115,14 +115,14 @@ importers:
         specifier: ^10.4.21
         version: 10.5.4(postcss@8.5.26)
       eslint:
-        specifier: 10.9.1
-        version: 10.9.1(jiti@1.21.7)(supports-color@7.2.0)
+        specifier: 10.10.0
+        version: 10.10.0(jiti@1.21.7)(supports-color@7.2.0)
       eslint-config-prettier:
         specifier: 10.1.8
-        version: 10.1.8(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))
+        version: 10.1.8(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))
       eslint-plugin-import:
         specifier: 2.32.0
-        version: 2.32.0(@typescript-eslint/parser@8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)
+        version: 2.32.0(@typescript-eslint/parser@8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)
       glob:
         specifier: ^13.0.0
         version: 13.0.6
@@ -198,10 +198,10 @@ importers:
         version: 21.2.22(@angular/compiler@21.2.22)(supports-color@8.1.1)(typescript@6.0.3)
       '@nx/angular':
         specifier: 22.7.9
-        version: 22.7.9(37cae72967fa1348f37dff8c74bcee08)
+        version: 22.7.9(807bbf3d92d03c6bcb8edfa17d565f81)
       '@nx/eslint':
         specifier: 22.7.9
-        version: 22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@zkochan/js-yaml@0.0.7)(eslint@10.9.1(jiti@2.6.1)(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1)
+        version: 22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@zkochan/js-yaml@0.0.7)(eslint@10.10.0(jiti@2.6.1)(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1)
       autoprefixer:
         specifier: ^10.4.21
         version: 10.5.4(postcss@8.5.26)
@@ -1074,6 +1074,12 @@ packages:
   '@bufbuild/protobuf@2.10.2':
     resolution: {integrity: sha512-uFsRXwIGyu+r6AMdz+XijIIZJYpoWeYzILt5yZ2d3mCjQrWUTVpVD9WL/jZAbvp+Ed04rOhrsk7FiTcEDseB5A==}
 
+  '@cacheable/memory@2.2.0':
+    resolution: {integrity: sha512-CTLKqLItRCEixEAewD3/j9DB3/o96gpTPD4eJ1v+DGOlxZRZncRQkGYqqnAGCscYd6RNeXfGeiuCphsPtqyIfQ==}
+
+  '@cacheable/utils@2.5.0':
+    resolution: {integrity: sha512-buipgOVDkkPXNR5+xBpDw7Zk2n1EvU7qBJCNUcL7rhQ//kfpOXPAvQ511Os0vpLYJ1pZnvudNytkQt2hst3wqA==}
+
   '@colordx/core@5.4.3':
     resolution: {integrity: sha512-kIxYSfA5T8HXjav55UaaH/o/cKivF6jCCGIb8eqtcsfI46wsvlSiT8jMDyrl779qLec3c2c2oHBZo4oAhvbjrQ==}
 
@@ -1294,8 +1300,8 @@ packages:
     resolution: {integrity: sha512-vqTaUEgxzm+YDSdElad6PiRoX4t8VGDjCtt05zn4nU810UIx/uNEV7/lZJ6KwFThKZOzOxzXy48da+No7HZaMw==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
-  '@eslint/plugin-kit@0.7.2':
-    resolution: {integrity: sha512-+CNAzxglkrpNf/kKywqQfk74QjtceuOE7Qm+AF8miRvPF/wmmK5+OJOgVh3AVTT3RP2mH3+FOaxlE5v72owk0A==}
+  '@eslint/plugin-kit@0.7.3':
+    resolution: {integrity: sha512-IkO+/KEUvwbVpiURZg+P7zF74z5Jxe0UgJxVni+RtoHQ6IZieXaO02kmadomap/q+l6bc/jdPGGqTjhuZnuz1Q==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
   '@gar/promise-retry@1.0.3':
@@ -1539,6 +1545,15 @@ packages:
     engines: {node: '>=10.0'}
     peerDependencies:
       tslib: '2'
+
+  '@keyv/bigmap@1.3.1':
+    resolution: {integrity: sha512-WbzE9sdmQtKy8vrNPa9BRnwZh5UF4s1KTmSK0KUVLo3eff5BlQNNWDnFOouNpKfPKDnms9xynJjsMYjMaT/aFQ==}
+    engines: {node: '>= 18'}
+    peerDependencies:
+      keyv: ^5.6.0
+
+  '@keyv/serialize@1.1.1':
+    resolution: {integrity: sha512-dXn3FZhPv0US+7dtJsIi2R+c7qWYiReoEh5zUntWCf4oSpMNib8FDhSoed6m3QyZdx5hK7iLFkYk3rNxwt8vTA==}
 
   '@leichtgewicht/ip-codec@2.0.5':
     resolution: {integrity: sha512-Vo+PSpZG2/fmgmiNzYK9qWRh8h/CHrwD0mo1h1DzL4yzHNSfWYujGTYsWGreD000gcgmZ7K4Ys6Tx9TxtsKdDw==}
@@ -3361,6 +3376,9 @@ packages:
     resolution: {integrity: sha512-M3Lab8NPYlZU2exsL3bMVvMrMqgwCnMWfdZbK28bn3pK6APT/Te/I8hjRPNu1uwORY9a1eEQoifXbKPQMfMTOA==}
     engines: {node: ^20.17.0 || >=22.9.0}
 
+  cacheable@2.5.0:
+    resolution: {integrity: sha512-60cyAOytib/OzBw1JNSoSV/boK1AtHryDIjvVBk7XbN4ugfkM3+Sry7fEjNgPMGgOjuaZPAp8ruZ0Cxafwyq9g==}
+
   call-bind-apply-helpers@1.0.2:
     resolution: {integrity: sha512-Sp1ablJ0ivDkSzjcaJdxEunN5/XvksFJ2sMBFfq6x0ryhQV/2b/KwFe21cMpmHtPOSij8K99/wSfoEuTObmuMQ==}
     engines: {node: '>= 0.4'}
@@ -4055,8 +4073,8 @@ packages:
     resolution: {integrity: sha512-tD40eHxA35h0PEIZNeIjkHoDR4YjjJp34biM0mDvplBe//mB+IHCqHDGV7pxF+7MklTvighcCPPZC7ynWyjdTA==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
-  eslint@10.9.1:
-    resolution: {integrity: sha512-9VaAkDURekixUQJy0oJYl2DcN6oKMfxay7XzaGYAWQwsb6qfKf+x76R2k1L8kb1boc+FyCAaTA9GmiKaaiaF+A==}
+  eslint@10.10.0:
+    resolution: {integrity: sha512-NPXn6r5zl4uET1DAVPaOwzX3rut4c0wcmw3dWJAfOsTM5+TogXo0DDjz8pwm/hL8cyVNpHqeK4JpN0NjnyFFNw==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
     hasBin: true
     peerDependencies:
@@ -4181,9 +4199,8 @@ packages:
     resolution: {integrity: sha512-yaduQFRKLXYOGgEn6AZau90j3ggSOyiqXU0F9JZfeXYhNa+Jk4X+s45A2zg5jns87GAFa34BBm2kXw4XpNcbdg==}
     engines: {node: '>=8'}
 
-  file-entry-cache@8.0.0:
-    resolution: {integrity: sha512-XXTUwCvisa5oacNGRP9SfNtYBNAMi+RPwBFmblZEF7N7swHYQS6/Zfk7SRwx4D5j3CH211YNRco1DEMNVfZCnQ==}
-    engines: {node: '>=16.0.0'}
+  file-entry-cache@11.1.5:
+    resolution: {integrity: sha512-+PFTHITI08JIGhnNpGNI8T8inUpgZfk3GNEqfT9R2zZV2iFXg3CvqzSl/uEhs7TSGujYRELEANyDvS8Fj7+S7Q==}
 
   fill-range@7.1.1:
     resolution: {integrity: sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==}
@@ -4217,16 +4234,15 @@ packages:
     resolution: {integrity: sha512-v2ZsoEuVHYy8ZIlYqwPe/39Cy+cFDzp4dXPaxNvkEuouymu+2Jbz0PxpKarJHYJTmv2HWT3O382qY8l4jMWthw==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
-  flat-cache@4.0.1:
-    resolution: {integrity: sha512-f7ccFPK3SXFHpx15UIGyRJ/FJQctuKZ0zVuN3frBo4HnK3cay9VEW0R6yPYFHC0AgqhukPzKjq22t5DmAyqGyw==}
-    engines: {node: '>=16'}
+  flat-cache@6.1.23:
+    resolution: {integrity: sha512-f++BY9pTk+983xK1FLzlLpmM0i0z+jHmx3QESGkURMXujQZz1k5wzwX6hjnQ8goaD0B+sYnDK1yZ6MTyZfUaqA==}
 
   flat@5.0.2:
     resolution: {integrity: sha512-b6suED+5/3rTpUBdG1gupIl8MPFCAMA0QXwmljLhvCUKcUvdE4gWky9zpuGCcXHOsz4J9wPGNWq6OKpmIzz3hQ==}
     hasBin: true
 
-  flatted@3.3.3:
-    resolution: {integrity: sha512-GX+ysw4PBCz0PzosHDepZGANEuFCMLrnRTiEy9McGjmkCQYwRq4A/X786G/fjM/+OjsWSU1ZrY5qyARZmO/uwg==}
+  flatted@3.4.4:
+    resolution: {integrity: sha512-5+ybhBZANEJxaH3X5evAFatUxLfEHSr7n6kYJ+1Qd0mUqr4eu9gIf6GDbWHf8RJijHrjjO8G+la14SlL2SeS1Q==}
 
   follow-redirects@1.16.0:
     resolution: {integrity: sha512-y5rN/uOsadFT/JfYwhxRS5R7Qce+g3zG97+JrtFZlC9klX/W5hD7iiLzScI4nZqUS7DNUdhPgw4xI8W2LuXlUw==}
@@ -4409,6 +4425,10 @@ packages:
     resolution: {integrity: sha512-NqADB8VjPFLM2V0VvHUewwwsw0ZWBaIdgo+ieHtK3hasLz4qeCRjYcqfB6AQrBggRKppKF8L52/VqdVsO47Dlw==}
     engines: {node: '>= 0.4'}
 
+  hashery@1.5.1:
+    resolution: {integrity: sha512-iZyKG96/JwPz1N55vj2Ie2vXbhu440zfUfJvSwEqEbeLluk7NnapfGqa7LH0mOsnDxTF85Mx8/dyR6HfqcbmbQ==}
+    engines: {node: '>=20'}
+
   hasown@2.0.4:
     resolution: {integrity: sha512-T2UbfbBEF32wiepXIsMlTW9+dDYC6wMh/t/vYA4tuOMKqWz/n3vr1NFSxQiyP+zk2mXsoMA/i/7qV6LKut1t1A==}
     engines: {node: '>= 0.4'}
@@ -4424,6 +4444,12 @@ packages:
   hono@4.12.16:
     resolution: {integrity: sha512-jN0ZewiNAWSe5khM3EyCmBb250+b40wWbwNILNfEvq84VREWwOIkuUsFONk/3i3nqkz7Oe1PcpM2mwQEK2L9Kg==}
     engines: {node: '>=16.9.0'}
+
+  hookified@1.15.1:
+    resolution: {integrity: sha512-MvG/clsADq1GPM2KGo2nyfaWVyn9naPiXrqIe4jYjXNZQt238kWyOGrsyc/DmRAQ+Re6yeo6yX/yoNCG5KAEVg==}
+
+  hookified@2.2.0:
+    resolution: {integrity: sha512-p/LgFzRN5FeoD3DLS6bkUapeye6E4SI6yJs6KetENd18S+FBthqYq2amJUWpt5z0EQwwHemidjY5OqJGEKm5uA==}
 
   hosted-git-info@9.0.3:
     resolution: {integrity: sha512-Hc+ghLoSt6QaYZUv0WBiIvmMDZuZZ7oaDvdH8MbfOO4lOsxdXLEvuC6ePoGs9H1X9oCLyq6+NVN0MKqD+ydxyg==}
@@ -4856,9 +4882,6 @@ packages:
     engines: {node: '>=6'}
     hasBin: true
 
-  json-buffer@3.0.1:
-    resolution: {integrity: sha512-4bV5BfR2mqfQTJm+V5tPPdf+ZpuhiIvTuAB5g8kcrXOZpTT/QwwVRWBywX1ozr6lEuPdbHxwaJlm9G6mI2sfSQ==}
-
   json-parse-even-better-errors@2.3.1:
     resolution: {integrity: sha512-xyFwyhro/JEof6Ghe2iz2NcXoj2sloNsWr/XsERDK/oiPCfaNhl5ONfp+jQdAZRQQ0IJWNzH9zIZF7li91kh2w==}
 
@@ -4918,8 +4941,8 @@ packages:
     resolution: {integrity: sha512-iYSchDJ+liQ8iwbSI2QqsQOvqv58eJCEanyJPJi+Khyu8smkcKSFUCbPwzFcL7YVtZ6eONjqRX/38caJ7QjRAQ==}
     engines: {node: '>= 0.6'}
 
-  keyv@4.5.4:
-    resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
+  keyv@5.6.0:
+    resolution: {integrity: sha512-CYDD3SOtsHtyXeEORYRx2qBtpDJFjRTGXUtmNEMGyzYOKj1TE3tycdlho7kA1Ufx9OYWZzg52QFBGALTirzDSw==}
 
   kind-of@6.0.3:
     resolution: {integrity: sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==}
@@ -6063,6 +6086,10 @@ packages:
   pvutils@1.1.5:
     resolution: {integrity: sha512-KTqnxsgGiQ6ZAzZCVlJH5eOjSnvlyEgx1m8bkRJfOhmGRqfo5KLvmAlACQkrjEtOQ4B7wF9TdSLIs9O90MX9xA==}
     engines: {node: '>=16.0.0'}
+
+  qified@0.10.1:
+    resolution: {integrity: sha512-+Owyggi9IxT1ePKGafcI87ubSmxol6smwJ+RAHDQlx9+9cPwFWDiKFFCPuWhr9ignlGpZ9vDQLw67N4dcTVFEA==}
+    engines: {node: '>=20'}
 
   qs@6.14.1:
     resolution: {integrity: sha512-4EK3+xJl8Ts67nLYNwqw/dsFVnCf+qR7RgXSK9jEEm9unao3njwMDdmsdvoKBKHzxd7tCYz5e5M+SnMjdtXGQQ==}
@@ -7669,39 +7696,39 @@ snapshots:
 
   '@angular-eslint/bundled-angular-compiler@21.4.0': {}
 
-  '@angular-eslint/eslint-plugin-template@21.4.0(@angular-eslint/template-parser@21.4.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(typescript@6.0.3))(@typescript-eslint/types@8.68.0)(@typescript-eslint/utils@8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(typescript@6.0.3)':
+  '@angular-eslint/eslint-plugin-template@21.4.0(@angular-eslint/template-parser@21.4.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(typescript@6.0.3))(@typescript-eslint/types@8.68.0)(@typescript-eslint/utils@8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(typescript@6.0.3)':
     dependencies:
       '@angular-eslint/bundled-angular-compiler': 21.4.0
-      '@angular-eslint/template-parser': 21.4.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(typescript@6.0.3)
-      '@angular-eslint/utils': 21.4.0(@typescript-eslint/utils@8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(typescript@6.0.3)
+      '@angular-eslint/template-parser': 21.4.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(typescript@6.0.3)
+      '@angular-eslint/utils': 21.4.0(@typescript-eslint/utils@8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(typescript@6.0.3)
       '@typescript-eslint/types': 8.68.0
-      '@typescript-eslint/utils': 8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
+      '@typescript-eslint/utils': 8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
       aria-query: 5.3.2
       axobject-query: 4.1.0
-      eslint: 10.9.1(jiti@1.21.7)(supports-color@7.2.0)
+      eslint: 10.10.0(jiti@1.21.7)(supports-color@7.2.0)
       typescript: 6.0.3
 
-  '@angular-eslint/eslint-plugin@21.4.0(@typescript-eslint/utils@8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(typescript@6.0.3)':
+  '@angular-eslint/eslint-plugin@21.4.0(@typescript-eslint/utils@8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(typescript@6.0.3)':
     dependencies:
       '@angular-eslint/bundled-angular-compiler': 21.4.0
-      '@angular-eslint/utils': 21.4.0(@typescript-eslint/utils@8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(typescript@6.0.3)
-      '@typescript-eslint/utils': 8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
-      eslint: 10.9.1(jiti@1.21.7)(supports-color@7.2.0)
+      '@angular-eslint/utils': 21.4.0(@typescript-eslint/utils@8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(typescript@6.0.3)
+      '@typescript-eslint/utils': 8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
+      eslint: 10.10.0(jiti@1.21.7)(supports-color@7.2.0)
       ts-api-utils: 2.5.0(typescript@6.0.3)
       typescript: 6.0.3
 
-  '@angular-eslint/template-parser@21.4.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(typescript@6.0.3)':
+  '@angular-eslint/template-parser@21.4.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(typescript@6.0.3)':
     dependencies:
       '@angular-eslint/bundled-angular-compiler': 21.4.0
-      eslint: 10.9.1(jiti@1.21.7)(supports-color@7.2.0)
+      eslint: 10.10.0(jiti@1.21.7)(supports-color@7.2.0)
       eslint-scope: 9.1.2
       typescript: 6.0.3
 
-  '@angular-eslint/utils@21.4.0(@typescript-eslint/utils@8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(typescript@6.0.3)':
+  '@angular-eslint/utils@21.4.0(@typescript-eslint/utils@8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(typescript@6.0.3)':
     dependencies:
       '@angular-eslint/bundled-angular-compiler': 21.4.0
-      '@typescript-eslint/utils': 8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
-      eslint: 10.9.1(jiti@1.21.7)(supports-color@7.2.0)
+      '@typescript-eslint/utils': 8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
+      eslint: 10.10.0(jiti@1.21.7)(supports-color@7.2.0)
       typescript: 6.0.3
 
   '@angular/build@21.2.23(@angular/compiler-cli@21.2.22(@angular/compiler@21.2.22)(supports-color@7.2.0)(typescript@6.0.3))(@angular/compiler@21.2.22)(@angular/core@21.2.22(@angular/compiler@21.2.22)(rxjs@7.8.2))(@angular/platform-browser@21.2.22(@angular/common@21.2.22(@angular/core@21.2.22(@angular/compiler@21.2.22)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.22(@angular/compiler@21.2.22)(rxjs@7.8.2)))(@emnapi/core@1.7.1)(@emnapi/runtime@1.7.1)(@types/node@24.13.3)(chokidar@5.0.0)(jiti@1.21.7)(less@4.9.0(supports-color@7.2.0))(lightningcss@1.33.0)(postcss@8.5.23)(sass-embedded@1.97.1)(supports-color@7.2.0)(tailwindcss@3.4.19(yaml@2.9.0))(terser@5.46.0)(tslib@2.8.1)(typescript@6.0.3)(yaml@2.9.0)':
@@ -9190,6 +9217,18 @@ snapshots:
 
   '@bufbuild/protobuf@2.10.2': {}
 
+  '@cacheable/memory@2.2.0':
+    dependencies:
+      '@cacheable/utils': 2.5.0
+      '@keyv/bigmap': 1.3.1(keyv@5.6.0)
+      hookified: 1.15.1
+      keyv: 5.6.0
+
+  '@cacheable/utils@2.5.0':
+    dependencies:
+      hashery: 1.5.1
+      keyv: 5.6.0
+
   '@colordx/core@5.4.3': {}
 
   '@discoveryjs/json-ext@0.6.3': {}
@@ -9298,14 +9337,14 @@ snapshots:
   '@esbuild/win32-x64@0.28.1':
     optional: true
 
-  '@eslint-community/eslint-utils@4.9.1(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))':
+  '@eslint-community/eslint-utils@4.9.1(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))':
     dependencies:
-      eslint: 10.9.1(jiti@1.21.7)(supports-color@7.2.0)
+      eslint: 10.10.0(jiti@1.21.7)(supports-color@7.2.0)
       eslint-visitor-keys: 3.4.3
 
-  '@eslint-community/eslint-utils@4.9.1(eslint@10.9.1(jiti@2.6.1)(supports-color@8.1.1))':
+  '@eslint-community/eslint-utils@4.9.1(eslint@10.10.0(jiti@2.6.1)(supports-color@8.1.1))':
     dependencies:
-      eslint: 10.9.1(jiti@2.6.1)(supports-color@8.1.1)
+      eslint: 10.10.0(jiti@2.6.1)(supports-color@8.1.1)
       eslint-visitor-keys: 3.4.3
 
   '@eslint-community/regexpp@4.12.2': {}
@@ -9348,13 +9387,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@eslint/js@10.0.1(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))':
+  '@eslint/js@10.0.1(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))':
     optionalDependencies:
-      eslint: 10.9.1(jiti@1.21.7)(supports-color@7.2.0)
+      eslint: 10.10.0(jiti@1.21.7)(supports-color@7.2.0)
 
   '@eslint/object-schema@3.0.5': {}
 
-  '@eslint/plugin-kit@0.7.2':
+  '@eslint/plugin-kit@0.7.3':
     dependencies:
       '@eslint/core': 1.2.1
       levn: 0.4.1
@@ -9590,6 +9629,14 @@ snapshots:
       '@jsonjoy.com/buffers': 1.2.1(tslib@2.8.1)
       '@jsonjoy.com/codegen': 1.0.0(tslib@2.8.1)
       tslib: 2.8.1
+
+  '@keyv/bigmap@1.3.1(keyv@5.6.0)':
+    dependencies:
+      hashery: 1.5.1
+      hookified: 1.15.1
+      keyv: 5.6.0
+
+  '@keyv/serialize@1.1.1': {}
 
   '@leichtgewicht/ip-codec@2.0.5': {}
 
@@ -10340,88 +10387,21 @@ snapshots:
       node-gyp: 12.3.0
       proc-log: 6.1.0
 
-  '@nx/angular@22.7.9(37cae72967fa1348f37dff8c74bcee08)':
+  '@nx/angular@22.7.9(069b5556c11437af2905d907b816faaf)':
     dependencies:
       '@angular-devkit/core': 21.2.23(chokidar@5.0.0)
       '@angular-devkit/schematics': 21.2.23(chokidar@5.0.0)
       '@nx/devkit': 22.7.9(nx@22.7.9)
-      '@nx/eslint': 22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@zkochan/js-yaml@0.0.7)(eslint@10.9.1(jiti@2.6.1)(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1)
-      '@nx/js': 22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1)
-      '@nx/module-federation': 22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@zkochan/js-yaml@0.0.7)(eslint@10.9.1(jiti@2.6.1)(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1))(@nx/webpack@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3))(debug@4.4.3(supports-color@8.1.1))(esbuild@0.28.1)(node-fetch@2.7.0(encoding@0.1.13))(nx@22.7.9)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@8.1.1)(typescript@6.0.3)
-      '@nx/rspack': 22.7.9(be97321123d99f2cd2b781fa2a361e98)
-      '@nx/web': 22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@zkochan/js-yaml@0.0.7)(eslint@10.9.1(jiti@2.6.1)(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1))(@nx/webpack@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3))(debug@4.4.3(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1)
-      '@nx/webpack': 22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@8.1.1))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@8.1.1)(typescript@6.0.3)
-      '@nx/workspace': 22.7.9
-      '@phenomnomnominal/tsquery': 6.2.0(typescript@6.0.3)
-      '@schematics/angular': 21.2.23(chokidar@5.0.0)
-      '@typescript-eslint/type-utils': 8.68.0(eslint@10.9.1(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)
-      enquirer: 2.3.6
-      magic-string: 0.30.21
-      picocolors: 1.1.1
-      picomatch: 4.0.4
-      rxjs: 7.8.2
-      semver: 7.8.5
-      tslib: 2.8.1
-      webpack-merge: 5.10.0
-    optionalDependencies:
-      '@angular-devkit/build-angular': 21.2.23(@angular/compiler-cli@21.2.22(@angular/compiler@21.2.22)(supports-color@8.1.1)(typescript@6.0.3))(@angular/compiler@21.2.22)(@angular/core@21.2.22(@angular/compiler@21.2.22)(rxjs@7.8.2))(@angular/platform-browser@21.2.22(@angular/common@21.2.22(@angular/core@21.2.22(@angular/compiler@21.2.22)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.22(@angular/compiler@21.2.22)(rxjs@7.8.2)))(@emnapi/core@1.7.1)(@emnapi/runtime@1.7.1)(@rspack/core@1.6.8)(@types/node@24.13.3)(chokidar@5.0.0)(debug@4.4.3(supports-color@8.1.1))(jiti@2.6.1)(lightningcss@1.33.0)(sass-embedded@1.97.1)(supports-color@8.1.1)(tailwindcss@3.4.19(yaml@2.9.0))(typescript@6.0.3)(yaml@2.9.0)
-      '@angular/build': 21.2.23(@angular/compiler-cli@21.2.22(@angular/compiler@21.2.22)(supports-color@8.1.1)(typescript@6.0.3))(@angular/compiler@21.2.22)(@angular/core@21.2.22(@angular/compiler@21.2.22)(rxjs@7.8.2))(@angular/platform-browser@21.2.22(@angular/common@21.2.22(@angular/core@21.2.22(@angular/compiler@21.2.22)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.22(@angular/compiler@21.2.22)(rxjs@7.8.2)))(@emnapi/core@1.7.1)(@emnapi/runtime@1.7.1)(@types/node@24.13.3)(chokidar@5.0.0)(jiti@2.6.1)(less@4.9.0(supports-color@8.1.1))(lightningcss@1.33.0)(postcss@8.5.26)(sass-embedded@1.97.1)(supports-color@8.1.1)(tailwindcss@3.4.19(yaml@2.9.0))(terser@5.46.0)(tslib@2.8.1)(typescript@6.0.3)(yaml@2.9.0)
-    transitivePeerDependencies:
-      - '@babel/traverse'
-      - '@module-federation/enhanced'
-      - '@module-federation/node'
-      - '@nx/cypress'
-      - '@nx/jest'
-      - '@nx/playwright'
-      - '@nx/vite'
-      - '@parcel/css'
-      - '@rspack/core'
-      - '@swc-node/register'
-      - '@swc/core'
-      - '@swc/css'
-      - '@swc/helpers'
-      - '@types/express'
-      - '@zkochan/js-yaml'
-      - bufferutil
-      - clean-css
-      - csso
-      - debug
-      - esbuild
-      - eslint
-      - html-webpack-plugin
-      - less
-      - lightningcss
-      - next
-      - node-fetch
-      - node-sass
-      - nx
-      - react
-      - react-dom
-      - react-refresh
-      - supports-color
-      - typescript
-      - uglify-js
-      - utf-8-validate
-      - verdaccio
-      - vue-tsc
-      - webpack-cli
-      - webpack-hot-middleware
-
-  '@nx/angular@22.7.9(7ca035216cd3c689a7a0f4ff96e45fc8)':
-    dependencies:
-      '@angular-devkit/core': 21.2.23(chokidar@5.0.0)
-      '@angular-devkit/schematics': 21.2.23(chokidar@5.0.0)
-      '@nx/devkit': 22.7.9(nx@22.7.9)
-      '@nx/eslint': 22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@zkochan/js-yaml@0.0.7)(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0)
+      '@nx/eslint': 22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@zkochan/js-yaml@0.0.7)(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0)
       '@nx/js': 22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0)
-      '@nx/module-federation': 22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@zkochan/js-yaml@0.0.7)(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0))(@nx/webpack@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3))(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(node-fetch@2.7.0(encoding@0.1.13))(nx@22.7.9)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@7.2.0)(typescript@6.0.3)
-      '@nx/rspack': 22.7.9(1aa4b26f8d902555b24f219c041ab1ca)
-      '@nx/web': 22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@zkochan/js-yaml@0.0.7)(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0))(@nx/webpack@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3))(debug@4.4.3(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0)
+      '@nx/module-federation': 22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@zkochan/js-yaml@0.0.7)(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0))(@nx/webpack@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3))(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(node-fetch@2.7.0(encoding@0.1.13))(nx@22.7.9)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@7.2.0)(typescript@6.0.3)
+      '@nx/rspack': 22.7.9(a016a4ef765508c1b04ebf2bba4488ea)
+      '@nx/web': 22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@zkochan/js-yaml@0.0.7)(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0))(@nx/webpack@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3))(debug@4.4.3(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0)
       '@nx/webpack': 22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3)
       '@nx/workspace': 22.7.9
       '@phenomnomnominal/tsquery': 6.2.0(typescript@6.0.3)
       '@schematics/angular': 21.2.23(chokidar@5.0.0)
-      '@typescript-eslint/type-utils': 8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
+      '@typescript-eslint/type-utils': 8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
       enquirer: 2.3.6
       magic-string: 0.30.21
       picocolors: 1.1.1
@@ -10474,6 +10454,73 @@ snapshots:
       - webpack-cli
       - webpack-hot-middleware
 
+  '@nx/angular@22.7.9(807bbf3d92d03c6bcb8edfa17d565f81)':
+    dependencies:
+      '@angular-devkit/core': 21.2.23(chokidar@5.0.0)
+      '@angular-devkit/schematics': 21.2.23(chokidar@5.0.0)
+      '@nx/devkit': 22.7.9(nx@22.7.9)
+      '@nx/eslint': 22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@zkochan/js-yaml@0.0.7)(eslint@10.10.0(jiti@2.6.1)(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1)
+      '@nx/js': 22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1)
+      '@nx/module-federation': 22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@zkochan/js-yaml@0.0.7)(eslint@10.10.0(jiti@2.6.1)(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1))(@nx/webpack@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3))(debug@4.4.3(supports-color@8.1.1))(esbuild@0.28.1)(node-fetch@2.7.0(encoding@0.1.13))(nx@22.7.9)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@8.1.1)(typescript@6.0.3)
+      '@nx/rspack': 22.7.9(614c2ef52bb39060c0e9fd48232e1589)
+      '@nx/web': 22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@zkochan/js-yaml@0.0.7)(eslint@10.10.0(jiti@2.6.1)(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1))(@nx/webpack@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3))(debug@4.4.3(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1)
+      '@nx/webpack': 22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@8.1.1))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@8.1.1)(typescript@6.0.3)
+      '@nx/workspace': 22.7.9
+      '@phenomnomnominal/tsquery': 6.2.0(typescript@6.0.3)
+      '@schematics/angular': 21.2.23(chokidar@5.0.0)
+      '@typescript-eslint/type-utils': 8.68.0(eslint@10.10.0(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)
+      enquirer: 2.3.6
+      magic-string: 0.30.21
+      picocolors: 1.1.1
+      picomatch: 4.0.4
+      rxjs: 7.8.2
+      semver: 7.8.5
+      tslib: 2.8.1
+      webpack-merge: 5.10.0
+    optionalDependencies:
+      '@angular-devkit/build-angular': 21.2.23(@angular/compiler-cli@21.2.22(@angular/compiler@21.2.22)(supports-color@8.1.1)(typescript@6.0.3))(@angular/compiler@21.2.22)(@angular/core@21.2.22(@angular/compiler@21.2.22)(rxjs@7.8.2))(@angular/platform-browser@21.2.22(@angular/common@21.2.22(@angular/core@21.2.22(@angular/compiler@21.2.22)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.22(@angular/compiler@21.2.22)(rxjs@7.8.2)))(@emnapi/core@1.7.1)(@emnapi/runtime@1.7.1)(@rspack/core@1.6.8)(@types/node@24.13.3)(chokidar@5.0.0)(debug@4.4.3(supports-color@8.1.1))(jiti@2.6.1)(lightningcss@1.33.0)(sass-embedded@1.97.1)(supports-color@8.1.1)(tailwindcss@3.4.19(yaml@2.9.0))(typescript@6.0.3)(yaml@2.9.0)
+      '@angular/build': 21.2.23(@angular/compiler-cli@21.2.22(@angular/compiler@21.2.22)(supports-color@8.1.1)(typescript@6.0.3))(@angular/compiler@21.2.22)(@angular/core@21.2.22(@angular/compiler@21.2.22)(rxjs@7.8.2))(@angular/platform-browser@21.2.22(@angular/common@21.2.22(@angular/core@21.2.22(@angular/compiler@21.2.22)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.22(@angular/compiler@21.2.22)(rxjs@7.8.2)))(@emnapi/core@1.7.1)(@emnapi/runtime@1.7.1)(@types/node@24.13.3)(chokidar@5.0.0)(jiti@2.6.1)(less@4.9.0(supports-color@8.1.1))(lightningcss@1.33.0)(postcss@8.5.26)(sass-embedded@1.97.1)(supports-color@8.1.1)(tailwindcss@3.4.19(yaml@2.9.0))(terser@5.46.0)(tslib@2.8.1)(typescript@6.0.3)(yaml@2.9.0)
+    transitivePeerDependencies:
+      - '@babel/traverse'
+      - '@module-federation/enhanced'
+      - '@module-federation/node'
+      - '@nx/cypress'
+      - '@nx/jest'
+      - '@nx/playwright'
+      - '@nx/vite'
+      - '@parcel/css'
+      - '@rspack/core'
+      - '@swc-node/register'
+      - '@swc/core'
+      - '@swc/css'
+      - '@swc/helpers'
+      - '@types/express'
+      - '@zkochan/js-yaml'
+      - bufferutil
+      - clean-css
+      - csso
+      - debug
+      - esbuild
+      - eslint
+      - html-webpack-plugin
+      - less
+      - lightningcss
+      - next
+      - node-fetch
+      - node-sass
+      - nx
+      - react
+      - react-dom
+      - react-refresh
+      - supports-color
+      - typescript
+      - uglify-js
+      - utf-8-validate
+      - verdaccio
+      - vue-tsc
+      - webpack-cli
+      - webpack-hot-middleware
+
   '@nx/devkit@22.7.9(nx@22.7.9)':
     dependencies:
       '@zkochan/js-yaml': 0.0.7
@@ -10485,14 +10532,14 @@ snapshots:
       tslib: 2.8.1
       yargs-parser: 21.1.1
 
-  '@nx/eslint-plugin@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@typescript-eslint/parser@8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint-config-prettier@10.1.8(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0)))(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3)':
+  '@nx/eslint-plugin@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@typescript-eslint/parser@8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint-config-prettier@10.1.8(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0)))(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3)':
     dependencies:
       '@nx/devkit': 22.7.9(nx@22.7.9)
       '@nx/js': 22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0)
       '@phenomnomnominal/tsquery': 6.2.0(typescript@6.0.3)
-      '@typescript-eslint/parser': 8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
-      '@typescript-eslint/type-utils': 8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
-      '@typescript-eslint/utils': 8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
+      '@typescript-eslint/parser': 8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
+      '@typescript-eslint/type-utils': 8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
+      '@typescript-eslint/utils': 8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
       chalk: 4.1.2
       confusing-browser-globals: 1.0.11
       globals: 17.6.0
@@ -10500,7 +10547,7 @@ snapshots:
       semver: 7.8.5
       tslib: 2.8.1
     optionalDependencies:
-      eslint-config-prettier: 10.1.8(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))
+      eslint-config-prettier: 10.1.8(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))
     transitivePeerDependencies:
       - '@babel/traverse'
       - '@swc-node/register'
@@ -10511,11 +10558,11 @@ snapshots:
       - typescript
       - verdaccio
 
-  '@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@zkochan/js-yaml@0.0.7)(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0)':
+  '@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@zkochan/js-yaml@0.0.7)(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0)':
     dependencies:
       '@nx/devkit': 22.7.9(nx@22.7.9)
       '@nx/js': 22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0)
-      eslint: 10.9.1(jiti@1.21.7)(supports-color@7.2.0)
+      eslint: 10.10.0(jiti@1.21.7)(supports-color@7.2.0)
       semver: 7.8.5
       tslib: 2.8.1
       typescript: 5.9.3
@@ -10529,11 +10576,11 @@ snapshots:
       - supports-color
       - verdaccio
 
-  '@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@zkochan/js-yaml@0.0.7)(eslint@10.9.1(jiti@2.6.1)(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1)':
+  '@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@zkochan/js-yaml@0.0.7)(eslint@10.10.0(jiti@2.6.1)(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1)':
     dependencies:
       '@nx/devkit': 22.7.9(nx@22.7.9)
       '@nx/js': 22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1)
-      eslint: 10.9.1(jiti@2.6.1)(supports-color@8.1.1)
+      eslint: 10.10.0(jiti@2.6.1)(supports-color@8.1.1)
       semver: 7.8.5
       tslib: 2.8.1
       typescript: 5.9.3
@@ -10617,14 +10664,14 @@ snapshots:
       - nx
       - supports-color
 
-  '@nx/module-federation@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@zkochan/js-yaml@0.0.7)(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0))(@nx/webpack@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3))(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(node-fetch@2.7.0(encoding@0.1.13))(nx@22.7.9)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@7.2.0)(typescript@6.0.3)':
+  '@nx/module-federation@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@zkochan/js-yaml@0.0.7)(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0))(@nx/webpack@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3))(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(node-fetch@2.7.0(encoding@0.1.13))(nx@22.7.9)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@7.2.0)(typescript@6.0.3)':
     dependencies:
       '@module-federation/enhanced': 2.5.0(@rspack/core@1.6.8)(node-fetch@2.7.0(encoding@0.1.13))(typescript@6.0.3)(webpack@5.105.2(esbuild@0.28.1))
       '@module-federation/node': 2.7.26(@rspack/core@1.6.8)(debug@4.4.3(supports-color@7.2.0))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@7.2.0)(typescript@6.0.3)(webpack@5.105.2(esbuild@0.28.1))
       '@module-federation/sdk': 2.5.0(node-fetch@2.7.0(encoding@0.1.13))
       '@nx/devkit': 22.7.9(nx@22.7.9)
       '@nx/js': 22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0)
-      '@nx/web': 22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@zkochan/js-yaml@0.0.7)(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0))(@nx/webpack@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3))(debug@4.4.3(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0)
+      '@nx/web': 22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@zkochan/js-yaml@0.0.7)(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0))(@nx/webpack@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3))(debug@4.4.3(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0)
       '@rspack/core': 1.6.8
       express: 4.22.1(supports-color@7.2.0)
       http-proxy-middleware: 3.0.7(supports-color@7.2.0)
@@ -10658,14 +10705,14 @@ snapshots:
       - vue-tsc
       - webpack-cli
 
-  '@nx/module-federation@22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@zkochan/js-yaml@0.0.7)(eslint@10.9.1(jiti@2.6.1)(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1))(@nx/webpack@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3))(debug@4.4.3(supports-color@8.1.1))(esbuild@0.28.1)(node-fetch@2.7.0(encoding@0.1.13))(nx@22.7.9)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@8.1.1)(typescript@6.0.3)':
+  '@nx/module-federation@22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@zkochan/js-yaml@0.0.7)(eslint@10.10.0(jiti@2.6.1)(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1))(@nx/webpack@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3))(debug@4.4.3(supports-color@8.1.1))(esbuild@0.28.1)(node-fetch@2.7.0(encoding@0.1.13))(nx@22.7.9)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@8.1.1)(typescript@6.0.3)':
     dependencies:
       '@module-federation/enhanced': 2.5.0(@rspack/core@1.6.8)(node-fetch@2.7.0(encoding@0.1.13))(typescript@6.0.3)(webpack@5.105.2(esbuild@0.28.1))
       '@module-federation/node': 2.7.26(@rspack/core@1.6.8)(debug@4.4.3(supports-color@8.1.1))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@8.1.1)(typescript@6.0.3)(webpack@5.105.2(esbuild@0.28.1))
       '@module-federation/sdk': 2.5.0(node-fetch@2.7.0(encoding@0.1.13))
       '@nx/devkit': 22.7.9(nx@22.7.9)
       '@nx/js': 22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1)
-      '@nx/web': 22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@zkochan/js-yaml@0.0.7)(eslint@10.9.1(jiti@2.6.1)(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1))(@nx/webpack@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3))(debug@4.4.3(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1)
+      '@nx/web': 22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@zkochan/js-yaml@0.0.7)(eslint@10.10.0(jiti@2.6.1)(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1))(@nx/webpack@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3))(debug@4.4.3(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1)
       '@rspack/core': 1.6.8
       express: 4.22.1(supports-color@8.1.1)
       http-proxy-middleware: 3.0.7(supports-color@8.1.1)
@@ -10729,81 +10776,14 @@ snapshots:
   '@nx/nx-win32-x64-msvc@22.7.9':
     optional: true
 
-  '@nx/rspack@22.7.9(1aa4b26f8d902555b24f219c041ab1ca)':
-    dependencies:
-      '@module-federation/enhanced': 2.5.0(@rspack/core@1.6.8)(node-fetch@2.7.0(encoding@0.1.13))(typescript@6.0.3)(webpack@5.105.2(esbuild@0.28.1))
-      '@module-federation/node': 2.7.26(@rspack/core@1.6.8)(debug@4.4.3(supports-color@7.2.0))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@7.2.0)(typescript@6.0.3)(webpack@5.105.2(esbuild@0.28.1))
-      '@nx/devkit': 22.7.9(nx@22.7.9)
-      '@nx/js': 22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0)
-      '@nx/module-federation': 22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@zkochan/js-yaml@0.0.7)(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0))(@nx/webpack@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3))(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(node-fetch@2.7.0(encoding@0.1.13))(nx@22.7.9)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@7.2.0)(typescript@6.0.3)
-      '@nx/web': 22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@zkochan/js-yaml@0.0.7)(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0))(@nx/webpack@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3))(debug@4.4.3(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0)
-      '@phenomnomnominal/tsquery': 6.2.0(typescript@6.0.3)
-      '@rspack/core': 1.6.8
-      '@rspack/dev-server': 1.1.4(@rspack/core@1.6.8)(@types/express@4.17.25)(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0)(webpack@5.105.2(esbuild@0.28.1))
-      '@rspack/plugin-react-refresh': 1.5.3(react-refresh@0.18.0)
-      autoprefixer: 10.5.4(postcss@8.5.26)
-      browserslist: 4.28.8
-      css-loader: 6.11.0(@rspack/core@1.6.8)(webpack@5.105.2(esbuild@0.28.1))
-      enquirer: 2.3.6
-      express: 4.22.1(supports-color@7.2.0)
-      http-proxy-middleware: 3.0.7(supports-color@7.2.0)
-      less-loader: 12.3.1(@rspack/core@1.6.8)(less@4.9.0(supports-color@7.2.0))(webpack@5.105.2(esbuild@0.28.1))
-      license-webpack-plugin: 4.0.2(webpack@5.105.2(esbuild@0.28.1))
-      loader-utils: 2.0.4
-      parse5: 4.0.0
-      picocolors: 1.1.1
-      postcss: 8.5.26
-      postcss-import: 14.1.0(postcss@8.5.26)
-      postcss-loader: 8.2.1(@rspack/core@1.6.8)(postcss@8.5.26)(typescript@6.0.3)(webpack@5.105.2(esbuild@0.28.1))
-      sass: 1.97.3
-      sass-embedded: 1.97.1
-      sass-loader: 16.0.7(@rspack/core@1.6.8)(sass-embedded@1.97.1)(sass@1.97.3)(webpack@5.105.2(esbuild@0.28.1))
-      source-map-loader: 5.0.0(webpack@5.105.2(esbuild@0.28.1))
-      style-loader: 3.3.4(webpack@5.105.2(esbuild@0.28.1))
-      ts-checker-rspack-plugin: 1.2.3(@rspack/core@1.6.8)(typescript@6.0.3)
-      tslib: 2.8.1
-      webpack: 5.105.2(esbuild@0.28.1)
-      webpack-node-externals: 3.0.0
-    transitivePeerDependencies:
-      - '@babel/traverse'
-      - '@nx/cypress'
-      - '@nx/eslint'
-      - '@nx/jest'
-      - '@nx/playwright'
-      - '@nx/vite'
-      - '@nx/webpack'
-      - '@swc-node/register'
-      - '@swc/core'
-      - '@swc/helpers'
-      - '@types/express'
-      - bufferutil
-      - debug
-      - esbuild
-      - less
-      - next
-      - node-fetch
-      - node-sass
-      - nx
-      - react
-      - react-dom
-      - react-refresh
-      - supports-color
-      - typescript
-      - uglify-js
-      - utf-8-validate
-      - verdaccio
-      - vue-tsc
-      - webpack-cli
-      - webpack-hot-middleware
-
-  '@nx/rspack@22.7.9(be97321123d99f2cd2b781fa2a361e98)':
+  '@nx/rspack@22.7.9(614c2ef52bb39060c0e9fd48232e1589)':
     dependencies:
       '@module-federation/enhanced': 2.5.0(@rspack/core@1.6.8)(node-fetch@2.7.0(encoding@0.1.13))(typescript@6.0.3)(webpack@5.105.2(esbuild@0.28.1))
       '@module-federation/node': 2.7.26(@rspack/core@1.6.8)(debug@4.4.3(supports-color@8.1.1))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@8.1.1)(typescript@6.0.3)(webpack@5.105.2(esbuild@0.28.1))
       '@nx/devkit': 22.7.9(nx@22.7.9)
       '@nx/js': 22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1)
-      '@nx/module-federation': 22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@zkochan/js-yaml@0.0.7)(eslint@10.9.1(jiti@2.6.1)(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1))(@nx/webpack@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3))(debug@4.4.3(supports-color@8.1.1))(esbuild@0.28.1)(node-fetch@2.7.0(encoding@0.1.13))(nx@22.7.9)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@8.1.1)(typescript@6.0.3)
-      '@nx/web': 22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@zkochan/js-yaml@0.0.7)(eslint@10.9.1(jiti@2.6.1)(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1))(@nx/webpack@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3))(debug@4.4.3(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1)
+      '@nx/module-federation': 22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@zkochan/js-yaml@0.0.7)(eslint@10.10.0(jiti@2.6.1)(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1))(@nx/webpack@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3))(debug@4.4.3(supports-color@8.1.1))(esbuild@0.28.1)(node-fetch@2.7.0(encoding@0.1.13))(nx@22.7.9)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@8.1.1)(typescript@6.0.3)
+      '@nx/web': 22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@zkochan/js-yaml@0.0.7)(eslint@10.10.0(jiti@2.6.1)(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1))(@nx/webpack@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3))(debug@4.4.3(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1)
       '@phenomnomnominal/tsquery': 6.2.0(typescript@6.0.3)
       '@rspack/core': 1.6.8
       '@rspack/dev-server': 1.1.4(@rspack/core@1.6.8)(@types/express@4.17.25)(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)(webpack@5.105.2(esbuild@0.28.1))
@@ -10863,7 +10843,74 @@ snapshots:
       - webpack-cli
       - webpack-hot-middleware
 
-  '@nx/web@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@zkochan/js-yaml@0.0.7)(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0))(@nx/webpack@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3))(debug@4.4.3(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0)':
+  '@nx/rspack@22.7.9(a016a4ef765508c1b04ebf2bba4488ea)':
+    dependencies:
+      '@module-federation/enhanced': 2.5.0(@rspack/core@1.6.8)(node-fetch@2.7.0(encoding@0.1.13))(typescript@6.0.3)(webpack@5.105.2(esbuild@0.28.1))
+      '@module-federation/node': 2.7.26(@rspack/core@1.6.8)(debug@4.4.3(supports-color@7.2.0))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@7.2.0)(typescript@6.0.3)(webpack@5.105.2(esbuild@0.28.1))
+      '@nx/devkit': 22.7.9(nx@22.7.9)
+      '@nx/js': 22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0)
+      '@nx/module-federation': 22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@zkochan/js-yaml@0.0.7)(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0))(@nx/webpack@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3))(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(node-fetch@2.7.0(encoding@0.1.13))(nx@22.7.9)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(supports-color@7.2.0)(typescript@6.0.3)
+      '@nx/web': 22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@zkochan/js-yaml@0.0.7)(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0))(@nx/webpack@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3))(debug@4.4.3(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0)
+      '@phenomnomnominal/tsquery': 6.2.0(typescript@6.0.3)
+      '@rspack/core': 1.6.8
+      '@rspack/dev-server': 1.1.4(@rspack/core@1.6.8)(@types/express@4.17.25)(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0)(webpack@5.105.2(esbuild@0.28.1))
+      '@rspack/plugin-react-refresh': 1.5.3(react-refresh@0.18.0)
+      autoprefixer: 10.5.4(postcss@8.5.26)
+      browserslist: 4.28.8
+      css-loader: 6.11.0(@rspack/core@1.6.8)(webpack@5.105.2(esbuild@0.28.1))
+      enquirer: 2.3.6
+      express: 4.22.1(supports-color@7.2.0)
+      http-proxy-middleware: 3.0.7(supports-color@7.2.0)
+      less-loader: 12.3.1(@rspack/core@1.6.8)(less@4.9.0(supports-color@7.2.0))(webpack@5.105.2(esbuild@0.28.1))
+      license-webpack-plugin: 4.0.2(webpack@5.105.2(esbuild@0.28.1))
+      loader-utils: 2.0.4
+      parse5: 4.0.0
+      picocolors: 1.1.1
+      postcss: 8.5.26
+      postcss-import: 14.1.0(postcss@8.5.26)
+      postcss-loader: 8.2.1(@rspack/core@1.6.8)(postcss@8.5.26)(typescript@6.0.3)(webpack@5.105.2(esbuild@0.28.1))
+      sass: 1.97.3
+      sass-embedded: 1.97.1
+      sass-loader: 16.0.7(@rspack/core@1.6.8)(sass-embedded@1.97.1)(sass@1.97.3)(webpack@5.105.2(esbuild@0.28.1))
+      source-map-loader: 5.0.0(webpack@5.105.2(esbuild@0.28.1))
+      style-loader: 3.3.4(webpack@5.105.2(esbuild@0.28.1))
+      ts-checker-rspack-plugin: 1.2.3(@rspack/core@1.6.8)(typescript@6.0.3)
+      tslib: 2.8.1
+      webpack: 5.105.2(esbuild@0.28.1)
+      webpack-node-externals: 3.0.0
+    transitivePeerDependencies:
+      - '@babel/traverse'
+      - '@nx/cypress'
+      - '@nx/eslint'
+      - '@nx/jest'
+      - '@nx/playwright'
+      - '@nx/vite'
+      - '@nx/webpack'
+      - '@swc-node/register'
+      - '@swc/core'
+      - '@swc/helpers'
+      - '@types/express'
+      - bufferutil
+      - debug
+      - esbuild
+      - less
+      - next
+      - node-fetch
+      - node-sass
+      - nx
+      - react
+      - react-dom
+      - react-refresh
+      - supports-color
+      - typescript
+      - uglify-js
+      - utf-8-validate
+      - verdaccio
+      - vue-tsc
+      - webpack-cli
+      - webpack-hot-middleware
+
+  '@nx/web@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@zkochan/js-yaml@0.0.7)(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0))(@nx/webpack@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3))(debug@4.4.3(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0)':
     dependencies:
       '@nx/devkit': 22.7.9(nx@22.7.9)
       '@nx/js': 22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0)
@@ -10872,7 +10919,7 @@ snapshots:
       picocolors: 1.1.1
       tslib: 2.8.1
     optionalDependencies:
-      '@nx/eslint': 22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@zkochan/js-yaml@0.0.7)(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0)
+      '@nx/eslint': 22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@zkochan/js-yaml@0.0.7)(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(nx@22.7.9)(supports-color@7.2.0)
       '@nx/webpack': 22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3)
     transitivePeerDependencies:
       - '@babel/traverse'
@@ -10883,7 +10930,7 @@ snapshots:
       - supports-color
       - verdaccio
 
-  '@nx/web@22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@zkochan/js-yaml@0.0.7)(eslint@10.9.1(jiti@2.6.1)(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1))(@nx/webpack@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3))(debug@4.4.3(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1)':
+  '@nx/web@22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@nx/eslint@22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@zkochan/js-yaml@0.0.7)(eslint@10.10.0(jiti@2.6.1)(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1))(@nx/webpack@22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3))(debug@4.4.3(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1)':
     dependencies:
       '@nx/devkit': 22.7.9(nx@22.7.9)
       '@nx/js': 22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1)
@@ -10892,7 +10939,7 @@ snapshots:
       picocolors: 1.1.1
       tslib: 2.8.1
     optionalDependencies:
-      '@nx/eslint': 22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@zkochan/js-yaml@0.0.7)(eslint@10.9.1(jiti@2.6.1)(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1)
+      '@nx/eslint': 22.7.9(@babel/traverse@7.29.8(supports-color@8.1.1))(@zkochan/js-yaml@0.0.7)(eslint@10.10.0(jiti@2.6.1)(supports-color@8.1.1))(nx@22.7.9)(supports-color@8.1.1)
       '@nx/webpack': 22.7.9(@babel/traverse@7.29.8(supports-color@7.2.0))(@rspack/core@1.6.8)(csso@5.0.5)(debug@4.4.3(supports-color@7.2.0))(esbuild@0.28.1)(lightningcss@1.33.0)(nx@22.7.9)(supports-color@7.2.0)(typescript@6.0.3)
     transitivePeerDependencies:
       - '@babel/traverse'
@@ -11675,15 +11722,15 @@ snapshots:
     dependencies:
       '@types/yargs-parser': 21.0.3
 
-  '@typescript-eslint/eslint-plugin@8.68.0(@typescript-eslint/parser@8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)':
+  '@typescript-eslint/eslint-plugin@8.68.0(@typescript-eslint/parser@8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)':
     dependencies:
       '@eslint-community/regexpp': 4.12.2
-      '@typescript-eslint/parser': 8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
+      '@typescript-eslint/parser': 8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
       '@typescript-eslint/scope-manager': 8.68.0
-      '@typescript-eslint/type-utils': 8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
-      '@typescript-eslint/utils': 8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
+      '@typescript-eslint/type-utils': 8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
+      '@typescript-eslint/utils': 8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
       '@typescript-eslint/visitor-keys': 8.68.0
-      eslint: 10.9.1(jiti@1.21.7)(supports-color@7.2.0)
+      eslint: 10.10.0(jiti@1.21.7)(supports-color@7.2.0)
       ignore: 7.0.6
       natural-compare: 1.4.0
       ts-api-utils: 2.5.0(typescript@6.0.3)
@@ -11691,14 +11738,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/parser@8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)':
+  '@typescript-eslint/parser@8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)':
     dependencies:
       '@typescript-eslint/scope-manager': 8.68.0
       '@typescript-eslint/types': 8.68.0
       '@typescript-eslint/typescript-estree': 8.68.0(supports-color@7.2.0)(typescript@6.0.3)
       '@typescript-eslint/visitor-keys': 8.68.0
       debug: 4.4.3(supports-color@7.2.0)
-      eslint: 10.9.1(jiti@1.21.7)(supports-color@7.2.0)
+      eslint: 10.10.0(jiti@1.21.7)(supports-color@7.2.0)
       typescript: 6.0.3
     transitivePeerDependencies:
       - supports-color
@@ -11730,25 +11777,25 @@ snapshots:
     dependencies:
       typescript: 6.0.3
 
-  '@typescript-eslint/type-utils@8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)':
+  '@typescript-eslint/type-utils@8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)':
     dependencies:
       '@typescript-eslint/types': 8.68.0
       '@typescript-eslint/typescript-estree': 8.68.0(supports-color@7.2.0)(typescript@6.0.3)
-      '@typescript-eslint/utils': 8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
+      '@typescript-eslint/utils': 8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
       debug: 4.4.3(supports-color@7.2.0)
-      eslint: 10.9.1(jiti@1.21.7)(supports-color@7.2.0)
+      eslint: 10.10.0(jiti@1.21.7)(supports-color@7.2.0)
       ts-api-utils: 2.5.0(typescript@6.0.3)
       typescript: 6.0.3
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/type-utils@8.68.0(eslint@10.9.1(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)':
+  '@typescript-eslint/type-utils@8.68.0(eslint@10.10.0(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)':
     dependencies:
       '@typescript-eslint/types': 8.68.0
       '@typescript-eslint/typescript-estree': 8.68.0(supports-color@8.1.1)(typescript@6.0.3)
-      '@typescript-eslint/utils': 8.68.0(eslint@10.9.1(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)
+      '@typescript-eslint/utils': 8.68.0(eslint@10.10.0(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)
       debug: 4.4.3(supports-color@8.1.1)
-      eslint: 10.9.1(jiti@2.6.1)(supports-color@8.1.1)
+      eslint: 10.10.0(jiti@2.6.1)(supports-color@8.1.1)
       ts-api-utils: 2.5.0(typescript@6.0.3)
       typescript: 6.0.3
     transitivePeerDependencies:
@@ -11786,24 +11833,24 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/utils@8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)':
+  '@typescript-eslint/utils@8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)':
     dependencies:
-      '@eslint-community/eslint-utils': 4.9.1(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))
+      '@eslint-community/eslint-utils': 4.9.1(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))
       '@typescript-eslint/scope-manager': 8.68.0
       '@typescript-eslint/types': 8.68.0
       '@typescript-eslint/typescript-estree': 8.68.0(supports-color@7.2.0)(typescript@6.0.3)
-      eslint: 10.9.1(jiti@1.21.7)(supports-color@7.2.0)
+      eslint: 10.10.0(jiti@1.21.7)(supports-color@7.2.0)
       typescript: 6.0.3
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/utils@8.68.0(eslint@10.9.1(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)':
+  '@typescript-eslint/utils@8.68.0(eslint@10.10.0(jiti@2.6.1)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)':
     dependencies:
-      '@eslint-community/eslint-utils': 4.9.1(eslint@10.9.1(jiti@2.6.1)(supports-color@8.1.1))
+      '@eslint-community/eslint-utils': 4.9.1(eslint@10.10.0(jiti@2.6.1)(supports-color@8.1.1))
       '@typescript-eslint/scope-manager': 8.68.0
       '@typescript-eslint/types': 8.68.0
       '@typescript-eslint/typescript-estree': 8.68.0(supports-color@8.1.1)(typescript@6.0.3)
-      eslint: 10.9.1(jiti@2.6.1)(supports-color@8.1.1)
+      eslint: 10.10.0(jiti@2.6.1)(supports-color@8.1.1)
       typescript: 6.0.3
     transitivePeerDependencies:
       - supports-color
@@ -12452,6 +12499,14 @@ snapshots:
       minipass-pipeline: 1.2.4
       p-map: 7.0.4
       ssri: 13.0.1
+
+  cacheable@2.5.0:
+    dependencies:
+      '@cacheable/memory': 2.2.0
+      '@cacheable/utils': 2.5.0
+      hookified: 1.15.1
+      keyv: 5.6.0
+      qified: 0.10.1
 
   call-bind-apply-helpers@1.0.2:
     dependencies:
@@ -13170,9 +13225,9 @@ snapshots:
 
   escape-string-regexp@4.0.0: {}
 
-  eslint-config-prettier@10.1.8(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0)):
+  eslint-config-prettier@10.1.8(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0)):
     dependencies:
-      eslint: 10.9.1(jiti@1.21.7)(supports-color@7.2.0)
+      eslint: 10.10.0(jiti@1.21.7)(supports-color@7.2.0)
 
   eslint-import-resolver-node@0.3.9(supports-color@7.2.0):
     dependencies:
@@ -13182,17 +13237,17 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.1(@typescript-eslint/parser@8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint-import-resolver-node@0.3.9(supports-color@7.2.0))(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0):
+  eslint-module-utils@2.12.1(@typescript-eslint/parser@8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint-import-resolver-node@0.3.9(supports-color@7.2.0))(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0):
     dependencies:
       debug: 3.2.7(supports-color@7.2.0)
     optionalDependencies:
-      '@typescript-eslint/parser': 8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
-      eslint: 10.9.1(jiti@1.21.7)(supports-color@7.2.0)
+      '@typescript-eslint/parser': 8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
+      eslint: 10.10.0(jiti@1.21.7)(supports-color@7.2.0)
       eslint-import-resolver-node: 0.3.9(supports-color@7.2.0)
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0):
+  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.9
@@ -13201,9 +13256,9 @@ snapshots:
       array.prototype.flatmap: 1.3.3
       debug: 3.2.7(supports-color@7.2.0)
       doctrine: 2.1.0
-      eslint: 10.9.1(jiti@1.21.7)(supports-color@7.2.0)
+      eslint: 10.10.0(jiti@1.21.7)(supports-color@7.2.0)
       eslint-import-resolver-node: 0.3.9(supports-color@7.2.0)
-      eslint-module-utils: 2.12.1(@typescript-eslint/parser@8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint-import-resolver-node@0.3.9(supports-color@7.2.0))(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)
+      eslint-module-utils: 2.12.1(@typescript-eslint/parser@8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint-import-resolver-node@0.3.9(supports-color@7.2.0))(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)
       hasown: 2.0.4
       is-core-module: 2.16.1
       is-glob: 4.0.3
@@ -13215,7 +13270,7 @@ snapshots:
       string.prototype.trimend: 1.0.9
       tsconfig-paths: 3.15.0
     optionalDependencies:
-      '@typescript-eslint/parser': 8.68.0(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
+      '@typescript-eslint/parser': 8.68.0(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)
     transitivePeerDependencies:
       - eslint-import-resolver-typescript
       - eslint-import-resolver-webpack
@@ -13239,14 +13294,14 @@ snapshots:
 
   eslint-visitor-keys@5.0.1: {}
 
-  eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0):
+  eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0):
     dependencies:
-      '@eslint-community/eslint-utils': 4.9.1(eslint@10.9.1(jiti@1.21.7)(supports-color@7.2.0))
+      '@eslint-community/eslint-utils': 4.9.1(eslint@10.10.0(jiti@1.21.7)(supports-color@7.2.0))
       '@eslint-community/regexpp': 4.12.2
       '@eslint/config-array': 0.23.5(supports-color@7.2.0)
       '@eslint/config-helpers': 0.7.0
       '@eslint/core': 1.2.1
-      '@eslint/plugin-kit': 0.7.2
+      '@eslint/plugin-kit': 0.7.3
       '@humanfs/node': 0.16.7
       '@humanwhocodes/module-importer': 1.0.1
       '@humanwhocodes/retry': 0.4.3
@@ -13261,7 +13316,7 @@ snapshots:
       esquery: 1.7.0
       esutils: 2.0.3
       fast-deep-equal: 3.1.3
-      file-entry-cache: 8.0.0
+      file-entry-cache: 11.1.5
       find-up: 5.0.0
       glob-parent: 6.0.2
       ignore: 5.3.2
@@ -13276,14 +13331,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint@10.9.1(jiti@2.6.1)(supports-color@8.1.1):
+  eslint@10.10.0(jiti@2.6.1)(supports-color@8.1.1):
     dependencies:
-      '@eslint-community/eslint-utils': 4.9.1(eslint@10.9.1(jiti@2.6.1)(supports-color@8.1.1))
+      '@eslint-community/eslint-utils': 4.9.1(eslint@10.10.0(jiti@2.6.1)(supports-color@8.1.1))
       '@eslint-community/regexpp': 4.12.2
       '@eslint/config-array': 0.23.5(supports-color@8.1.1)
       '@eslint/config-helpers': 0.7.0
       '@eslint/core': 1.2.1
-      '@eslint/plugin-kit': 0.7.2
+      '@eslint/plugin-kit': 0.7.3
       '@humanfs/node': 0.16.7
       '@humanwhocodes/module-importer': 1.0.1
       '@humanwhocodes/retry': 0.4.3
@@ -13298,7 +13353,7 @@ snapshots:
       esquery: 1.7.0
       esutils: 2.0.3
       fast-deep-equal: 3.1.3
-      file-entry-cache: 8.0.0
+      file-entry-cache: 11.1.5
       find-up: 5.0.0
       glob-parent: 6.0.2
       ignore: 5.3.2
@@ -13542,9 +13597,9 @@ snapshots:
     dependencies:
       escape-string-regexp: 1.0.5
 
-  file-entry-cache@8.0.0:
+  file-entry-cache@11.1.5:
     dependencies:
-      flat-cache: 4.0.1
+      flat-cache: 6.1.23
 
   fill-range@7.1.1:
     dependencies:
@@ -13619,14 +13674,15 @@ snapshots:
       locate-path: 7.2.0
       path-exists: 5.0.0
 
-  flat-cache@4.0.1:
+  flat-cache@6.1.23:
     dependencies:
-      flatted: 3.3.3
-      keyv: 4.5.4
+      cacheable: 2.5.0
+      flatted: 3.4.4
+      hookified: 1.15.1
 
   flat@5.0.2: {}
 
-  flatted@3.3.3: {}
+  flatted@3.4.4: {}
 
   follow-redirects@1.16.0(debug@4.4.3(supports-color@7.2.0)):
     optionalDependencies:
@@ -13819,6 +13875,10 @@ snapshots:
     dependencies:
       has-symbols: 1.1.0
 
+  hashery@1.5.1:
+    dependencies:
+      hookified: 1.15.1
+
   hasown@2.0.4:
     dependencies:
       function-bind: 1.1.2
@@ -13830,6 +13890,10 @@ snapshots:
       parse-passwd: 1.0.0
 
   hono@4.12.16: {}
+
+  hookified@1.15.1: {}
+
+  hookified@2.2.0: {}
 
   hosted-git-info@9.0.3:
     dependencies:
@@ -14343,8 +14407,6 @@ snapshots:
 
   jsesc@3.1.0: {}
 
-  json-buffer@3.0.1: {}
-
   json-parse-even-better-errors@2.3.1: {}
 
   json-parse-even-better-errors@5.0.0: {}
@@ -14400,9 +14462,9 @@ snapshots:
     dependencies:
       tsscmp: 1.0.6
 
-  keyv@4.5.4:
+  keyv@5.6.0:
     dependencies:
-      json-buffer: 3.0.1
+      '@keyv/serialize': 1.1.1
 
   kind-of@6.0.3: {}
 
@@ -14643,7 +14705,7 @@ snapshots:
     dependencies:
       date-format: 4.0.14
       debug: 4.4.3(supports-color@7.2.0)
-      flatted: 3.3.3
+      flatted: 3.4.4
       rfdc: 1.4.1
       streamroller: 3.1.5(supports-color@7.2.0)
     transitivePeerDependencies:
@@ -14653,7 +14715,7 @@ snapshots:
     dependencies:
       date-format: 4.0.14
       debug: 4.4.3(supports-color@8.1.1)
-      flatted: 3.3.3
+      flatted: 3.4.4
       rfdc: 1.4.1
       streamroller: 3.1.5(supports-color@8.1.1)
     transitivePeerDependencies:
@@ -15754,6 +15816,10 @@ snapshots:
       tslib: 2.8.1
 
   pvutils@1.1.5: {}
+
+  qified@0.10.1:
+    dependencies:
+      hookified: 2.2.0
 
   qs@6.14.1:
     dependencies:
