@@ -4,7 +4,7 @@ go 1.26.0
 
 require (
 	github.com/caarlos0/env/v11 v11.4.1
-	github.com/cloudflare/cloudflare-go/v7 v7.9.0
+	github.com/cloudflare/cloudflare-go/v7 v7.10.0
 	github.com/go-logr/logr v1.4.4
 	k8s.io/api v0.37.0
 	k8s.io/apimachinery v0.37.0
