@@ -10,12 +10,12 @@ dependencies:
   version: 6.17.1
 - name: kube-state-metrics
   repository: https://prometheus-community.github.io/helm-charts
-  version: 8.4.1
+  version: 8.4.2
 - name: prometheus-node-exporter
   repository: https://prometheus-community.github.io/helm-charts
   version: 4.56.3
 - name: victoria-metrics-single
   repository: https://victoriametrics.github.io/helm-charts
   version: 0.45.0
-digest: sha256:895ab539c558cbe4dd7f6bfde9289d7b8b992beeb980f14e0693157e2767d850
-generated: "2026-09-18T18:55:42.804054758Z"
+digest: sha256:4b96d7fb2ae3fc0939a8ef42e89c17f88e596d52f00a95739ba7f2b9a4556dab
+generated: "2026-09-20T13:59:26.288725444Z"
