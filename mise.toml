@@ -6,7 +6,7 @@ locked = true
 minimum_release_age = "14d"
 
 [tools]
-node = "24.20.0"
+node = "24.21.0"
 pnpm = "12.3.4"
 go = "1.27.1"
 terraform = "1.16.1"
