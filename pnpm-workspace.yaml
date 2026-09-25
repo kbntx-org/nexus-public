@@ -3,6 +3,7 @@ minimumReleaseAgeStrict: true
 
 packages:
   - 'apps/portfolio'
+  - 'apps/smelt/frontend'
   - 'platform/services/kiln/client'
 
 minimumReleaseAgeExclude:

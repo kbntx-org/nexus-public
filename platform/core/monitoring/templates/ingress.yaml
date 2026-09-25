@@ -18,8 +18,12 @@ spec:
       services:
         - name: prometheus-operated
           port: 9090
+  {{- if .Values.certificate.enabled }}
   tls:
     secretName: monitoring-tls
+  {{- else }}
+  tls: {}
+  {{- end }}
 {{- if .Values.certificate.enabled }}
 ---
 apiVersion: cert-manager.io/v1

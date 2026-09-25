@@ -24,8 +24,12 @@ spec:
       services:
         - name: api@internal
           kind: TraefikService
+  {{- if .Values.certificate.enabled }}
   tls:
     secretName: traefik-dashboard-tls
+  {{- else }}
+  tls: {}
+  {{- end }}
 {{- if .Values.certificate.enabled }}
 ---
 apiVersion: cert-manager.io/v1

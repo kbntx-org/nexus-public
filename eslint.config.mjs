@@ -237,5 +237,15 @@ export default [
       rules: {
         ...config.rules
       }
-    }))
+    })),
+  {
+    // eslint-plugin-import@2.32.0's import/order "newlines-between" fixer calls a
+    // SourceCode method (getTokenOrCommentAfter) that ESLint 10 removed, crashing the
+    // linter outright on any file needing a newline inserted/removed between import
+    // groups. Disabled here until eslint-plugin-import ships an ESLint 10-compatible fix.
+    files: ['apps/smelt/frontend/**/*.ts', 'apps/smelt/frontend/**/*.tsx'],
+    rules: {
+      'import/order': 'off'
+    }
+  }
 ];

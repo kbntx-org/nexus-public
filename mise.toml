@@ -32,4 +32,4 @@ run = "bash platform/core/local/local.sh \"${1:?Usage: mise run cluster <create|
 
 [tasks."dev"]
 description = "tilt up an app alongside core infra (docs|kiln|portfolio)"
-run = "tilt up -- \"${1:?Usage: mise run dev <docs|kiln|portfolio>}\""
+run = "tilt up -- \"${1:?Usage: mise run dev <docs|kiln|portfolio|smelt>}\""

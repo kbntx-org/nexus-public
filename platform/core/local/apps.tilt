@@ -1,7 +1,7 @@
 load('ext://helm_resource', 'helm_resource')
 load('./lib.tilt', 'buildkit_build', 'mise_tool_version', 'root_path')
 
-PRODUCT_RESOURCES = ['docs', 'kiln', 'portfolio']
+PRODUCT_RESOURCES = ['docs', 'kiln', 'portfolio', 'smelt']
 
 NODE_VERSION = mise_tool_version('node')
 PNPM_VERSION = mise_tool_version('pnpm')
@@ -130,3 +130,6 @@ helm_resource(
   links=[link('http://portfolio.localhost', 'portfolio.localhost')],
   labels=['1-Product'],
 )
+
+# ── Smelt ─────────────────────────────────────────────────────────────────────
+include(root_path("apps/smelt/Tiltfile"))

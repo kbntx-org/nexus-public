@@ -13,8 +13,12 @@ spec:
       services:
         - name: hubble-ui
           port: http
+  {{- if .Values.certificate.enabled }}
   tls:
     secretName: hubble-ui-tls
+  {{- else }}
+  tls: {}
+  {{- end }}
 {{- if .Values.certificate.enabled }}
 ---
 apiVersion: cert-manager.io/v1

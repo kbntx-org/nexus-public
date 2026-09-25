@@ -13,8 +13,12 @@ spec:
       services:
         - name: argocd-server
           port: http
+  {{- if .Values.certificate.enabled }}
   tls:
     secretName: argocd-server-tls
+  {{- else }}
+  tls: {}
+  {{- end }}
 {{- if .Values.certificate.enabled }}
 ---
 apiVersion: cert-manager.io/v1

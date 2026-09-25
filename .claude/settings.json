@@ -6,6 +6,8 @@
       "Read(.env.*)",
       "Read(**/.env)",
       "Read(**/.env.*)",
+      "Read(environment.json)",
+      "Read(**/environment.json)",
       "Read(*.tfvars)",
       "Read(**/*.tfvars)",
       "Read(*.tfvars.json)",

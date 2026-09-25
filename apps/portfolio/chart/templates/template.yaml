@@ -107,8 +107,12 @@ spec:
           port: {{ $.Values.containerPort | default 80 }}
     {{- end }}
     {{- end }}
+  {{- if .Values.certificate.enabled }}
   tls:
     secretName: portfolio-tls
+  {{- else }}
+  tls: {}
+  {{- end }}
 {{- if .Values.certificate.enabled }}
 ---
 apiVersion: cert-manager.io/v1

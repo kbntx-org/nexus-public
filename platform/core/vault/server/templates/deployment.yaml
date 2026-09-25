@@ -89,8 +89,12 @@ spec:
       services:
         - name: vault
           port: 8200
+  {{- if .Values.certificate.enabled }}
   tls:
     secretName: vault-tls
+  {{- else }}
+  tls: {}
+  {{- end }}
 {{- if .Values.certificate.enabled }}
 ---
 apiVersion: cert-manager.io/v1

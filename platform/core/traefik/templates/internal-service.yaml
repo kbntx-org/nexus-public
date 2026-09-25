@@ -1,3 +1,4 @@
+{{- if .Values.internalServiceClusterIP }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -13,3 +14,4 @@ spec:
     - name: internal-secure
       port: 443
       targetPort: {{ .Values.internalSecurePort }}
+{{- end }}

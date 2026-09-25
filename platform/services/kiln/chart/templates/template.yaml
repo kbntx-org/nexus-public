@@ -121,8 +121,12 @@ spec:
           port: {{ $.Values.containerPort | default 8080 }}
     {{- end }}
     {{- end }}
+  {{- if .Values.certificate.enabled }}
   tls:
     secretName: kiln-tls
+  {{- else }}
+  tls: {}
+  {{- end }}
 {{- if .Values.certificate.enabled }}
 ---
 apiVersion: cert-manager.io/v1

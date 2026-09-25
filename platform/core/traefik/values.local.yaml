@@ -22,8 +22,6 @@ traefik:
             permanent: true
     websecure:
       nodePort: 30443
-    internal-web: null
-    internal-secure: null
 
   tlsStore:
     default:

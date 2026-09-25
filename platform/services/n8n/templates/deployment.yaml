@@ -105,8 +105,12 @@ spec:
       services:
         - name: n8n
           port: 5678
+  {{- if .Values.certificate.enabled }}
   tls:
     secretName: n8n-tls
+  {{- else }}
+  tls: {}
+  {{- end }}
 {{- if .Values.certificate.enabled }}
 ---
 apiVersion: cert-manager.io/v1

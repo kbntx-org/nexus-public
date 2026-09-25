@@ -28,6 +28,8 @@ node_modules
 !.vscode/extensions.json
 
 .env
+environment.json
+*.tsbuildinfo
 
 # misc
 /.sass-cache

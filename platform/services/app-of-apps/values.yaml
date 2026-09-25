@@ -6,6 +6,10 @@ argocd-apps:
         repoURL: https://github.com/kbntx-org/nexus.git
         path: platform/core/traefik
         targetRevision: main
+        helm:
+          valueFiles:
+            - values.yaml
+            - values.prod.yaml
       destination:
         server: https://kubernetes.default.svc
         namespace: traefik-ingress
@@ -354,12 +358,13 @@ argocd-apps:
     smelt:
       project: default
       sources:
-        - repoURL: https://github.com/kbntx-org/smelt.git
-          path: chart
+        - repoURL: https://github.com/kbntx-org/nexus.git
+          path: apps/smelt/chart
           targetRevision: main
           helm:
             valueFiles:
               - values.yaml
+              - $values/smelt/values.yaml
         - repoURL: https://github.com/kbntx-org/nexus-manifests.git
           targetRevision: main
           ref: values
