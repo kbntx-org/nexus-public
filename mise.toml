@@ -21,6 +21,7 @@ uv = "0.12.13"
 yq = "4.53.6"
 golangci-lint = "2.13.2"
 s5cmd = "2.3.0"
+"go:golang.org/x/tools/gopls" = { version = "v0.23.0", depends = ["go"] }
 
 
 [tasks."lock:update"]
