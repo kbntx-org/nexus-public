@@ -307,3 +307,5 @@ If you are not sure about it, ask me.
 Each project may have its own `CLAUDE.md` with additional rules:
 
 - [`docs/CLAUDE.md`](docs/CLAUDE.md) — Documentation writing guidelines
+- [`apps/smelt/backend/CLAUDE.md`](apps/smelt/backend/CLAUDE.md) — Smelt backend domain-driven
+  layout
