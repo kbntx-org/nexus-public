@@ -1,4 +1,7 @@
 {
+  "sandbox": {
+    "enabled": true
+  },
   "permissions": {
     "allow": ["WebFetch(domain:docs.github.com)"],
     "deny": [
