@@ -45,8 +45,19 @@ abandoned projects are not acceptable.
 
 ## Checks Before Finishing
 
-Run formatting and the tests of the affected projects (`pnpm nx affected -t format-check test`).
-Linting is left to CI. Update the docs for any feature you add, change or remove.
+**Mandatory, never skip, even for a one-line or docs-only change.** Before every commit, amend or
+push, run the same formatting checks as CI against `main`, which cover only what changed:
+
+```sh
+pnpm nx format:check --base main --libs-and-apps
+pnpm nx format:check --base main
+pnpm nx affected -t format-check test
+```
+
+Both `format:check` runs are needed: `--libs-and-apps` covers files that belong to an nx project,
+the plain run covers the rest of the git diff (root `AGENTS.md`, for example). A formatting failure
+in CI means this check was skipped. Linting is left to CI. Update the docs for any feature you add,
+change or remove.
 
 ## Safety
 
@@ -64,6 +75,14 @@ PRs are never coupled. The user opens the PRs; never open, push or submit one un
   render the issue forms in `.github/ISSUE_TEMPLATE/`, so use the matching form's field labels as
   `##` headings and fill each with concrete content (goal, scope with real paths, verifiable
   acceptance criteria). Pick labels from `gh label list`; never invent one. Give the user the URL.
+- **Assignee, project and status:** every issue and PR is assigned to the user (`--assignee @me` or
+  `gh issue edit` / `gh pr edit --add-assignee @me`). Only issues, not PRs, go in the `Nexus`
+  project (`gh project item-add 1 --owner kbntx-org --url <url>`), with Status set to `Backlog` or
+  `In Progress` (`gh project item-edit`). `gh project` needs the `read:project` and `project` token
+  scopes (`gh auth refresh -s read:project,project`).
+- **Size:** one commit per PR, and keep the PR small. Fold follow-up changes into that commit
+  (amend) instead of adding commits.
+- **Linking:** every PR mentions its issue in the description (`Closes #<n>` or `Part of #<n>`).
 - **Writing a PR description:** when asked, read the PR with `gh pr view` and `gh pr diff` (in a
   stack, describe only that PR's slice), fill in
   [`.github/pull_request_template.md`](.github/pull_request_template.md) (Why / What / Notes), link
