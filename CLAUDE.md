@@ -7,6 +7,13 @@ each project sub-directory.
 
 ## Naming Conventions
 
+### "Repository", not "store"
+
+Name a persistence-access type or interface `Repository` (or `...Repository`), not
+`store`/`...Store`, even for a non-SQL backend such as an S3 object store. This matches the
+domain-driven layout's own `repository.go` convention and keeps naming consistent across every kind
+of backing store.
+
 ### No abbreviations or acronyms in identifiers
 
 Use full, descriptive names. Never shorten service or library names to initials.
@@ -67,6 +74,45 @@ IngressRule{Service: "http_status:404"}
 const watchReconnectDelay = 5 * time.Second
 const catchAllRule = "http_status:404"
 ```
+
+---
+
+## Comments
+
+Don't write comments that restate the code, name what a function does, or add a doc comment to every
+exported identifier. Well-named code is the documentation. Add a comment only for what the code
+cannot say: a non-obvious _why_, a hidden constraint, or a workaround for a specific quirk. This
+applies to **all languages** in the repo.
+
+---
+
+## TypeScript: enums are the single source of truth
+
+When a closed set of values is needed both as a type and as a runtime list (dropdown options, tabs,
+validation), define one `enum` and derive everything from it. Never write a string-literal union
+_and_ a hand-typed array of the same values — the two drift apart.
+
+**Bad:**
+
+```ts
+export type ClosedReason = 'rejected' | 'withdrawn' | 'no_response' | 'accepted';
+export const CLOSED_REASONS: ClosedReason[] = ['rejected', 'withdrawn', 'no_response', 'accepted'];
+```
+
+**Good:**
+
+```ts
+export enum ClosedReason {
+  Rejected = 'rejected',
+  Withdrawn = 'withdrawn',
+  NoResponse = 'no_response',
+  Accepted = 'accepted'
+}
+export const CLOSED_REASONS = Object.values(ClosedReason);
+```
+
+Use enum members (`ClosedReason.Rejected`) instead of string literals in code, derive subsets with
+`filter`, and key label maps with `Record<ClosedReason, string>`.
 
 ---
 
@@ -262,6 +308,10 @@ pnpm i --no-frozen-lockfile
 ```
 
 Never commit a `package.json` change without a matching `pnpm-lock.yaml` update.
+
+Before adding any dependency (npm or Go module), check that it is still maintained: archived or
+unmaintained repositories are not acceptable, look for the actively maintained fork or alternative
+first (e.g. `go.yaml.in/yaml/v3` rather than the archived `gopkg.in/yaml.v3`).
 
 ---
 

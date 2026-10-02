@@ -1,0 +1,17 @@
+image:
+  repository: rustfs/rustfs
+  tag: '1.0.0'
+initImage:
+  repository: amazon/aws-cli
+  tag: '2.37.5'
+
+rootUser: nexus
+rootPassword: nexus123
+bucket: nexus
+
+hostPath:
+  enabled: true
+  path: /data/rustfs
+
+apiIngressHost: s3.localhost
+consoleIngressHost: s3-console.localhost

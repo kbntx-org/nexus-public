@@ -1,0 +1,147 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rustfs
+spec:
+  clusterIP: None
+  ports:
+    - name: api
+      port: 9000
+    - name: console
+      port: 9001
+  selector:
+    app: rustfs
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: rustfs
+spec:
+  serviceName: rustfs
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: Retain
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rustfs
+  template:
+    metadata:
+      labels:
+        app: rustfs
+    spec:
+      initContainers:
+        - name: fix-permissions
+          # rustfs runs as uid/gid 10001 (see rustfs:x:10001:10001 in the image's /etc/passwd),
+          # which can't write to a hostPath dir the kubelet creates as root - chown it first.
+          image: {{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}
+          command: ['chown', '-R', '10001:10001', '/data']
+          volumeMounts:
+            - name: rustfs-persistent-storage
+              mountPath: /data
+        - name: rustfs-init
+          image: {{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}
+          restartPolicy: Always
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              value: {{ .Values.rootUser | quote }}
+            - name: AWS_SECRET_ACCESS_KEY
+              value: {{ .Values.rootPassword | quote }}
+            - name: AWS_DEFAULT_REGION
+              value: us-east-1
+            - name: AWS_EC2_METADATA_DISABLED
+              value: "true"
+          command:
+            - /bin/sh
+            - -euc
+            - |
+              echo 'Waiting for RustFS to start...';
+              until aws --endpoint-url http://localhost:9000 s3api list-buckets >/dev/null 2>&1; do
+                echo 'RustFS not ready, retrying in 2s...';
+                sleep 2;
+              done;
+
+              aws --endpoint-url http://localhost:9000 s3api create-bucket --bucket {{ .Values.bucket }} >/dev/null 2>&1 || true;
+
+              echo '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":"*","Action":["s3:GetObject"],"Resource":["arn:aws:s3:::{{ .Values.bucket }}/*"]}]}' > /tmp/policy.json;
+              aws --endpoint-url http://localhost:9000 s3api put-bucket-policy --bucket {{ .Values.bucket }} --policy file:///tmp/policy.json;
+              echo 'Bucket ready and public.';
+              sleep infinity;
+      containers:
+        - name: rustfs
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          env:
+            - name: RUSTFS_ACCESS_KEY
+              value: {{ .Values.rootUser | quote }}
+            - name: RUSTFS_SECRET_KEY
+              value: {{ .Values.rootPassword | quote }}
+          ports:
+            - name: api
+              containerPort: 9000
+            - name: console
+              containerPort: 9001
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 9000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 9000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          volumeMounts:
+            - name: rustfs-persistent-storage
+              mountPath: /data
+      {{- if .Values.hostPath.enabled }}
+      volumes:
+        - name: rustfs-persistent-storage
+          hostPath:
+            path: {{ .Values.hostPath.path }}
+            type: DirectoryOrCreate
+      {{- end }}
+  {{- if not .Values.hostPath.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: rustfs-persistent-storage
+      spec:
+        accessModes: ['ReadWriteOnce']
+        resources:
+          requests:
+            storage: 5Gi
+  {{- end }}
+{{- if .Values.consoleIngressHost }}
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: rustfs-console
+  labels:
+    app: rustfs
+spec:
+  routes:
+    - match: Host(`{{ .Values.consoleIngressHost }}`)
+      kind: Rule
+      services:
+        - name: rustfs
+          port: console
+  tls: {}
+{{- end }}
+{{- if .Values.apiIngressHost }}
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: rustfs-api
+  labels:
+    app: rustfs
+spec:
+  routes:
+    - match: Host(`{{ .Values.apiIngressHost }}`)
+      kind: Rule
+      services:
+        - name: rustfs
+          port: api
+  tls: {}
+{{- end }}

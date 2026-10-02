@@ -6,7 +6,7 @@ update_settings(max_parallel_updates=6)
 
 default_registry(REGISTRY_REF)
 
-CORE_RESOURCES = ['cilium', 'vault', 'external-secrets', 'traefik', 'metrics-server-repo', 'metrics-server', 'cloudnative-pg', 'watch-ingresses']
+CORE_RESOURCES = ['cilium', 'vault', 'external-secrets', 'traefik', 'metrics-server-repo', 'metrics-server', 'cloudnative-pg', 'rustfs', 'watch-ingresses']
 OPTIONAL_RESOURCES = ['monitoring']
 PERSISTED_ON_DOWN = ['cloudnative-pg', 'cilium']
 
@@ -76,6 +76,19 @@ helm_resource(
   deps=[root_path('platform/core/vault/server')],
   labels=['2-Infra'],
   links=[link('http://vault.localhost', 'vault.localhost')],
+)
+
+# ── RustFS (S3-compatible object storage for product services' local dev) ──────
+helm_resource(
+  'rustfs',
+  root_path('platform/core/rustfs'),
+  namespace='default',
+  deps=[root_path('platform/core/rustfs')],
+  labels=['2-Infra'],
+  links=[
+    link('http://s3.localhost', 'S3 API'),
+    link('http://s3-console.localhost', 'Console'),
+  ],
 )
 
 # ── Traefik (auto-started as a dependency of all product services) ─────────────
