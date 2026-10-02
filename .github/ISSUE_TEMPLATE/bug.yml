@@ -1,0 +1,42 @@
+name: Bug
+description: Something is broken or behaves differently than documented
+labels: [bug]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - apps/portfolio
+        - apps/smelt
+        - platform/core
+        - platform/services
+        - docs
+        - CI / tooling
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include error messages and logs.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Exact commands or clicks, and whether this happens locally or in production.
+    validations:
+      required: true
+  - type: textarea
+    id: hints
+    attributes:
+      label: Suspected cause or relevant files
+      description: Optional. Paths, commits or hypotheses that narrow the search.

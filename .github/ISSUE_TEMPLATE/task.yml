@@ -1,0 +1,57 @@
+name: Task
+description: A feature, improvement or chore with a clear outcome
+labels: [task]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - apps/portfolio
+        - apps/smelt
+        - platform/core
+        - platform/services
+        - docs
+        - CI / tooling
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What should be true when this is done, and why it matters.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: Paths or components in scope, and what is explicitly out of scope.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: A checklist that can be verified without asking you.
+      placeholder: |
+        - [ ] ...
+        - [ ] Affected Nx lint, format-check, test and build pass
+        - [ ] Docs updated
+    validations:
+      required: true
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Needs a running cluster
+      description: Whether verifying the change needs the app deployed, not just tests and lint.
+      options:
+        - 'No'
+        - 'Yes'
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes and constraints
+      description: Optional. Links, prior art, approval needed for new access or secrets.
