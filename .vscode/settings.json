@@ -33,7 +33,8 @@
   "explorer.fileNesting.patterns": {
     "package.json": "pnpm-lock.yaml, pnpm-workspace.yaml, .pnpmfile.mjs",
     "Tiltfile": ".tiltignore",
-    "README.md": "LICENSE, CLAUDE.md",
+    "README.md": "LICENSE",
+    "AGENTS.md": "CLAUDE.md",
     "mise.toml": "mise.lock",
     ".prettierrc": ".prettierignore"
   },
