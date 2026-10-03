@@ -3,7 +3,7 @@ name: monitoring-stack
 version: 1.0.0
 dependencies:
   - name: grafana
-    version: 13.2.2
+    version: 13.2.5
     repository: https://grafana-community.github.io/helm-charts
   - name: loki
     version: 7.3.0
@@ -12,11 +12,11 @@ dependencies:
     version: 6.17.1
     repository: https://grafana.github.io/helm-charts
   - name: kube-state-metrics
-    version: 8.4.2
+    version: 8.5.0
     repository: https://prometheus-community.github.io/helm-charts
   - name: prometheus-node-exporter
-    version: 4.56.3
+    version: 4.57.0
     repository: https://prometheus-community.github.io/helm-charts
   - name: victoria-metrics-single
-    version: 0.45.0
+    version: 0.46.0
     repository: https://victoriametrics.github.io/helm-charts
