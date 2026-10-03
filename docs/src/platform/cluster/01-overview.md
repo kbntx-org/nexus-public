@@ -3,102 +3,96 @@ title: Overview
 ---
 
 Nexus runs on a <a href="https://k3s.io/" target="_blank" rel="noopener">k3s</a> cluster on
-<a href="https://www.hetzner.com/cloud" target="_blank" rel="noopener">Hetzner Cloud</a> VMs. This
-page covers why, how nodes are provisioned and kept up to date, and what's actually running to make
-the cluster a cluster.
+<a href="https://www.hetzner.com/cloud" target="_blank" rel="noopener">Hetzner Cloud</a> VMs.
 
 ## Why k3s on Hetzner
 
-A managed control plane is a great default, however the idea of this platform was also to not only
-use kubernetes but understand it. K3s offers a low footprint kubernetes distribution and hetzner
-offers competitive pricing on compute while being based in europe.
+A managed control plane is a great default, but this platform is also meant to teach how Kubernetes
+works, not just how to use it. k3s is a low-footprint distribution, and Hetzner offers competitive
+compute pricing in Europe.
 
-Bundled k3s services (Traefik, servicelb, local-path, flannel, kube-proxy) are disabled on purpose
-so the cluster looks like a vanilla Kubernetes cluster: ingress, CNI, and storage all come back in
-as their own GitOps-managed components instead of k3s defaults.
+The bundled k3s services (Traefik, servicelb, local-path storage, flannel, kube-proxy, network
+policy controller, cloud controller) are disabled on purpose, so the cluster looks like vanilla
+Kubernetes: ingress, CNI and storage come back as their own GitOps-managed components.
 
 ## Cluster shape
 
-```mermaid
-%%{init: {'theme':'dark'}}%%
-graph TD
-    ControlPlane[Control plane<br/>k3s server]
-    Static[Pre-provisioned pools<br/>cheap, static Hetzner nodes]
-    Dynamic[Dynamic compute<br/>Karpenter, e.g. CI runners]
+<div class="nexus-diagram">
+--8<-- "src/assets/diagrams/cluster-shape.svg"
+</div>
 
-    ControlPlane --- Static
-    ControlPlane -.->|provisions on demand| Dynamic
-```
+What the diagram doesn't show is why:
 
-The control plane has a single node but is using etcd to be able to extend it to HA later if needed.
-The worker nodes are provisioned in two separate flavors:
-
-- **Pre-provisioned pools**, sized and shaped once in Terraform because they're cheap enough to just
-  run continuously. They are managed through terraform and ansible in
-  <a href="https://github.com/kbntx-org/nexus/blob/main/platform/core/kubernetes/provision/main.tf" target="_blank" rel="noopener"><code>platform/core/kubernetes/provision/main.tf</code></a>.
-- **Dynamic pools**, provisioned on demand by Karpenter for bursty workloads like CI runners. They
-  are deployed along workloads.
+- **Embedded etcd on a single server** lets the control plane grow to HA later without migrating the
+  datastore.
+- **Static pools** are cheap enough to run continuously, so they are sized once rather than scaled.
+- **<a href="https://karpenter.sh/" target="_blank" rel="noopener">Karpenter</a> nodes** configure
+  themselves at boot through their cloud-init, which is why they are excluded from the Ansible
+  inventory. The controller comes with its
+  <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/karpenter" target="_blank" rel="noopener">Hetzner
+  provider</a>, and the cloud-init secret is rendered by
+  [ESO templating](../secrets/01-overview.md#external-secrets-operator).
 
 ## Provisioning and upgrades
 
-- The pre-provisioned VMs are created through
-  <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/kubernetes/provision" target="_blank" rel="noopener"><code>terraform</code></a>
-  and configured through an ansible k3s
-  <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/kubernetes/configuration" target="_blank" rel="noopener"><code>role</code></a>.
-
-- The initial critical components are installed by running
-  <a href="https://github.com/kbntx-org/nexus/blob/main/platform/modules/k3s/terraform/config/init-core-cluster-dependencies.sh" target="_blank" rel="noopener"><code>init-core-cluster-dependencies.sh</code></a>.
-
-- For the later k3s upgrades, the official
-  <a href="https://github.com/rancher/system-upgrade-controller" target="_blank" rel="noopener">Rancher's
-  system-upgrade-controller</a> is used.
+1. Terraform creates the static VMs
+   (<a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/kubernetes/provision" target="_blank" rel="noopener"><code>provision/</code></a>)
+   and an Ansible k3s
+   <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/kubernetes/configuration" target="_blank" rel="noopener"><code>role</code></a>
+   configures them; see
+   [Run the cluster Ansible playbook](../../runbooks/02-run-the-cluster-ansible-playbook.md).
+2. <a href="https://github.com/kbntx-org/nexus/blob/main/platform/modules/k3s/terraform/config/init-core-cluster-dependencies.sh" target="_blank" rel="noopener"><code>init-core-cluster-dependencies.sh</code></a>
+   installs the critical components below.
+3. Later k3s upgrades go through Rancher's
+   <a href="https://github.com/rancher/system-upgrade-controller" target="_blank" rel="noopener">system-upgrade-controller</a>.
 
 ### Gotcha: changing the agent token doesn't touch the datastore
 
-`k3s_token` and `k3s_agent_token` (consumed by the
-<a href="https://github.com/kbntx-org/nexus/blob/main/platform/modules/k3s/ansible/roles/k3s/templates/k3s-config.yml.j2" target="_blank" rel="noopener"><code>k3s
-role's config template</code></a>) only get written into the cluster's encrypted bootstrap data —
-the copy k3s actually checks against on the datastore — the first time a server initializes
-(`cluster-init`). Re-running the role with a changed `k3s_agent_token` updates
-`/etc/rancher/k3s/config.yaml` on disk, but on an already-running cluster the datastore keeps
-whatever value was set at init time (the server token itself, if no distinct agent token was passed
-yet). Restarting the control plane afterwards then fails because the on-disk config no longer
-matches what's in the datastore, while the stale agent token silently keeps working for new nodes
-joining the cluster, since that's still the value the datastore has.
+**Symptom:** after re-running the role with a new `k3s_agent_token`, the control plane fails to
+restart, yet new nodes still join with the old token.
 
-To actually change it, use
-<a href="https://docs.k3s.io/cli/token" target="_blank" rel="noopener"><code>k3s token
-rotate</code></a> (`-t <old> --new-token <new>`) and restart the servers/agents with the new value —
-this forces k3s to rewrite the bootstrap data. Rotating to the same value the config already has is
-a safe way to force that resync without actually changing the token.
+**Cause:** `k3s_token` and `k3s_agent_token` (consumed by the
+<a href="https://github.com/kbntx-org/nexus/blob/main/platform/modules/k3s/ansible/roles/k3s/templates/k3s-config.yml.j2" target="_blank" rel="noopener"><code>k3s
+role's config template</code></a>) are written into the encrypted bootstrap data on the datastore
+only when a server first initializes (`cluster-init`). Re-running the role updates
+`/etc/rancher/k3s/config.yaml` on disk, but the datastore keeps the init-time value (the server
+token itself, if no distinct agent token was passed yet). The on-disk config and the datastore then
+disagree.
+
+**Fix:** run <a href="https://docs.k3s.io/cli/token" target="_blank" rel="noopener"><code>k3s token
+rotate</code></a> (`-t <old> --new-token <new>`) and restart the servers and agents with the new
+value; this forces k3s to rewrite the bootstrap data. Rotating to the value the config already has
+forces the same resync without changing the token.
 
 ## Core components
 
-What actually makes a freshly provisioned set of VMs into a working, useful cluster — in the order
-they show up:
+In the order they show up on fresh VMs:
 
 - **<a href="https://helm.sh/docs/" target="_blank" rel="noopener">Helm</a>** installs the initial
-  components below and then is used purely for templating.
+  components below, then is only used for templating.
 
-- **<a href="https://cilium.io/" target="_blank" rel="noopener">Cilium</a>** goes in first among the
-  charts, before even the cloud controller, because nothing schedules without a CNI. It's more than
-  a CNI here: k3s is configured with `disable-kube-proxy: true` and `disable-network-policy: true`
-  specifically so Cilium's eBPF dataplane replaces kube-proxy (better performance) and enforces
-  `NetworkPolicy`/`CiliumNetworkPolicy` natively instead of running both a CNI and a separate proxy
-  layer. See [Delivery](../delivery/02-ci-cd-pipeline.md#docker-in-docker-without-privileged-true)
-  for the one network policy that exists today.
+- **<a href="https://cilium.io/" target="_blank" rel="noopener">Cilium</a>** goes first, before even
+  the cloud controller, because nothing schedules without a CNI. k3s runs with
+  `disable-kube-proxy: true` and `disable-network-policy: true` so Cilium's eBPF dataplane replaces
+  kube-proxy (better performance) and enforces `NetworkPolicy`/`CiliumNetworkPolicy` natively,
+  instead of running a CNI plus a separate proxy layer.
 
 - **<a href="https://github.com/hetznercloud/hcloud-cloud-controller-manager" target="_blank" rel="noopener">Hetzner
-  Cloud Controller Manager</a> +
-  <a href="https://github.com/hetznercloud/csi-driver" target="_blank" rel="noopener">Hetzner
-  CSI</a>** go in next. The first one enables the integration between kubernetes nodes and hetzner
-  (metadata, sync when a server is deleted). The second one allows using hetzner native block
-  storage as a storage class.
+  Cloud Controller Manager</a>** integrates nodes with Hetzner (metadata, cleanup when a server is
+  deleted), and
+  **<a href="https://github.com/hetznercloud/csi-driver" target="_blank" rel="noopener">Hetzner
+  CSI</a>** exposes Hetzner block storage as a storage class.
 
-- **<a href="https://argo-cd.readthedocs.io/" target="_blank" rel="noopener">ArgoCD</a>** is our
-  main deployment tool. Once it is deployed and the cluster initialized, it takes over reconciling
-  itself and everything else in the cluster. Its own reconciliation model is covered in full in
+- **<a href="https://argo-cd.readthedocs.io/" target="_blank" rel="noopener">ArgoCD</a>** then takes
+  over reconciling itself and everything else in the cluster; see
   [Delivery](../delivery/01-overview.md).
+
+- **<a href="https://github.com/nestybox/sysbox" target="_blank" rel="noopener">Sysbox</a>** lets a
+  pod run its own Docker daemon (Docker-in-Docker) inside a user namespace instead of needing
+  `privileged: true`, which would hand it root on the node. ArgoCD deploys it as an installer
+  DaemonSet on every node labeled `sysbox-install=yes`, registering a `sysbox-runc` `RuntimeClass`
+  that pods opt into with `runtimeClassName`. The installer image is built in the repo because
+  upstream only publishes it for amd64 and its script needed patching for k3s.
 
 ## References
 
@@ -117,6 +111,8 @@ they show up:
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/hetzner-cloud-controller" target="_blank" rel="noopener"><code>platform/core/hetzner-cloud-controller/</code></a>
   — Hetzner CCM + CSI Helm chart
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/karpenter" target="_blank" rel="noopener"><code>platform/core/karpenter/</code></a>
-  — on-demand Hetzner node provisioning
+  — on-demand Hetzner node provisioning and the cloud-init `userData` secret
+- <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/sysbox" target="_blank" rel="noopener"><code>platform/core/sysbox/</code></a>
+  — Sysbox installer image and DaemonSet chart
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/network" target="_blank" rel="noopener"><code>platform/core/network/</code></a>
   — the private VPC the cluster joins

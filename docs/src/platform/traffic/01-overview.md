@@ -2,136 +2,92 @@
 title: Overview
 ---
 
-Networking in Nexus is built on one rule: **the cluster has no open inbound ports.** Nodes are
-routed through a NAT gateway and the firewall closes every inbound port.
-
-Everything in front of the cluster is
-<a href="https://www.cloudflare.com/" target="_blank" rel="noopener">Cloudflare</a>, everything
-behind it is a private
-<a href="https://www.hetzner.com/cloud" target="_blank" rel="noopener">Hetzner</a> network, and
-traffic only ever reaches it through outbound tunnels the cluster itself opens.
+Networking in Nexus is built on one rule: **the cluster has no open inbound ports.** The firewall
+closes every inbound port and nodes reach the internet through a NAT gateway.
+<a href="https://www.cloudflare.com/" target="_blank" rel="noopener">Cloudflare</a> sits in front, a
+private <a href="https://www.hetzner.com/cloud" target="_blank" rel="noopener">Hetzner</a> network
+sits behind, and traffic only gets in through outbound tunnels the cluster opens itself.
 
 ## Request path
 
-```mermaid
-%%{init: {'theme':'dark'}}%%
-graph LR
-    Internet[Public internet]
-    Edge[Cloudflare edge<br/>DNS · WAF · DDoS]
-    Tunnel[Tunnel CRD<br/>cloudflared pods]
-    Traefik
+<div class="nexus-diagram">
+--8<-- "src/assets/diagrams/traffic.svg"
+</div>
 
-    Internet --> Edge
-    Edge -->|outbound tunnel| Tunnel
-    Tunnel -->|TLS| Traefik[Public ingress]
-```
-
-_Figure 1 — Request path from the public internet to Traefik_
-
-1. **Cloudflare edge.** Cloudflare owns the DNS and proxies every request, providing WAF, DDoS
-   protection, and rate limiting. The cluster's origin IP is never exposed.
-2. In-cluster
-   <a href="https://developers.cloudflare.com/cloudflare-one/connections/connect-networks" target="_blank" rel="noopener"><code>cloudflared
-   </code></a> pods hold a persistent **outbound** connection to the edge — no inbound listener, no
-   firewall hole, no public IP.
-3. The tunnel forwards the request over TLS to the ingress controller, which does the in-cluster
-   routing. The TLS in-cluster is covered by
-   <a href="https://cert-manager.io/" target="_blank" rel="noopener">cert-manager</a> through DNS
-   letsencrypt challenge.
+1. **Cloudflare edge.** Cloudflare owns the DNS and proxies every request (WAF, DDoS protection,
+   rate limiting), so the origin IP is never exposed.
+2. **Tunnel.** In-cluster
+   <a href="https://developers.cloudflare.com/cloudflare-one/connections/connect-networks" target="_blank" rel="noopener"><code>cloudflared</code></a>
+   pods hold a persistent **outbound** connection to the edge: no inbound listener, no firewall
+   hole, no public IP.
+3. **Ingress.** The tunnel forwards the request over TLS to the ingress controller, which routes it
+   in-cluster. Certificates come from
+   <a href="https://cert-manager.io/" target="_blank" rel="noopener">cert-manager</a> and Let's
+   Encrypt through a Cloudflare DNS-01 challenge, so no inbound HTTP endpoint is needed.
 
 ## Cloudflare-k8s-controller: the tunnel isn't hand-configured
 
-One difficulty I faced was to maintain all the cloudflare access rules, policies. It was initially
-done through terraform but it felt wrong since those rules/protections should live along the
-workload they represent. So I built a custom
+Access rules used to live in Terraform, away from the workloads they protect. The repo's own
 <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/cloudflare-controller" target="_blank" rel="noopener"><code>cloudflare-controller</code></a>,
-a small controller-runtime operator built for this repo, from three CRDs:
+a small controller-runtime operator, moved them next to the workload: each chart declares its
+Cloudflare objects as CRDs, and the controller reconciles them through the Cloudflare API.
 
-- **`Tunnel`** — declares the cloudflared pods (replica count, a `PodDisruptionBudget`), the public
-  ingress rules (hostname → in-cluster service, evaluated in order, with a catch-all appended
-  automatically), and any private-network CIDRs to route through the tunnel. The cluster's own
-  tunnel does double duty: it carries public ingress _and_ routes the cluster's pod/service CIDRs
-  privately, so a WARP-connected device can resolve and reach Kubernetes-internal IPs directly.
+<div class="nexus-diagram">
+--8<-- "src/assets/diagrams/cloudflare-controller.svg"
+</div>
 
-- **`AccessApplication`** — a Cloudflare Zero Trust Access application protecting one hostname: how
-  long a session lasts, and which `AccessPolicy` resources gate it (evaluated in the order listed).
-
-- **`AccessPolicy`** — a reusable allow/deny/`non_identity`/`bypass` rule: `include` conditions OR
-  together, `require` conditions all apply on top, `exclude` overrides a match. This is what
-  actually decides "does this request/identity get through" for anything sitting behind Zero Trust
-  (the ArgoCD UI, Grafana, the Traefik dashboard).
-
-Adding a new privately-gated hostname is now a matter of writing an `AccessApplication` +
-`AccessPolicy` pair in the consuming app's chart, not a Terraform or dashboard change.
+**Gating a hostname** is an `AccessApplication` plus the `AccessPolicy` resources it references, in
+the consuming app's chart, not a Terraform or dashboard change. Policies must live in the
+application's namespace, and the application stays not ready until each of them has been created on
+Cloudflare.
 
 ## External-dns: DNS records aren't hand-managed either
 
 <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/external-dns" target="_blank" rel="noopener"><code>external-dns</code></a>
-watches `Service`, `Ingress`, Traefik CRD, and raw DNS-record CRD sources and syncs matching
-Cloudflare DNS records automatically. It only acts on resources labeled `external-dns/enabled=true`,
-and is restricted to managing `A`/`CNAME` records within the platform's own DNS zone. This enable to
-deploy DNS records along the workloads.
+syncs Cloudflare DNS records from `Service`, `Ingress`, Traefik CRD and `DNSEndpoint` sources, so
+records ship with the workloads they point to. It is the zone's only writer, which is why the
+controller hands it a `DNSEndpoint` instead of calling the DNS API itself. It only acts on resources
+labeled `external-dns/enabled=true`, and only manages `A`/`CNAME` records in the platform's own
+zone.
 
 ## Private access via WARP
 
-Operating the platform (for the rare debugging sessions) and accessing internal apps needs
-reachability into the VPC without punching a hole in the no-public-ingress rule. Cloudflare
+Operating the platform and reaching internal apps needs a way into the VPC without breaking the
+no-inbound rule.
 <a href="https://developers.cloudflare.com/cloudflare-one/connections/connect-devices/warp/" target="_blank" rel="noopener">Cloudflare
-Zero Trust Solution</a> solves it with the same outbound-only pattern as public traffic:
+Zero Trust</a> with the WARP client uses the same outbound-only pattern as public traffic (the
+private paths in the figure above). Two tunnels carry private traffic, each with its own scope:
 
-```mermaid
-%%{init: {'theme':'dark'}}%%
-graph LR
-    Device[My device<br/>WARP client]
-    ZT[Zero Trust<br/>Gateway]
-    Bastion[Bastion tunnel<br/>→ whole VPC]
-    ClusterTunnel[Cluster Tunnel<br/>→ pod/service CIDRs]
-
-    Device --> ZT
-    ZT -->|VPC route| Bastion
-    ZT -->|pod/svc route| ClusterTunnel
-```
-
-Two separate tunnels carry private traffic, each routing a different scope:
-
-- The bastion's tunnel routes the _entire_ VPC subnet (node IPs, the bastion itself — mainly used
-  for SSH for non kubernetes operations). It is the one connector that cannot live in the cluster:
-  it is also the VPC's NAT gateway, so it has to be reachable when nothing else is. It runs as a
-  Compose stack on a VPS, and its
+- **The bastion's tunnel routes the entire VPC subnet**: node IPs and the bastion itself, mainly for
+  SSH during non-Kubernetes operations. It is the one connector that can't live in the cluster,
+  because the bastion is also the VPC's NAT gateway and must be reachable when nothing else is. Its
   <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/bastion" target="_blank" rel="noopener">Terraform</a>
-  owns both the machine and the rollout — the same run that creates the tunnel deploys the stack
-  that uses its token, so the token never has to leave Terraform. Redeploys go in place rather than
-  replacing the server, since every private node loses egress while the NAT gateway is gone.
+  creates the tunnel and hands its token to cloud-init, which starts `cloudflared` as a container on
+  first boot, so the token never leaves Terraform.
 
-- The cluster's CR `Tunnel` routes the pod and service CIDRs. This allow me to publish private dns
-  on cloudflare and reaching private applications and databases through the vpc directly. This
-  configured in the WARP default profile (Terraform, in
+- **The cluster's `Tunnel` routes the pod and service CIDRs**, alongside public ingress. Private DNS
+  records on Cloudflare can then point at private apps and databases, reachable directly from a
+  WARP-connected device. The WARP default profile (Terraform, in
   <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/warp" target="_blank" rel="noopener"><code>platform/core/warp/</code></a>)
+  keeps those ranges inside the tunnel through its split-tunnel excludes, and resolves
+  cluster-internal domains against the cluster DNS through local-domain fallback.
 
-## Reaching a node: no classic bastion
+**Gotcha: changing the bastion's config replaces the server.** Cloud-init only runs at creation. The
+floating IP keeps the gateway address stable, but every private node loses egress until the new
+server is up.
 
-There is no SSH bastion here in the "jump host with authorized keys" sense. Every Hetzner server is
-registered as a
+## SSH to a node
+
+There is no "jump host with authorized keys". Every Hetzner server is a
 <a href="https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/use-cases/ssh/ssh-infrastructure-access/" target="_blank" rel="noopener">Cloudflare
-Zero Trust Infrastructure Access</a> target
-
-This gates SSH by one policy: **identity** (an allow-listed email) AND **device posture** (the
-connecting device must match a "gateway" posture rule, i.e. actually be on WARP). Passing both gets
-you a short-lived SSH certificate, signed by an account-wide CA that every node's `sshd` already
+Zero Trust Infrastructure Access</a> target, gated by one policy: **identity** (an allow-listed
+email) AND **device posture** (a "gateway" posture rule, i.e. the device is on WARP). Passing both
+yields a short-lived SSH certificate signed by an account-wide CA that every node's `sshd` already
 trusts.
 
-```mermaid
-%%{init: {'theme':'dark'}}%%
-graph LR
-    Operator[Operator<br/>WARP + identity]
-    Access[Zero Trust<br/>Infrastructure Access]
-    CA[Short-lived<br/>SSH cert]
-    Node[Any Hetzner node<br/>sshd trusts the CA]
-
-    Operator -->|posture + identity check| Access
-    Access -->|issues| CA
-    CA --> Node
-```
+<div class="nexus-diagram">
+--8<-- "src/assets/diagrams/ssh-access.svg"
+</div>
 
 ## References
 
@@ -144,7 +100,7 @@ graph LR
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/warp" target="_blank" rel="noopener"><code>platform/core/warp/</code></a>
   — WARP device profile, split-tunnel and local-domain-fallback config
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/bastion" target="_blank" rel="noopener"><code>platform/core/bastion/</code></a>
-  — the bastion VM: NAT gateway, VPC-wide private-network tunnel, and the Terraform that rolls its
-  Compose stack out
+  — the bastion VM: NAT gateway, VPC-wide private-network tunnel, and the cloud-init that starts its
+  tunnel
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/network" target="_blank" rel="noopener"><code>platform/core/network/</code></a>
   — the Hetzner VPC every private route ultimately targets

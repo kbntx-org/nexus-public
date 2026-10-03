@@ -13,24 +13,12 @@ provisioned with
 reconciled continuously from Git via
 <a href="https://argo-cd.readthedocs.io/" target="_blank" rel="noopener">ArgoCD</a>.
 
-```mermaid
-%%{init: {'theme':'dark'}}%%
-graph TD
-    Internet -->|Cloudflare Tunnel| Traefik
-    GitHub[GitHub repo] -->|GitOps sync| ArgoCD
+<div class="nexus-diagram">
+--8<-- "src/assets/diagrams/platform-overview.svg"
+</div>
 
-    subgraph Cluster[k3s on Hetzner]
-        Traefik --> Apps
-        ArgoCD --> Apps
-        ArgoCD --> Platform[Platform components]
-        Vault -.->|External Secrets| Apps
-    end
-```
-
-The cluster has no open inbound ports — [Traffic](../platform/traffic/01-overview.md) covers how
-requests still reach it. Secrets stay out of Git, materialised at runtime from
-[Vault](../platform/secrets/01-overview.md). Every component past that is chosen deliberately: see
-the domain pages below for the why behind each one.
+The cluster has no open inbound ports, and secrets stay out of Git. Each domain page below explains
+how, and why each component was chosen.
 
 ## Where to go next
 
@@ -38,15 +26,28 @@ the domain pages below for the why behind each one.
   your machine.
 - [Cluster & Compute](../platform/cluster/01-overview.md) — provisioning, upgrades, CNI,
   autoscaling.
-- [Traffic & Access](../platform/traffic/01-overview.md) — how a request or an operator reaches the
-  cluster, and TLS/ingress once inside.
+- [Traffic & Access](../platform/traffic/01-overview.md) — how a request or an operator reaches a
+  cluster with no open inbound ports.
 - [Delivery](../platform/delivery/01-overview.md) — GitOps, CI/CD, how a commit turns into a running
   change.
-- [Databases](../platform/databases/01-overview.md) — the shared Postgres pattern, backups, restore,
-  hibernation.
-- [Secrets](../platform/secrets/01-overview.md) — Vault + External Secrets.
+- [Databases](../platform/databases/01-overview.md) — the shared Postgres pattern and its backups.
+- [Secrets](../platform/secrets/01-overview.md) — Vault + External Secrets, keeping values out of
+  Git.
 - [Observability](../platform/observability/01-overview.md) — metrics, logs, dashboards.
+- [Runbooks](../runbooks/01-restore-a-cnpg-backup.md) — step-by-step procedures for operating the
+  platform.
 
 Ongoing work and planned improvements are tracked as
 <a href="https://github.com/kbntx-org/nexus/issues" target="_blank" rel="noopener">GitHub issues</a>
 — the docs describe the platform as it stands today, not the roadmap.
+
+## References
+
+- <a href="https://github.com/kbntx-org/nexus/blob/main/platform/services/app-of-apps/values.yaml" target="_blank" rel="noopener"><code>platform/services/app-of-apps/values.yaml</code></a>
+  — every ArgoCD application deployed to the cluster
+- <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core" target="_blank" rel="noopener"><code>platform/core/</code></a>
+  — cluster-level building blocks: networking, certificates, secrets, ingress, operators
+- <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/kubernetes" target="_blank" rel="noopener"><code>platform/core/kubernetes/</code></a>
+  — Terraform provisioning and configuration of the k3s cluster
+- <a href="https://github.com/kbntx-org/nexus/blob/main/mise.toml" target="_blank" rel="noopener"><code>mise.toml</code></a>
+  — pinned versions of every runtime and tool

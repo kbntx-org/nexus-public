@@ -292,8 +292,8 @@ hide:
     Welcome to <span class="nexus-hero__brand">Nexus</span>
   </h1>
   <p class="nexus-hero__subtitle">
-    A space to experiment with latest technologies, cloud-native infrastructure while building a solid,
-    reusable production infrastructure my projects.
+    A space to experiment with the latest technologies and cloud-native infrastructure while building a
+    solid, reusable production infrastructure for my projects.
   </p>
   <div class="nexus-hero__actions">
     <a class="nexus-cta nexus-cta--primary" href="getting-started/01-overview/">

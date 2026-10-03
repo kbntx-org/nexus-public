@@ -22,35 +22,68 @@ replicate official documentation — it's to cover:
   tutorials, restatements of official docs and anything the code already answers.
 - **Justify decisions.** State what we chose, the alternative we rejected and why, in plain
   language. A reader should leave knowing the reasoning, not just the setup.
-- **Diagram only when prose struggles.** See [Diagrams](#diagrams).
+- **Easy to read, not dense.** A page should be understood in one pass: short paragraphs, the
+  outcome before the mechanics, and nothing said twice on a page or across pages; link to where it
+  is already explained instead.
+- **Illustrate.** When a flow or an architecture takes more than a few sentences to describe, draw
+  it and keep only the prose the diagram can't carry (the why, the gotchas). See
+  [Diagrams](#diagrams).
 
 ## Structure
 
-docs/ <topic>/ .nav.yml # Section title and display ordering 01-overview.md 02-<subtopic>.md ...
+```text
+docs/src/
+  <topic>/
+    .nav.yml          # Section title and display ordering
+    01-overview.md
+    02-<subtopic>.md
+    ...
+```
 
 Files are prefixed with a 2-digit number (01, 02...) to control ordering. The .nav.yml sets the
 section title shown in navigation.
+
+### Runbooks
+
+Step-by-step operational procedures live under `docs/src/runbooks/`, one page per procedure. Each
+covers: when to use it, prerequisites (access needed, such as WARP), numbered steps with
+copy-pasteable commands using placeholders, how to verify, and rollback or gotchas. Domain pages
+explain the why and link to the runbook instead of embedding the steps.
 
 ## Writing a Doc
 
 Each doc should where relevant:
 
-- Reference actual code paths in the repo (e.g. `infrastructure/helm/`)
+- Reference actual code paths in the repo (e.g. `platform/core/traefik/`)
 - Link to official documentation rather than replicating it
 - Include a diagram if it makes a flow or architecture clearer
 
 ### Diagrams
 
-Use a diagram when a flow or architecture is hard to follow as prose; skip it otherwise. Choose the
-format by readability:
+Prefer a diagram to a long description of a flow or an architecture. Diagrams are **SVG only, never
+Mermaid**: a hand-written SVG lays out zones, boundaries and mixed line styles that Mermaid can't,
+and reads the same in both themes.
 
-- **Mermaid** for simple flows and sequences. Keep it small — max ~6-8 nodes, no wide layouts. If
-  the Mermaid result gets cramped or unreadable, use an SVG instead.
-- **SVG** for anything Mermaid can't lay out cleanly. Hand-write it, keep it tiny (a few KB at most)
-  so it can be committed under `docs/src/assets/` and embedded: no editor metadata, no embedded
-  fonts or raster images, a `viewBox` instead of fixed width/height, shapes and `<text>` only, and
-  `currentColor` or CSS variables so it works in both light and dark themes. Run it through
-  [SVGO](https://svgo.dev/) before committing.
+- Hand-write it and keep it tiny (a few KB at most): no editor metadata, no embedded fonts or raster
+  images, a `viewBox` instead of fixed width/height, shapes and `<text>` only.
+- Color it only with `currentColor` and Material CSS variables (`--md-default-fg-color--light`,
+  `--md-accent-fg-color`, ...) in one `<style>` block, so it follows the light and dark themes.
+- Put it in `docs/src/assets/diagrams/` and inline it with a snippet wrapped in a `div`:
+
+  ```markdown
+  <div class="nexus-diagram">
+  --8<-- "src/assets/diagrams/<name>.svg"
+  </div>
+  ```
+
+  An `<img>` can't inherit the page's theme colors, and without the `div` Markdown parses the SVG's
+  text: a `*` or `_` in a label becomes emphasis and breaks the diagram. Prefix its class names and
+  ids with the diagram name, since inlined SVGs share the page's CSS.
+
+- Match the style of the existing diagrams in that folder, and optimize it with
+  [SVGO](https://svgo.dev/) before committing:
+  `pnpm dlx svgo --config docs/svgo.config.mjs docs/src/assets/diagrams/<name>.svg`. The config
+  keeps the `<style>` block, class names and ids the default preset would inline or rename.
 
 ### Avoid Over-Specific Details
 

@@ -7,137 +7,128 @@ Actions</a>, colocated with the source.
 
 ## Runners
 
-Every workflow runs on GitHub-hosted `ubuntu-latest` runners (`runs-on: ubuntu-latest`). No pipeline
-step needs to reach the cluster, Vault, or any other internal network directly: images are built and
-pushed to the registry, and a deploy is a commit to `nexus-manifests` — ArgoCD is what actually
-reconciles the cluster from that repo, not this pipeline (see
-[GitOps deploys](03-gitops-deploys.md)). Since nothing in the pipeline needs privileged network
-access or in-cluster compute, hosted runners avoid the operational cost of running and isolating
-CI's own compute (an ephemeral-pod controller, dedicated node pools, network policies) for no
-corresponding benefit.
+Every workflow runs on GitHub-hosted `ubuntu-latest` runners. No step needs to reach the cluster,
+Vault or any other internal network: images are pushed to the registry, and a deploy is a commit to
+`nexus-manifests` that ArgoCD reconciles from (see [GitOps deploys](03-gitops-deploys.md)). With no
+need for privileged network access or in-cluster compute, hosted runners spare us the cost of
+running and isolating CI's own compute (an ephemeral-pod controller, dedicated node pools, network
+policies) for no corresponding benefit.
 
 ## Toolchain provisioning
 
-Each job installs exactly the
-<a href="https://mise.jdx.dev/" target="_blank" rel="noopener">mise</a>-tracked tools it needs — via
-the
+Each job installs only the
+<a href="https://mise.jdx.dev/" target="_blank" rel="noopener">mise</a>-tracked tools its steps
+invoke, through the
 <a href="https://github.com/kbntx-org/nexus/blob/main/.github/actions/mise-install/action.yaml" target="_blank" rel="noopener"><code>mise-install</code></a>
-composite action right after checkout — instead of running on a pre-baked image, listing only the
-tools that job's steps actually invoke (e.g. `node pnpm` for a plain Nx job,
-`node pnpm go golangci-lint` for a job whose `lint` target shells out to both). Versions come from
-the root
+composite action right after checkout, instead of running on a pre-baked image: `node pnpm` for a
+plain Nx job, `node pnpm go golangci-lint` for a job whose `lint` target shells out to both.
+
+Versions come from the root
 <a href="https://github.com/kbntx-org/nexus/blob/main/mise.toml" target="_blank" rel="noopener"><code>mise.toml</code></a>,
-the single source of truth for every pinned runtime — the same file a contributor's shell reads
+the single source of truth for every pinned runtime and the same file a contributor's shell reads
 locally (see [Local Development](../../getting-started/02-local-development.md)).
 
 ## Pipeline shape
 
 <a href="https://github.com/kbntx-org/nexus/blob/main/.github/workflows/checks.yml" target="_blank" rel="noopener"><code>checks.yml</code></a>
-is the single entrypoint for both pull requests and pushes to `main` — each called workflow branches
-on `github.event_name` internally where behavior needs to differ, rather than living as a separate
-PR/main file.
+is the single entrypoint for pull requests and pushes to `main`; each called workflow branches on
+`github.event_name` where behavior differs, rather than living in a separate PR or main file. A
+newer push to a PR cancels that PR's in-flight run, while every push to `main` gets its own run that
+is never cancelled, so each trunk commit leaves a complete result for the [diff base](#diff-base)
+walk.
 
-```mermaid
-%%{init: {'theme':'dark'}}%%
-graph LR
-    Push[push / PR] --> Affected[Affected]
-    Affected --> Lint[Lint & format]
-    Affected --> Test
-    Affected --> Build[Build<br/>images, parallel]
-    Lint & Test & Build --> Gate[Checks gate]
-    Gate --> Deploy[Deploy<br/>gated on targets != empty]
-    Gate & Deploy --> PGate[Pipeline gate]
-```
+<div class="nexus-diagram">
+--8<-- "src/assets/diagrams/pipeline.svg"
+</div>
 
-0. **Affected** — a single job at the front of the pipeline that resolves what changed once (see
-   [Affected detection](#affected-detection) below) and hands the result to every job after it.
-1. **Lint & format** — `nx run-many` scoped to the projects Affected marked as lint-affected.
-   Skipped entirely, runner and all, when that list is empty — both on a PR and on `main`.
-2. **Test** — same scoping/skip behavior against the test-affected list.
-3. **Build** — build — and, outside a PR, push — one image per deploy target, as parallel steps in
-   one job. Skipped as a whole job when Affected found no deploy targets at all. On a PR the images
-   are built but never pushed, so a broken Dockerfile fails the check without publishing anything.
-4. **Checks gate** — reads the result of Affected, Lint & format, Test, and Build, and fails unless
-   every one of them is `success` or `skipped`. This is what branch protection should require
-   instead of the individual jobs — a job that's legitimately skipped (nothing affected) shouldn't
-   be able to block a merge.
-5. **Deploy** — only runs if Checks gate passed and there's at least one deploy target; see
-   [GitOps deploys](03-gitops-deploys.md) for the full mechanics.
-6. **Pipeline gate** — a second, non-required gate after Deploy, folding its result in too. It
-   exists purely so [Affected detection](#diff-base) has one reliable "did this commit's pipeline,
-   deploy included, actually complete" signal — branch protection stays on Checks gate, since a
-   flaky PR-preview push shouldn't be able to block a merge.
+0. **Affected** resolves what changed once and hands the result to every job after it (see
+   [Affected detection](#affected-detection)).
+1. **Lint & format** always runs. The Prettier check (`nx format:check` against the affected base,
+   with and without `--libs-and-apps`, since each mode alone misses some files) runs on every
+   pipeline. The `lint` and `format-check` targets (`format-check` is a project's non-Prettier
+   formatter, such as `golangci-lint fmt` for a Go project) run through `nx run-many` on the
+   projects Affected computed for each, and each step is skipped when its list is empty.
+2. **Test** runs `nx run-many` on the test-affected projects; the job is skipped when that list is
+   empty.
+3. **Build** builds one image per deploy target in one job and, outside a PR, pushes it to Docker
+   Hub (see [Pull requests](03-gitops-deploys.md#pull-requests)). It is skipped when Affected found
+   no deploy targets.
+4. **Checks gate** fails unless Affected, Lint & format, Test and Build each ended `success` or
+   `skipped`. Branch protection should require this job rather than the individual ones, so a job
+   legitimately skipped because nothing is affected can't block a merge.
+5. **Deploy** runs only if Checks gate passed and Affected found at least one deploy target (see
+   [GitOps deploys](03-gitops-deploys.md#build-and-deploy)).
+6. **Pipeline gate** runs on trunk pushes only, after Deploy, and folds Deploy's result in with
+   Checks gate's. It is the [diff base](#diff-base) walk's signal that a commit fully shipped.
+   Branch protection stays on Checks gate, since a flaky PR-preview push shouldn't block a merge.
 
 ## Affected detection
 
-<a href="https://nx.dev/" target="_blank" rel="noopener">Nx</a> answers "what changed since
-`<base>`", and every question the pipeline asks it — what to lint, what to test, what to build for
-CI — is the exact same call shape:
-`nx show projects --affected --base <base> --with-target <target>`. Each deployable project declares
-a real `build-ci`
-<a href="https://nx.dev/reference/project-configuration#targets" target="_blank" rel="noopener">Nx
-target</a> in its `project.json`, deliberately named differently from the plain `build` target some
-of these projects already have for local dev (`portfolio:build` is what `nx serve` depends on;
-folding a Docker push into it would make local dev accidentally publish images). `build-ci` is an
-`nx:run-commands` target that runs
-<a href="https://github.com/kbntx-org/nexus/blob/main/tools/docker-build-and-push.sh" target="_blank" rel="noopener"><code>tools/docker-build-and-push.sh</code></a>.
-Only projects that ship an image are in the Nx graph at all — pure infrastructure like the
-[bastion](../traffic/01-overview.md#private-access-via-warp) has no `project.json` and is rolled out
-by Terraform, not by this pipeline. All of this runs as steps directly inside the
-<a href="https://github.com/kbntx-org/nexus/blob/main/.github/workflows/affected.yml" target="_blank" rel="noopener"><code>Affected</code></a>
-job — it has no read dependency on `nexus-manifests` at all; every app's deploy-target decision is
-Nx's own affected-graph computation, diffed against the same shared base described below. `build-ci`
-only produces and pushes the image; bumping the tag in `nexus-manifests` is still entirely
-`deploy.yml`'s job, unchanged — see [GitOps deploys](03-gitops-deploys.md).
+<a href="https://nx.dev/" target="_blank" rel="noopener">Nx</a> decides what's affected; every job
+after it follows that answer. Each question the pipeline asks (what to lint, format-check, test or
+build) is the same call: `nx show projects --affected --base <base> --with-target <target>`.
 
-There's no hand-rolled path-matching or fail-safe script anymore — both are just Nx `inputs`.
-`affected.yml`, `build.yml`, and `deploy.yml` are listed in `nx.json`'s `sharedGlobals` named input,
-which every project's `default` (and therefore `production`, and therefore every target built on top
-of it — `build`, `build-ci`, `test`, `lint`) already includes. So a change to any of those three
-files changes every project's task hash for every target, and Nx's own affected computation marks
-everything affected on its own — deliberately broader than the old fail-safe, which only ever
-touched deploy targets; a pipeline-critical change now also re-lints and re-tests everything, not
-just re-deploys it.
+What makes a project affected is entirely Nx `inputs`; there's no hand-rolled path matching.
+`nx.json`'s `sharedGlobals` named input holds the files whose change must re-run the whole pipeline:
+the pipeline workflows, the `mise.toml` toolchain pins and the pnpm lockfile. Every project's
+`default` input (and so `production`, and every target built on it) includes `sharedGlobals`.
+Touching any of those files therefore re-lints, re-tests, rebuilds and redeploys everything, because
+any of them could change what every target produces.
+
+A deploy target is a project with a `build-ci`
+<a href="https://nx.dev/reference/project-configuration#targets" target="_blank" rel="noopener">Nx
+target</a>. It is named apart from the plain `build` target some projects have for local dev
+(`portfolio:build` is what `nx serve` depends on), so local dev can never publish an image.
+`build-ci` is an `nx:run-commands` target running
+<a href="https://github.com/kbntx-org/nexus/blob/main/tools/docker-build-and-push.sh" target="_blank" rel="noopener"><code>tools/docker-build-and-push.sh</code></a>,
+which builds with Buildx and pushes only when the workflow sets `PUSH`.
+
+All of this runs as steps inside the
+<a href="https://github.com/kbntx-org/nexus/blob/main/.github/workflows/affected.yml" target="_blank" rel="noopener"><code>Affected</code></a>
+job, which never reads `nexus-manifests`: every app's deploy decision is Nx's affected graph against
+the one shared diff base below, with no per-app base. Code without a `project.json` is outside the
+graph and so outside this pipeline (see
+[What's not GitOps-managed](03-gitops-deploys.md#whats-not-gitops-managed)).
 
 ### Diff base
 
-On a PR, the diff base is always trunk (`origin/main`), regardless of the PR's actual base branch —
-this matters for stacked PRs targeting another feature branch.
+On a PR, the diff base is always trunk (`origin/main`), whatever the PR's base branch, so a stacked
+PR targeting another feature branch still diffs against trunk.
 
 On `main`, the diff base is **the most recent ancestor commit whose `Pipeline gate` job succeeded**,
-not simply the previous commit. A commit can land on `main` without its pipeline ever going green —
-an infra blip, a flaky job, a force-push, or a deploy that failed to push to `nexus-manifests` after
-Checks gate already passed — and diffing against an unvalidated (or undeployed) commit would
-silently drop whatever never actually shipped. Checking `Pipeline gate` specifically, rather than
-`Checks gate`, is what makes that self-healing: since Pipeline gate also folds in Deploy's result, a
-commit whose deploy failed is ineligible as a future diff base, so the very next run's diff
-naturally widens to pick that change back up. So instead the action walks `Checks` runs on `main`
-newest-first via the GitHub API, skipping any whose commit isn't a real ancestor of `HEAD` (guards
-against two runs finishing out of order), and falls back to the empty tree — treating every project
-as affected — logging a warning if no green ancestor is found at all.
+not the previous commit:
 
-This only catches drift `nexus`'s own pipeline can see, though — a manual `git revert` made directly
-in `nexus-manifests` (see [Rollback and hotfix](03-gitops-deploys.md#rollback-and-hotfix)) has no
-trace anywhere in `nexus`, so there's nothing for this walk to detect; re-syncing after a manual
-rollback is a deliberate follow-up step, not something this makes automatic.
+<div class="nexus-diagram">
+--8<-- "src/assets/diagrams/diff-base.svg"
+</div>
 
-```mermaid
-%%{init: {'theme':'dark'}}%%
-graph TD
-    Start[Walk Checks runs<br/>on main, newest first] --> Ancestor{commit is ancestor<br/>of HEAD?}
-    Ancestor -->|no| Start
-    Ancestor -->|yes| Gate{Pipeline gate<br/>succeeded?}
-    Gate -->|no| Start
-    Gate -->|yes| Base[Diff base = that commit]
-    Start -->|runs exhausted| Empty[Diff base = empty tree<br/>+ warning logged]
-```
+A commit can land on `main` without its pipeline going green: an infra blip, a flaky job, a
+force-push, or a deploy that failed to push to `nexus-manifests` after Checks gate passed. Diffing
+against such a commit would silently drop whatever never shipped.
 
-Every app uses this same base — there's no separate per-app diff base read from `nexus-manifests`
-anymore. The tradeoff: if two commits land on `main` close enough together that the second one's
-diff base walk doesn't yet see the first as green, both can independently decide the same app is a
-deploy target and each push their own tag. That's harmless, not incorrect — see
-[Deploy target computation](03-gitops-deploys.md#deploy-target-computation) for why the write side
-already makes the newer commit's tag win.
+Checking Pipeline gate rather than Checks gate makes this self-healing. Pipeline gate folds in
+Deploy's result, so a commit whose deploy failed can't become a diff base, and the next run's diff
+widens to pick that change back up.
+
+The walk reads `Checks` runs on `main` through the GitHub API. The ancestor check guards against two
+runs finishing out of order. With no green ancestor at all, the base falls back to the empty tree:
+every project is affected and a warning is logged.
+
+Two limits live on the deploy side: a manual change in `nexus-manifests` is invisible to this walk
+(see [Rollback and hotfix](03-gitops-deploys.md#rollback-and-hotfix)), and two close commits can
+both deploy the same app (see [Concurrent deploys](03-gitops-deploys.md#concurrent-deploys)).
+
+## Public mirror
+
+<a href="https://github.com/kbntx-org/nexus/blob/main/.github/workflows/sync-nexus-public.yml" target="_blank" rel="noopener"><code>sync-nexus-public.yml</code></a>
+runs daily (and on demand) outside the Checks pipeline and force-pushes a read-only copy of this
+repo to a separate public repository. It rewrites the full history with
+<a href="https://github.com/newren/git-filter-repo" target="_blank" rel="noopener">git-filter-repo</a>
+rather than copying a snapshot: excluded paths and personal emails are stripped from every commit,
+not just the latest tree, since anything left in an old commit would still be public. Keeping the
+working repo private and publishing a filtered mirror makes the platform public without exposing
+what is excluded from it (a private app, for example). The mirror is regenerated and force-pushed
+each run, so it is never edited directly.
 
 ## References
 
@@ -152,3 +143,15 @@ already makes the newer commit's tag win.
   together
 - <a href="https://github.com/kbntx-org/nexus/blob/main/.github/workflows/affected.yml" target="_blank" rel="noopener"><code>.github/workflows/affected.yml</code></a>
   — the single upfront job: affected + deploy-target computation, including the trunk diff-base walk
+- <a href="https://github.com/kbntx-org/nexus/blob/main/.github/workflows/lint-and-format.yml" target="_blank" rel="noopener"><code>.github/workflows/lint-and-format.yml</code></a>
+  — Prettier check plus the affected `lint` and `format-check` targets
+- <a href="https://github.com/kbntx-org/nexus/blob/main/.github/workflows/build.yml" target="_blank" rel="noopener"><code>.github/workflows/build.yml</code></a>
+  — runs `build-ci` for the deploy targets, pushing outside PRs
+- <a href="https://github.com/kbntx-org/nexus/blob/main/.github/actions/setup-buildx/action.yaml" target="_blank" rel="noopener"><code>.github/actions/setup-buildx/action.yaml</code></a>
+  — Buildx builder used by the build job
+- <a href="https://github.com/kbntx-org/nexus/blob/main/tools/docker-build-and-push.sh" target="_blank" rel="noopener"><code>tools/docker-build-and-push.sh</code></a>
+  — the shared build/push script every `build-ci` target runs
+- <a href="https://github.com/kbntx-org/nexus/blob/main/nx.json" target="_blank" rel="noopener"><code>nx.json</code></a>
+  — `sharedGlobals` and target input defaults
+- <a href="https://github.com/kbntx-org/nexus/blob/main/.github/workflows/sync-nexus-public.yml" target="_blank" rel="noopener"><code>.github/workflows/sync-nexus-public.yml</code></a>
+  — daily public mirror with filtered history

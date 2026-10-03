@@ -4,44 +4,35 @@ title: Overview
 
 <a href="https://argo-cd.readthedocs.io/" target="_blank" rel="noopener">ArgoCD</a> is the GitOps
 reconciler that owns the cluster. Every workload that runs in Nexus exists because ArgoCD read its
-definition from this repo and applied it — the cluster state is a pure function of `main`. Drift is
-structurally impossible (a manual `kubectl apply` gets reverted on the next reconcile), rollback is
-one `git revert`, and Git history _is_ the deploy history.
+definition from this repo and applied it: the cluster state is a function of `main`. A manual
+`kubectl apply` is reverted on the next reconcile, rollback is one `git revert`, and Git history
+_is_ the deploy history.
 
 ## Two paths in, depending on what changed
 
-```mermaid
-%%{init: {'theme':'dark'}}%%
-graph LR
-    Git[GitHub repo]
-    GHA[GitHub Actions]
-    ArgoCD
-    Cluster
+<div class="nexus-diagram">
+--8<-- "src/assets/diagrams/delivery-paths.svg"
+</div>
 
-    Git -->|config-only change| ArgoCD
-    Git -->|source change| GHA
-    GHA -->|build image, bump tag| ArgoCD
-    ArgoCD -->|sync| Cluster
-```
+A **config change** (a Helm value, a new manifest) to a component that ships no image needs no build
+or deploy: ArgoCD syncs it from `main`, and CI only runs its checks. This covers most of the
+platform, including every third-party component wrapped in an umbrella chart (ArgoCD itself, for
+example).
 
-**Config change** (a Helm value, a new manifest, a workflow tweak) — no CI involved. ArgoCD picks it
-up and syncs directly. This is most of the platform: Traefik, ArgoCD itself, External Secrets, the
-monitoring stack, and so on are all configured this way.
-
-**Source change** — anything this repo builds an image for — goes through CI first: build the image,
-then hand ArgoCD a new tag. See [CI/CD pipeline](02-ci-cd-pipeline.md) and
-[GitOps deploys](03-gitops-deploys.md) for that path in full.
+A **source change**, to anything this repo builds an image for, goes through CI first: build the
+image, then hand ArgoCD a new tag. See [CI/CD pipeline](02-ci-cd-pipeline.md) and
+[GitOps deploys](03-gitops-deploys.md).
 
 ## The app-of-apps pattern
 
 A single root `Application`, registered by hand once at bootstrap, points at the
 <a href="https://github.com/kbntx-org/nexus/tree/main/platform/services/app-of-apps" target="_blank" rel="noopener"><code>app-of-apps</code></a>
-chart — a thin wrapper around
+chart, a thin wrapper around
 <a href="https://github.com/argoproj/argo-helm/tree/main/charts/argocd-apps" target="_blank" rel="noopener"><code>argocd-apps</code></a>
 that declares every other `Application` the platform needs as a child. Bootstrapping the platform is
 one sync of the root; everything declared in
 <a href="https://github.com/kbntx-org/nexus/blob/main/platform/services/app-of-apps/values.yaml" target="_blank" rel="noopener"><code>app-of-apps/values.yaml</code></a>
-is then materialized on its own — every `platform/core/*` and `platform/services/*` component plus
+is then materialized on its own: every `platform/core/*` and `platform/services/*` component plus
 the apps, all traceable back to one file.
 
 **Runbook — add a new cluster-side workload:** drop the chart under `platform/core/<name>/` or
@@ -60,29 +51,34 @@ Image-shipping apps use a
 <code>Application</code></a>: the chart comes from this repo, and a values overlay
 (`$values/<app>/values.yaml`) comes from
 <a href="https://github.com/kbntx-org/nexus-manifests" target="_blank" rel="noopener"><code>nexus-manifests</code></a>,
-a small repo CI commits image-tag bumps to. A GitHub webhook triggers sub-minute sync on every
-`nexus-manifests` push. Full pipeline in [GitOps deploys](03-gitops-deploys.md).
+a small repo CI commits image-tag bumps to (see [GitOps deploys](03-gitops-deploys.md)). A GitHub
+webhook triggers a sync within seconds of every `nexus-manifests` push.
 
 ## Dependency updates
 
 <a href="https://docs.renovatebot.com/" target="_blank" rel="noopener">Renovate</a> runs self-hosted
-on a scheduled GitHub Actions workflow rather than the hosted GitHub app, so it authenticates with a
-dedicated GitHub App (minted per run via
+on a scheduled GitHub Actions workflow rather than the hosted GitHub app. It authenticates with a
+dedicated GitHub App (token minted per run via
 <a href="https://github.com/actions/create-github-app-token" target="_blank" rel="noopener"><code>create-github-app-token</code></a>)
-instead of the default `GITHUB_TOKEN`. The job checks out this repo, installs
-<a href="https://mise.jdx.dev/" target="_blank" rel="noopener">mise</a>-managed tools via the same
-[`mise-install`](https://github.com/kbntx-org/nexus/blob/main/.github/actions/mise-install/action.yaml)
-action every other pipeline uses, then invokes Renovate — so `postUpgradeTasks` like the pnpm
-lockfile fixup run with the exact toolchain versions this repo is pinned to, not whatever ships in a
-Renovate base image.
+instead of the default `GITHUB_TOKEN`.
+
+The job installs <a href="https://mise.jdx.dev/" target="_blank" rel="noopener">mise</a>-managed
+tools via the same
+<a href="https://github.com/kbntx-org/nexus/blob/main/.github/actions/mise-install/action.yaml" target="_blank" rel="noopener"><code>mise-install</code></a>
+action as every other pipeline before invoking Renovate, so `postUpgradeTasks` like the pnpm
+lockfile fixup run with the toolchain versions this repo pins, not whatever ships in a Renovate base
+image.
 
 ## Access
 
 Humans authenticate through GitHub SSO via the bundled
-<a href="https://dexidp.io/" target="_blank" rel="noopener">Dex</a> connector — the local `admin`
-account is disabled, and RBAC maps a GitHub team to `role:admin`, so granting access is a
-team-membership change, not an ArgoCD config edit. CI uses a separate, narrowly-scoped API-key
-account (`get`/`sync`/`update`/restart on the `default` project, nothing more).
+<a href="https://dexidp.io/" target="_blank" rel="noopener">Dex</a> connector. The local `admin`
+account is disabled and RBAC maps a GitHub team to `role:admin`, so granting access is a
+team-membership change, not an ArgoCD config edit.
+
+The pipeline never talks to the ArgoCD API: a deploy is a commit to `nexus-manifests`, so CI needs
+no ArgoCD credentials. The narrowly scoped `ci` API-key account still declared in the ArgoCD values
+is not used by any workflow.
 
 ## References
 

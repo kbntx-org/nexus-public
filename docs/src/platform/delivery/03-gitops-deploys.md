@@ -2,106 +2,98 @@
 title: GitOps deploys
 ---
 
-Apps that ship an image are deployed through a **separate manifests repo** rather than CI patching
-ArgoCD directly. This page covers why, what that repo looks like, and how a push to `main` actually
-reaches the cluster.
+Apps that ship an image are deployed by committing their new tag to a **separate manifests repo**
+that ArgoCD reads; CI never patches ArgoCD. This page covers why, how the deploy job writes to that
+repo, and how to roll back.
 
 ## Why a separate repo
 
-The previous flow had CI compute "what's affected," then imperatively `argocd app set` the new image
-tag directly against the live `Application` — an unversioned, unserialized mutation. Two builds
-landing close together could have their `argocd app set` calls interleave in the wrong order,
-leaving an older image live even though a newer commit had already "deployed."
+A deploy has to change the image tag ArgoCD runs. The alternative to a manifests repo is CI mutating
+the live `Application` (`argocd app set` with the new tag): that change is unversioned, needs CI
+credentials and network reach into ArgoCD, and two builds landing close together can interleave
+their calls and leave an older image live after a newer commit has "deployed". It also fights
+`selfHeal: true`, which reverts any live override to what Git declares on the next reconcile, so
+`argocd app set` is never part of deploying or rolling back.
 
-The fix: stop mutating ArgoCD directly. Route every deploy through a small, dumb git repo —
-<a href="https://github.com/kbntx-org/nexus-manifests" target="_blank" rel="noopener"><code>nexus-manifests</code></a>
-— that ArgoCD reads as a values overlay instead. It holds one tiny file per app
-(`portfolio/values.yaml` → `image: { tag: <sha> }`, and so on), no `Chart.yaml`, no templates.
-Because a deploy is now a git commit pushed through a single concurrency group with a rebase-retry
-loop (see [Pipeline shape](#pipeline-shape) below), two waves landing back-to-back serialize
-correctly at the git layer instead of racing as live API calls — whichever lands last is simply
-`main`'s current desired state, with no possibility of an out-of-order overwrite. Its git history
-_is_ the deploy log; rollback is `git revert` on this repo alone.
+Instead, every deploy is a commit to a small, dumb git repo,
+<a href="https://github.com/kbntx-org/nexus-manifests" target="_blank" rel="noopener"><code>nexus-manifests</code></a>,
+that ArgoCD reads as a values overlay (see [Sync model](01-overview.md#sync-model)). It holds one
+tiny file per app (`portfolio/values.yaml` → `image: { tag: <tag> }`, for example), no `Chart.yaml`,
+no templates. Writes to it are serialized, its history _is_ the deploy log, and rollback is
+`git revert` on this repo alone.
 
-## Pipeline shape
+## Build and deploy
 
-```mermaid
-%%{init: {'theme':'dark'}}%%
-graph LR
-    Push[push to main] --> Affected[affected job<br/>affected + deploy targets]
-    Affected --> Build[build job<br/>images, parallel]
-    Build --> Deploy[deploy job<br/>one commit to nexus-manifests]
-    Deploy --> Sync[ArgoCD sync<br/>via webhook]
-```
-
-The [Affected job](02-ci-cd-pipeline.md#affected-detection) computes deploy targets up front;
+The chain is drawn in [Pipeline shape](02-ci-cd-pipeline.md#pipeline-shape).
 <a href="https://github.com/kbntx-org/nexus/blob/main/.github/workflows/build.yml" target="_blank" rel="noopener"><code>build.yml</code></a>
-runs `pnpm nx run-many --target=build-ci --projects=<the list> --parallel`, tagged with the commit
-SHA via an `IMAGE_TAG` env var. Nx's own task graph decides what actually happens per project —
-every deploy target runs
-<a href="https://github.com/kbntx-org/nexus/blob/main/tools/docker-build-and-push.sh" target="_blank" rel="noopener"><code>tools/docker-build-and-push.sh</code></a>.
-`build-ci` only produces and pushes the image — it never touches `nexus-manifests`; that's entirely
-`deploy.yml`'s job, described next.
+runs `pnpm nx run-many --target=build-ci --projects=<deploy targets>` with the image tag in an
+`IMAGE_TAG` env var: `trunk-<commit sha>` on `main`, `pr-<number>-commit-<head sha>` on a PR.
+`build-ci` only produces and pushes the image; bumping the tag in `nexus-manifests` is
+`deploy.yml`'s job.
 
 <a href="https://github.com/kbntx-org/nexus/blob/main/.github/workflows/deploy.yml" target="_blank" rel="noopener"><code>deploy.yml</code></a>
-is **one job** (`deploy`), invoked only through `workflow_call`. It clones `nexus-manifests`, bumps
-`image.tag` for each target, and produces one commit per wave — using a rebase-retry loop so two
-waves landing back-to-back serialize cleanly at the git layer. Auto-sync + a GitHub webhook mean
-ArgoCD picks up the change within seconds; a manual `argocd app set` is never part of this flow,
-since `selfHeal: true` would just revert it on the next reconcile.
+is **one job** (`deploy`), invoked only through `workflow_call` once Checks gate has passed. It
+clones `nexus-manifests`, bumps `image.tag` for each target and makes one commit per run:
 
-## Deploy target computation
+- Runs share a concurrency group per target branch (`deploy-<branch>`), so only one deploy writes to
+  a branch at a time.
+- On `main`, waiting deploys queue first-in, first-out, so every trunk commit that reaches Deploy
+  gets its turn. On a PR branch a newer deploy replaces the pending one, since only the latest
+  preview matters.
+- The push retries with a rebase, covering any write that still lands in between (a hand-made hotfix
+  commit, for example).
 
-`nexus` never reads `nexus-manifests` to decide what to deploy — the
-[Affected job](02-ci-cd-pipeline.md#affected-detection) has no read dependency on it at all. Every
-app's deploy-target decision is `nx show projects --affected --with-target build-ci` against the
-exact same shared [diff base](02-ci-cd-pipeline.md#diff-base) used for lint and test — there's no
-separate per-app base read from a deployed SHA, and no hand-rolled path matching; it's Nx's own
-affected-graph computation over each project's `build-ci` target `inputs`.
+ArgoCD auto-syncs the new commit within seconds.
 
-The tradeoff this accepts: if two commits land on `main` close enough together that the second's
-diff-base walk doesn't yet see the first as green, both can independently decide the same app is a
-deploy target and each push a commit bumping its tag. That's harmless rather than incorrect — the
-rebase-retry loop above already serializes those two writes correctly, and since the second commit
-is a descendant of the first, whichever tag lands last is the one that should be live anyway. Worst
-case is one redundant image build for a tag that gets superseded moments later, not a wrong or
-missing deploy.
+## Which projects get a manifests bump
 
-Having a `build-ci` target is necessary but not sufficient for a manifests bump: `deploy.yml` reads
-each target's `manifestsValuesPath` metadata and skips any project that doesn't declare one. A
-standalone image with no running Kubernetes workload (see
-[CI toolkit image](02-ci-cd-pipeline.md#ci-toolkit-image)) is a perfectly valid `build-ci` project —
-Nx builds and pushes it like any other — it just has nothing for `nexus-manifests` to track, so that
-half of the pipeline is a deliberate no-op for it.
+A `build-ci` target makes a project a deploy target, but a manifests bump also needs a
+`manifestsValuesPath` in its `project.json` metadata: `deploy.yml` reads it per target and skips any
+project without one. A standalone base image with no Kubernetes workload of its own (the
+<a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/sysbox" target="_blank" rel="noopener">sysbox</a>
+image, for example) is built and pushed like any other project but has nothing for `nexus-manifests`
+to track.
 
-What this design intentionally does _not_ self-heal: a deploy whose manifests push fails is caught
-automatically (see [Pipeline gate](02-ci-cd-pipeline.md#diff-base) — a failed deploy makes that
-commit ineligible as a future diff base, so the next run's diff widens to pick it back up), but a
-manual `git revert` made directly in `nexus-manifests` (see
-[Rollback and hotfix](#rollback-and-hotfix) below) leaves no trace in `nexus` at all — re-syncing
-after a manual rollback is a deliberate follow-up, not something any of this makes automatic.
+## Concurrent deploys
+
+Two commits landing on `main` close together can both deploy the same app: the second's
+[diff base](02-ci-cd-pipeline.md#diff-base) walk doesn't yet see the first as green, so both pick
+the app as a deploy target and each push a commit bumping its tag.
+
+The deploy queue runs them in the order their pipelines reach Deploy, normally commit order, so the
+newer tag lands last and the cost is one redundant image build. The queue doesn't compare tags,
+though: if the older commit's pipeline reaches Deploy after the newer one, its older tag lands last
+and stays live. If an app runs an older tag than `main` should have, re-run the newest commit's
+Deploy job or hand-edit the tag (see [Rollback and hotfix](#rollback-and-hotfix)).
 
 ## Auth
 
 A `nexus-ci` GitHub App, installed on both repos with write access to `nexus-manifests`, mints a
-short-lived installation token on the fly for the deploy job's write — that's `nexus-manifests`'s
-only consumer; nothing in `nexus`'s CI reads from it.
+short-lived installation token for the deploy job's write, the only thing in CI that touches
+`nexus-manifests`.
 
 ## Rollback and hotfix
 
-The manifests repo is small and human-editable, so there are three real options when production
-needs to move right now: `git revert` the bad commit in `nexus-manifests` (ArgoCD syncs the revert
-within seconds via the webhook), hand-edit `image.tag` to a known-good SHA and push, or re-run CI
-for the desired `nexus` commit. `argocd app set` is not one of them — `selfHeal: true` reverts any
-live override on the next reconcile.
+The manifests repo is small and human-editable, so when production needs to move right now:
+
+- `git revert` the bad commit in `nexus-manifests`; ArgoCD syncs the revert within seconds.
+- Hand-edit `image.tag` to a known-good tag and push.
+- Re-run CI for the desired `nexus` commit.
+
+A failed deploy heals itself on the next run (see [Diff base](02-ci-cd-pipeline.md#diff-base)), but
+a manual change in `nexus-manifests` leaves no trace in `nexus`, so nothing detects it: re-syncing
+after a manual rollback is a deliberate follow-up, not automatic.
 
 ## Pull requests
 
-PRs run the same build → deploy chain with three differences: the build step never pushes the image
-(`docker buildx build` without `--push`, so buildability is still validated), the image tag is the
-PR head SHA, and the deploy step writes to a `pr-<number>` branch in `nexus-manifests` instead of
-`main` (created from `main` on first build, reused after). Since the image is never pushed, that tag
-isn't consumable by anything yet — it's scaffolding for a not-yet-wired PR-preview `ApplicationSet`.
+PRs run the same build and deploy chain with two differences. The build never pushes the image
+(`docker buildx build` without a registry output), so a broken Dockerfile still fails the check
+without publishing anything. The deploy writes the `pr-<number>-commit-<head sha>` tag to a
+`pr-<number>` branch in `nexus-manifests` instead of `main`, created from `main` on first build and
+reused after.
+
+Since the image is never pushed, that tag isn't consumable yet: it's scaffolding for a not-yet-wired
+PR-preview `ApplicationSet`.
 <a href="https://github.com/kbntx-org/nexus/blob/main/.github/workflows/cleanup-pr-manifests.yml" target="_blank" rel="noopener"><code>cleanup-pr-manifests.yml</code></a>
 deletes the `pr-<number>` branch when the PR closes, merged or not.
 
@@ -109,13 +101,11 @@ deletes the `pr-<number>` branch when the PR closes, merged or not.
 
 The
 <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/bastion" target="_blank" rel="noopener"><code>bastion</code></a>
-runs a Compose stack on a VPS rather than a workload in the cluster, so neither ArgoCD nor this
-pipeline deploys it — its Terraform owns the rollout end to end, and it has no `project.json`, so Nx
-never sees it. That keeps the one component that cannot be a cluster workload out of the delivery
-pipeline entirely instead of bolting a second deploy mechanism onto it; the Compose stack's only
-secret is a tunnel token Terraform already creates, so it never has to round-trip through repository
-secrets. See [private access](../traffic/01-overview.md#private-access-via-warp) for why the VPS
-exists at all.
+is a VPS, not a cluster workload, and has no `project.json`, so neither ArgoCD nor this pipeline
+deploys it; Terraform does. That keeps the one component that can't run in the cluster out of the
+delivery pipeline instead of bolting a second deploy mechanism onto it. See
+[private access](../traffic/01-overview.md#private-access-via-warp) for how it is provisioned and
+why it exists.
 
 ## References
 
@@ -128,7 +118,7 @@ exists at all.
 - <a href="https://github.com/kbntx-org/nexus/blob/main/.github/workflows/build.yml" target="_blank" rel="noopener"><code>.github/workflows/build.yml</code></a>
   — runs `nx run-many --target=build-ci` for the affected deploy targets
 - <a href="https://github.com/kbntx-org/nexus/blob/main/tools/docker-build-and-push.sh" target="_blank" rel="noopener"><code>tools/docker-build-and-push.sh</code></a>
-  — the shared build/push script each image-shipping app's `deploy` target runs
+  — the shared build/push script every `build-ci` target runs
 - <a href="https://github.com/kbntx-org/nexus/blob/main/.github/workflows/deploy.yml" target="_blank" rel="noopener"><code>.github/workflows/deploy.yml</code></a>
   — the single `deploy` job (the `nexus-manifests` bump)
 - <a href="https://github.com/kbntx-org/nexus/blob/main/.github/workflows/cleanup-pr-manifests.yml" target="_blank" rel="noopener"><code>.github/workflows/cleanup-pr-manifests.yml</code></a>

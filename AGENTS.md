@@ -75,14 +75,17 @@ PRs are never coupled. The user opens the PRs; never open, push or submit one un
   render the issue forms in `.github/ISSUE_TEMPLATE/`, so use the matching form's field labels as
   `##` headings and fill each with concrete content (goal, scope with real paths, verifiable
   acceptance criteria). Pick labels from `gh label list`; never invent one. Give the user the URL.
+- **Routine work needs no issue:** recurring maintenance such as a docs audit, dependency bumps or
+  formatting fixes goes straight to a branch and PR, with no issue to create or link.
 - **Assignee, project and status:** every issue and PR is assigned to the user (`--assignee @me` or
   `gh issue edit` / `gh pr edit --add-assignee @me`). Only issues, not PRs, go in the `Nexus`
   project (`gh project item-add 1 --owner kbntx-org --url <url>`), with Status set to `Backlog` or
   `In Progress` (`gh project item-edit`). `gh project` needs the `read:project` and `project` token
   scopes (`gh auth refresh -s read:project,project`).
-- **Size:** one commit per PR, and keep the PR small. Fold follow-up changes into that commit
-  (amend) instead of adding commits.
-- **Linking:** every PR mentions its issue in the description (`Closes #<n>` or `Part of #<n>`).
+- **One commit per PR:** every PR is a single commit, even a lone PR shipped as a one-PR stack. Fold
+  follow-up changes into that commit (amend) instead of adding commits.
+- **Linking:** every PR that has an issue mentions it in the description (`Closes #<n>` or
+  `Part of #<n>`).
 - **Writing a PR description:** when asked, read the PR with `gh pr view` and `gh pr diff` (in a
   stack, describe only that PR's slice), fill in
   [`.github/pull_request_template.md`](.github/pull_request_template.md) (Why / What / Notes), link

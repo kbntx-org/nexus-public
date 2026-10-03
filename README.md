@@ -3,67 +3,43 @@
 My personal internal developer platform to deploy apps in production and experiment with modern
 tooling and technologies.
 
-The platform itself is GitOps-driven (Terraform + ArgoCD), runs on a small k3s cluster on Hetzner,
-and hosts the apps published under [kbntx.com](https://kbntx.com).
+The platform is GitOps-driven: Terraform provisions a k3s cluster on Hetzner, and ArgoCD reconciles
+everything running on it from this repo. It hosts the apps published under
+[kbntx.com](https://kbntx.com).
 
 ## What's inside
 
-- [apps/](apps/) — the applications the platform hosts (currently the Angular portfolio).
-- [docs/](docs/) — the MkDocs Material site this README points to below.
-- [platform/](platform/) — everything that makes the platform run: Terraform-provisioned
-  infrastructure, the GitOps/CI-CD pipeline, ingress and access, secrets, databases, and
-  observability. See [docs.kbntx.com](https://docs.kbntx.com) for what's actually in there.
+- [apps/](apps/) — the product applications the platform hosts.
+- [platform/](platform/) — everything that makes the platform run: `core/` for cluster-level
+  building blocks, `services/` for workloads that aren't product apps.
+- [docs/](docs/) — the documentation site, published at [docs.kbntx.com](https://docs.kbntx.com).
 
 ## Stack
 
-- **Apps**: Angular, TypeScript, Go, Nx monorepo
-- **Infrastructure**: Hetzner Cloud, k3s, Terraform
-- **GitOps & CI/CD**: ArgoCD (app-of-apps), GitHub Actions on self-hosted runners
-- **Ingress & access**: Traefik, Cloudflare Tunnel, cert-manager
+- **Apps**: Angular, React, Go, TypeScript, Nx monorepo
+- **Infrastructure**: Hetzner Cloud, k3s, Cilium, Karpenter, Terraform, Ansible
+- **GitOps & CI/CD**: ArgoCD (app-of-apps), GitHub Actions
+- **Traffic & access**: Cloudflare Tunnel and Zero Trust, Traefik, cert-manager, external-dns
 - **Secrets**: Vault, External Secrets Operator
 - **Databases**: CloudNativePG
-- **Observability**: VictoriaMetrics, Grafana, Loki
-- **Local dev**: pnpm workspaces, Tilt, kind
+- **Observability**: Grafana, VictoriaMetrics, Loki
 
-## Local development
+## Quick start
 
-You can spin up a local cluster and run the apps with live reload.
-
-**Prerequisites**: Docker. Everything else (Node.js, pnpm, kind, kubectl, Tilt, mkcert, Helm,
-Terraform, ...) is pinned in [mise.toml](mise.toml) and installed by the bootstrap script below.
-
-**Bootstrap** — `create` installs [mise](https://mise.jdx.dev/) if it isn't already there, installs
-every tool pinned in `mise.toml`, then creates a KinD cluster with a local registry and a port
-mapping that lets `*.localhost` routes hit Traefik directly. See
-[platform/core/local/local.sh](platform/core/local/local.sh). Safe to re-run any time — every step
-is idempotent.
+The only prerequisite is Docker; every other tool is pinned in [mise.toml](mise.toml).
 
 ```sh
-platform/core/local/local.sh create
+platform/core/local/local.sh create   # install the tools, create the local kind cluster
+mise run dev docs                     # start an app on top of core infra → http://docs.localhost
 ```
 
-**Run an app** — Tilt deploys core infra (Traefik, metrics-server, etc.) plus the app(s) named on
-the command line, with source hot-reload through Docker sync.
-
-```sh
-mise run dev:portfolio   # → http://portfolio.localhost
-mise run dev:docs        # → http://docs.localhost
-```
-
-**Tear down**:
-
-```sh
-tilt down                    # keeps the cluster
-mise run cluster:delete      # remove the KinD cluster + local registry
-```
-
-See the [Tiltfile](Tiltfile) and [platform/core/local/](platform/core/local/) for the full set of
-resources and how enablement works.
+[Local development](https://docs.kbntx.com/getting-started/02-local-development/) covers how it fits
+together, tear-down and gotchas.
 
 ## Documentation
 
-Deeper context on each platform component — design decisions, how it fits together, and gotchas —
-lives at [docs.kbntx.com](https://docs.kbntx.com).
+Design decisions, how each part of the platform fits together, gotchas and runbooks live at
+[docs.kbntx.com](https://docs.kbntx.com).
 
 ## License
 

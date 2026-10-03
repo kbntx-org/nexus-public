@@ -2,99 +2,77 @@
 title: Overview
 ---
 
-Secrets in Nexus follow one rule: **the cluster never owns the source of truth.** No secret value is
-committed to Git or lives exclusively inside an application's manifest. Credentials, tokens, and
-connection strings live in
-<a href="https://developer.hashicorp.com/vault" target="_blank" rel="noopener">HashiCorp Vault</a>,
-and the cluster reaches in for them through the
+Secrets in Nexus follow one rule: **the cluster never owns the source of truth.** Values live in
+<a href="https://developer.hashicorp.com/vault" target="_blank" rel="noopener">HashiCorp Vault</a>;
+Git only declares _which_ secret a workload needs, and the
 <a href="https://external-secrets.io/" target="_blank" rel="noopener">External Secrets Operator</a>
-(ESO). Git only ever holds a declarative description of _which_ secret a workload needs — the value
-is materialised at runtime.
-
-That split is what lets a namespace be torn down and rebuilt without losing a credential: it just
-comes back up by re-reading from Vault.
+(ESO) materializes it at runtime. A namespace can be torn down and rebuilt without losing a
+credential: it just re-reads it from Vault.
 
 ## Vault in the cluster
 
-Vault runs in-cluster as a Helm chart at
-<a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/vault/server" target="_blank" rel="noopener"><code>platform/core/vault/server/</code></a>:
-the Vault Deployment, a
+<div class="nexus-diagram">
+--8<-- "src/assets/diagrams/secrets.svg"
+</div>
+
+Vault runs in-cluster from the
+<a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/vault/server" target="_blank" rel="noopener"><code>platform/core/vault/server/</code></a>
+chart: the Vault Deployment, an `IngressRoute` for the API, and a
 <a href="https://cloudnative-pg.io/" target="_blank" rel="noopener">CloudNativePG</a> `Cluster` for
-storage, and the `IngressRoute` fronting the API.
+storage.
 
-```mermaid
-%%{init: {'theme':'dark'}}%%
-graph LR
-    IngressRoute[Traefik<br/>IngressRoute]
-    Vault[Vault<br/>Deployment]
-    CNPG[(vault-postgres-cnpg<br/>CNPG cluster)]
-    R2[(R2 bucket<br/>barman backups)]
+**Why Postgres, not the embedded/Raft backends:** the platform already backs up Postgres, so reusing
+it beats a Vault-specific snapshot workflow, and a remote backend keeps no data on a local disk. The
+schema is created once by CNPG's `postInitApplicationSQLRefs` from
+<a href="https://github.com/kbntx-org/nexus/blob/main/platform/core/vault/server/files/vault.sql" target="_blank" rel="noopener"><code>vault.sql</code></a>,
+skipped on recovered or re-attached volumes.
 
-    IngressRoute --> Vault
-    Vault -->|kv reads/writes| CNPG
-    CNPG -->|WAL + base| R2
-```
+**The bootstrap secret.** Vault needs storage before it can serve its first request, so one secret
+can't come from Vault: `vault-secret` in the `vault` namespace, applied manually. It holds the
+Postgres connection URI, the CNPG superuser credentials and the R2 backup keys.
 
-**Why Postgres, not the embedded/Raft backends:** the platform already standardizes on Postgres for
-backups, so reusing it here beats bolting on a Vault-specific snapshotting workflow — and a remote
-backend avoids disk-local data like SQLite, which makes backup simpler on top. It's bootstrapped
-once by CNPG's `postInitApplicationSQLRefs`, reading
-<a href="https://github.com/kbntx-org/nexus/blob/main/platform/core/vault/server/files/vault.sql" target="_blank" rel="noopener"><code>vault.sql</code></a>
-— skipped on recovered/re-attached volumes.
-
-**The bootstrap secret.** One secret doesn't come from Vault: `vault-secret` in the `vault`
-namespace, applied manually, holding the Postgres connection URI, CNPG superuser credentials, and R2
-backup keys — Vault needs somewhere to store its own data before it can serve its first request.
-
-Vault starts **sealed** on every boot and needs a manual unseal — no auto-unseal configured, the
-deliberate trade-off for keeping the unseal keys off the cluster entirely.
+**Manual unseal.** Vault starts sealed on every boot. There is no auto-unseal: the deliberate
+trade-off for keeping the unseal keys off the cluster entirely.
 
 ## External Secrets Operator
 
-ESO reconciles two CRDs: a `SecretStore`/`ClusterSecretStore` (how to talk to Vault) and an
-`ExternalSecret` (what to fetch, and what Kubernetes `Secret` to build from it). Workloads then
-mount that `Secret` like any other, never knowing Vault is in the picture.
+ESO reconciles two CRDs: a `SecretStore`/`ClusterSecretStore` (how to reach Vault) and an
+`ExternalSecret` (what to fetch, and which Kubernetes `Secret` to build). Workloads mount that
+`Secret` like any other, never knowing Vault is involved.
 
-```mermaid
-%%{init: {'theme':'dark'}}%%
-graph LR
-    Vault[Vault<br/>kv v2]
-    ESO[External Secrets<br/>Operator]
-    Secret[Kubernetes<br/>Secret]
-    App[Application<br/>pod]
-
-    Vault -->|read on refresh| ESO
-    ESO -->|create / update| Secret
-    Secret -->|env or volume| App
-```
-
-**Templating is the strong point.** An `ExternalSecret`'s `target.template` isn't limited to a flat
-key/value `Secret`. It can also be useful to inject a sensitive variable in a template that is
-committed in git. Karpenter uses exactly this to render a whole cloud-init `userData` document (see
-<a href="https://github.com/kbntx-org/nexus/blob/main/platform/core/karpenter/templates/secrets.yaml" target="_blank" rel="noopener"><code>karpenter/templates/secrets.yaml</code></a>):
-a Vault-sourced join token and registry credentials are injected in a template that is saved in git.
+**Templating is the strong point.** An `ExternalSecret`'s `target.template` can inject a Vault value
+into a larger document committed in Git, not just build a flat key/value `Secret`. Karpenter uses it
+to render a whole cloud-init `userData` around a Vault-sourced k3s agent join token (see
+<a href="https://github.com/kbntx-org/nexus/blob/main/platform/core/karpenter/templates/secrets.yaml" target="_blank" rel="noopener"><code>karpenter/templates/secrets.yaml</code></a>).
 
 ### How ESO authenticates to Vault
 
 Each consuming app has its own `ServiceAccount`. ESO presents its projected token (audience `vault`)
-via Vault's
+to Vault's
 <a href="https://developer.hashicorp.com/vault/docs/auth/kubernetes" target="_blank" rel="noopener">Kubernetes
-auth method</a>, which Vault validates via the cluster's TokenReview API, hence
+auth method</a>, and Vault validates it through the cluster's TokenReview API. That is why
 <a href="https://github.com/kbntx-org/nexus/blob/main/platform/core/external-secrets/deploy/templates/rbac.yaml" target="_blank" rel="noopener"><code>external-secrets/deploy/templates/rbac.yaml</code></a>
-binding `system:auth-delegator` to the `external-secrets` ServiceAccount.
+binds `system:auth-delegator` to the `external-secrets` ServiceAccount.
 
-The Vault backend side of this is provisioned a single time by Terraform in
-<a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/external-secrets/provision" target="_blank" rel="noopener"><code>platform/core/external-secrets/provision/</code></a>
-since Vault's own API has to be configured directly — and it's a long-lived, one-time setup. Then
-each secret created in the platform KV at the path <namespace>/* is accessible by the namespace
-service accounts to ensure isolation between apps.
+A single `eso` role accepts any `ServiceAccount`. Its templated policy grants read access only to
+`platform/<namespace>` and `platform/<namespace>/*` in the KV, where `<namespace>` is the
+authenticating `ServiceAccount`'s own namespace, so apps are isolated from each other without a role
+per app. This Vault-side setup is long-lived and configured through Vault's own API, so Terraform
+applies it once from
+<a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/external-secrets/provision" target="_blank" rel="noopener"><code>platform/core/external-secrets/provision/</code></a>.
 
 ## Adding a new secret
 
-Write the value into Vault under a KV path matching the consuming `ServiceAccount`'s namespace (the
-templated policy scopes access automatically), then copy this shape into the consumer's chart:
+Write the value into Vault under the KV path named after the consumer's namespace, then copy this
+shape into the consumer's chart:
 
 ```yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: my-app-secret-sa
+automountServiceAccountToken: false
+---
 apiVersion: external-secrets.io/v1
 kind: SecretStore
 metadata:
@@ -102,7 +80,7 @@ metadata:
 spec:
   provider:
     vault:
-      server: https://vault.kbntx.com
+      server: https://vault.example.com
       path: platform
       version: v2
       auth:
@@ -129,33 +107,43 @@ spec:
         key: my-app # matches the ServiceAccount's namespace
 ```
 
-Consume `my-app-secret` from the workload's manifest — ESO handles the rest on its refresh interval.
-For field-level details (templating, extraction, refresh behavior) the
+Real charts point `server` at the Vault `IngressRoute`'s hostname, set in
+<a href="https://github.com/kbntx-org/nexus/blob/main/platform/core/vault/server/values.yaml" target="_blank" rel="noopener">Vault's
+values file</a>. The workload then consumes `my-app-secret`, and ESO refreshes it on its interval.
+There is no Nexus-specific wrapper: the
 <a href="https://external-secrets.io/latest/" target="_blank" rel="noopener">ESO docs</a> are
-authoritative; there's no Nexus-specific wrapper.
+authoritative for templating, extraction and refresh behavior.
 
 ## Backups and disaster recovery
 
-Vault's durability rests on the CNPG cluster backing its KV store and the unseal keys/root token
-kept out-of-band. The backup/restore/hibernate mechanics are the same for every CNPG-backed database
-and covered once in [Databases](../databases/01-overview.md). Vault-specific: after a restore,
-re-apply `vault-secret` pointed at the restored cluster and unseal manually — both the chart and
-schema bootstrap are idempotent against an existing volume.
+Vault's durability rests on its CNPG cluster, backed up like every other
+([Databases](../databases/01-overview.md#backups)), and on the unseal keys and root token kept
+out-of-band. To restore it, follow
+[Restore a CNPG backup](../../runbooks/01-restore-a-cnpg-backup.md), then:
+
+- **Unseal it by hand**: the Vault pod restarts sealed.
+- **Re-apply `vault-secret`** if its `databaseUri` no longer matches: a side-by-side cut-over
+  changes the host, and a rebuilt namespace loses the secret.
+- **Write again anything stored after the restore point**: it is gone, and ESO picks the new values
+  up on its next refresh.
+
+Restore Vault before any other database: every other consumer reads its backup credentials through
+ESO, which needs a working Vault. The `vault.sql` schema bootstrap only runs on a fresh cluster, so
+a recovered one keeps the schema from the backup.
 
 ## Encryption at rest
 
-k3s runs with `secrets-encryption: true`, so Kubernetes `Secret` objects — everything ESO writes
-included — are encrypted at rest in etcd rather than stored as plain base64. Cluster-wide, not
-opt-in; see [Cluster](../cluster/01-overview.md). This does **not** cover Postgres data itself — see
-[Databases](../databases/01-overview.md) for that gap.
+k3s runs with `secrets-encryption: true`
+(<a href="https://github.com/kbntx-org/nexus/blob/main/platform/modules/k3s/ansible/roles/k3s/templates/k3s-config.yml.j2" target="_blank" rel="noopener">k3s
+config template</a>), so every Kubernetes `Secret`, including those ESO writes, is encrypted in etcd
+rather than stored as plain base64. It is cluster-wide, not opt-in, and does **not** cover Postgres
+data (see [Databases](../databases/01-overview.md#encryption-at-rest)).
 
 ## Local environment
 
-**Local dev** drops the CNPG cluster and runs Vault's built-in `-dev` mode against an in-memory
-backend, seeded by
-<a href="https://github.com/kbntx-org/nexus/blob/main/platform/core/vault/server/templates/seed-script.yaml" target="_blank" rel="noopener"><code>seed-script.yaml</code></a>
-so a fresh local cluster has a working Vault with zero operator steps and the full external secret
-operator up and running.
+Locally, Vault drops the CNPG cluster and runs in `-dev` mode on an in-memory backend, seeded by
+<a href="https://github.com/kbntx-org/nexus/blob/main/platform/core/vault/server/templates/seed-script.yaml" target="_blank" rel="noopener"><code>seed-script.yaml</code></a>,
+so a fresh local cluster has a working Vault and ESO with zero operator steps.
 
 ## References
 
