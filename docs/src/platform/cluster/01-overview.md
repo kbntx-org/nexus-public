@@ -92,7 +92,9 @@ In the order they show up on fresh VMs:
   `privileged: true`, which would hand it root on the node. ArgoCD deploys it as an installer
   DaemonSet on every node labeled `sysbox-install=yes`, registering a `sysbox-runc` `RuntimeClass`
   that pods opt into with `runtimeClassName`. The installer image is built in the repo because
-  upstream only publishes it for amd64 and its script needed patching for k3s.
+  upstream only publishes it for amd64 and its script needed patching for k3s. Its containerd
+  drop-in also turns off containerd's unprivileged ports and ICMP on those nodes: the sysctls they
+  inject into every pod sandbox can't be written under Sysbox, so `sysbox-runc` pods fail to start.
 
 ## References
 
