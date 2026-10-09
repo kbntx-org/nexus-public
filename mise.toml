@@ -19,7 +19,7 @@ helm = "3.22.0"
 python = "3.14.7"
 uv = "0.12.19"
 yq = "4.53.6"
-golangci-lint = "2.13.2"
+golangci-lint = "2.14.0"
 s5cmd = "2.3.0"
 "go:golang.org/x/tools/gopls" = { version = "v0.23.0", depends = ["go"] }
 
