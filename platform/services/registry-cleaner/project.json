@@ -1,0 +1,46 @@
+{
+  "name": "registry-cleaner",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "platform/services/registry-cleaner",
+  "tags": [],
+  "metadata": {
+    "manifestsValuesPath": "registry-cleaner/values.yaml"
+  },
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "platform/services/registry-cleaner",
+        "command": "go build ./..."
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "platform/services/registry-cleaner",
+        "command": "golangci-lint run --config ../../../.golangci.yml ./..."
+      }
+    },
+    "format-check": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "platform/services/registry-cleaner",
+        "command": "golangci-lint fmt --config ../../../.golangci.yml --diff ./..."
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "platform/services/registry-cleaner",
+        "command": "go test ./..."
+      }
+    },
+    "build-ci": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tools/docker-build-and-push.sh platform/services/registry-cleaner/Dockerfile platform/services/registry-cleaner kbntx/registry-cleaner:$IMAGE_TAG --build-arg GO_VERSION=$(mise current go)"
+      }
+    }
+  }
+}
