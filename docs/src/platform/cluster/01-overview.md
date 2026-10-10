@@ -82,15 +82,6 @@ In the order they show up on fresh VMs:
   over reconciling itself and everything else in the cluster; see
   [Delivery](../delivery/01-overview.md).
 
-- **<a href="https://github.com/nestybox/sysbox" target="_blank" rel="noopener">Sysbox</a>** lets a
-  pod run its own Docker daemon (Docker-in-Docker) inside a user namespace instead of needing
-  `privileged: true`, which would hand it root on the node. ArgoCD deploys it as an installer
-  DaemonSet on every node labeled `sysbox-install=yes`, registering a `sysbox-runc` `RuntimeClass`
-  that pods opt into with `runtimeClassName`. The installer image is built in the repo because
-  upstream only publishes it for amd64 and its script needed patching for k3s. Its containerd
-  drop-in also turns off containerd's unprivileged ports and ICMP on those nodes: the sysctls they
-  inject into every pod sandbox can't be written under Sysbox, so `sysbox-runc` pods fail to start.
-
 ## References
 
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/kubernetes/provision" target="_blank" rel="noopener"><code>platform/core/kubernetes/provision/</code></a>
@@ -107,7 +98,5 @@ In the order they show up on fresh VMs:
   — CNI, kube-proxy replacement, NetworkPolicy engine
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/hetzner-cloud-controller" target="_blank" rel="noopener"><code>platform/core/hetzner-cloud-controller/</code></a>
   — Hetzner CCM + CSI Helm chart
-- <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/sysbox" target="_blank" rel="noopener"><code>platform/core/sysbox/</code></a>
-  — Sysbox installer image and DaemonSet chart
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/network" target="_blank" rel="noopener"><code>platform/core/network/</code></a>
   — the private VPC the cluster joins

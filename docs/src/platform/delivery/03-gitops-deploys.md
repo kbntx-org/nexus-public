@@ -49,10 +49,8 @@ ArgoCD auto-syncs the new commit within seconds.
 
 A `build-ci` target makes a project a deploy target, but a manifests bump also needs a
 `manifestsValuesPath` in its `project.json` metadata: `deploy.yml` reads it per target and skips any
-project without one. A standalone base image with no Kubernetes workload of its own (the
-<a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/sysbox" target="_blank" rel="noopener">sysbox</a>
-image, for example) is built and pushed like any other project but has nothing for `nexus-manifests`
-to track.
+project without one. A standalone image with no Kubernetes workload of its own is built and pushed
+like any other project but has nothing for `nexus-manifests` to track.
 
 ## Concurrent deploys
 
