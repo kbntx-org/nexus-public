@@ -45,11 +45,6 @@
     },
     "build-ci": {
       "inputs": ["production", "^production"]
-    },
-    "@angular-devkit/build-angular:application": {
-      "cache": true,
-      "dependsOn": ["^build"],
-      "inputs": ["production", "^production"]
     }
   },
   "parallel": 1,
@@ -70,12 +65,6 @@
         "unitTestRunner": "jest",
         "skipPackageJson": true
       }
-    },
-    "@nx/angular:application": {
-      "e2eTestRunner": "none",
-      "linter": "eslint",
-      "style": "scss",
-      "unitTestRunner": "jest"
     }
   },
   "plugins": [

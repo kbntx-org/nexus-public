@@ -78,8 +78,8 @@ any of them could change what every target produces.
 A deploy target is a project with a `build-ci`
 <a href="https://nx.dev/reference/project-configuration#targets" target="_blank" rel="noopener">Nx
 target</a>. It is named apart from the plain `build` target some projects have for local dev
-(`portfolio:build` is what `nx serve` depends on), so local dev can never publish an image.
-`build-ci` is an `nx:run-commands` target running
+(`portfolio:build` runs the Vite build), so local dev can never publish an image. `build-ci` is an
+`nx:run-commands` target running
 <a href="https://github.com/kbntx-org/nexus/blob/main/tools/docker-build-and-push.sh" target="_blank" rel="noopener"><code>tools/docker-build-and-push.sh</code></a>,
 which builds with Buildx and pushes only when the workflow sets `PUSH`.
 

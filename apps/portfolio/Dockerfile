@@ -23,27 +23,27 @@ FROM node-tooling AS local
 
 WORKDIR /usr/src/app
 
-COPY nx.json tsconfig.base.json ./
+COPY nx.json ./
 COPY apps/portfolio ./apps/portfolio
 COPY --from=portfolio-node-modules /pruned/node_modules ./node_modules
 COPY --from=portfolio-node-modules /pruned/package.json /pruned/pnpm-lock.yaml ./
 
 EXPOSE 4200
 
-CMD ["pnpm", "nx", "run", "portfolio:serve", "--host=0.0.0.0", "--poll=2000"]
+CMD ["pnpm", "nx", "run", "portfolio:serve"]
 
 FROM node-tooling AS builder
 
 WORKDIR /usr/src/app
 
-COPY nx.json tsconfig.base.json ./
+COPY nx.json ./
 COPY apps/portfolio ./apps/portfolio
 COPY --from=portfolio-node-modules /pruned/node_modules ./node_modules
 COPY --from=portfolio-node-modules /pruned/package.json /pruned/pnpm-lock.yaml ./
 
-RUN pnpm nx build portfolio --configuration=production
+RUN pnpm nx build portfolio
 
 FROM caddy:2.11.4-alpine AS prod
 
-COPY --from=builder /usr/src/app/dist/apps/portfolio/browser /srv/app/
+COPY --from=builder /usr/src/app/dist/apps/portfolio /srv/app/
 COPY apps/portfolio/Caddyfile /etc/caddy/Caddyfile

@@ -16,7 +16,7 @@ everything running on it from this repo. It hosts the apps published under
 
 ## Stack
 
-- **Apps**: Angular, React, Go, TypeScript, Nx monorepo
+- **Apps**: React, Go, TypeScript, Nx monorepo
 - **Infrastructure**: Hetzner Cloud, k3s, Cilium, Terraform, Ansible
 - **GitOps & CI/CD**: ArgoCD (app-of-apps), GitHub Actions
 - **Traffic & access**: Cloudflare Tunnel and Zero Trust, Traefik, cert-manager, external-dns

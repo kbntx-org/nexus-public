@@ -39,9 +39,10 @@ share one structure, whatever the language or framework. Copy the closest existi
 
 ## Dependencies
 
-pnpm only. After any `package.json` change run `pnpm i --no-frozen-lockfile` and commit the
-lockfile. Before adding any npm package or Go module, check it is still maintained; archived or
-abandoned projects are not acceptable.
+pnpm only. npm package versions live in the `catalog` of `pnpm-workspace.yaml`; every `package.json`
+references them as `"catalog:"`, never with an inline version. After any `package.json` or catalog
+change run `pnpm i --no-frozen-lockfile` and commit the lockfile. Before adding any npm package or
+Go module, check it is still maintained; archived or abandoned projects are not acceptable.
 
 ## Checks Before Finishing
 

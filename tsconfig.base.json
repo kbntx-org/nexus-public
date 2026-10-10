@@ -1,10 +1,5 @@
 {
   "compileOnSave": false,
-  "angularCompilerOptions": {
-    "fullTemplateTypeCheck": true,
-    "strictTemplates": true,
-    "strictInjectionParameters": true
-  },
   "compilerOptions": {
     "rootDir": ".",
     "declaration": false,

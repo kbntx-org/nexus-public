@@ -2,30 +2,27 @@
   "name": "portfolio",
   "version": "0.0.0",
   "license": "MIT",
-  "files": [],
   "private": true,
+  "type": "module",
   "dependencies": {
-    "@angular/common": "21.2.24",
-    "@angular/compiler": "21.2.24",
-    "@angular/core": "21.2.24",
-    "@angular/platform-browser": "21.2.24",
-    "@angular/router": "21.2.24",
-    "front-matter": "^4.0.2",
-    "lucide-angular": "^0.577.0",
-    "marked": "^18.0.0",
-    "rxjs": "~7.8.0",
-    "tslib": "^2.3.0"
+    "lucide-react": "catalog:",
+    "marked": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "react-router-dom": "catalog:",
+    "yaml": "catalog:"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "21.2.24",
-    "@angular/cli": "21.2.24",
-    "@angular/compiler-cli": "21.2.24",
-    "@nx/angular": "22.7.12",
-    "@nx/eslint": "22.7.12",
-    "autoprefixer": "^10.4.21",
-    "nx": "22.7.12",
-    "postcss": "^8.5.2",
-    "tailwindcss": "^3.4.6",
-    "typescript": "6.0.3"
+    "@nx/eslint": "catalog:",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "autoprefixer": "catalog:",
+    "nx": "catalog:",
+    "postcss": "catalog:",
+    "tailwindcss": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:"
   }
 }

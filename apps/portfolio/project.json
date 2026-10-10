@@ -1,8 +1,7 @@
 {
   "name": "portfolio",
-  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "prefix": "app",
   "sourceRoot": "apps/portfolio/src",
   "tags": [],
   "metadata": {
@@ -10,54 +9,20 @@
   },
   "targets": {
     "build": {
-      "executor": "@nx/angular:application",
-      "outputs": ["{options.outputPath}"],
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/apps/portfolio"],
       "options": {
-        "aot": true,
-        "outputPath": "dist/apps/portfolio",
-        "index": "apps/portfolio/src/index.html",
-        "browser": "apps/portfolio/src/main.ts",
-        "tsConfig": "apps/portfolio/tsconfig.app.json",
-        "assets": ["apps/portfolio/src/favicon.ico", "apps/portfolio/src/assets"],
-        "styles": ["apps/portfolio/src/styles.scss"],
-        "scripts": []
-      },
-      "configurations": {
-        "production": {
-          "budgets": [
-            {
-              "type": "initial",
-              "maximumWarning": "500kb",
-              "maximumError": "1mb"
-            },
-            {
-              "type": "anyComponentStyle",
-              "maximumWarning": "2kb",
-              "maximumError": "4kb"
-            }
-          ],
-          "outputHashing": "all"
-        },
-        "development": {
-          "optimization": false,
-          "extractLicenses": false,
-          "sourceMap": true
-        }
-      },
-      "defaultConfiguration": "development"
+        "cwd": "apps/portfolio",
+        "command": "tsc -b && vite build"
+      }
     },
     "serve": {
-      "executor": "@nx/angular:dev-server",
-      "configurations": {
-        "production": {
-          "buildTarget": "portfolio:build:production"
-        },
-        "development": {
-          "buildTarget": "portfolio:build:development",
-          "host": "0.0.0.0"
-        }
-      },
-      "defaultConfiguration": "development"
+      "executor": "nx:run-commands",
+      "continuous": true,
+      "options": {
+        "cwd": "apps/portfolio",
+        "command": "vite"
+      }
     },
     "build-ci": {
       "executor": "nx:run-commands",

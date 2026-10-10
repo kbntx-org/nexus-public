@@ -102,7 +102,6 @@ buildkit_build(
   build_args={'NODE_VERSION': NODE_VERSION, 'PNPM_VERSION': PNPM_VERSION},
   only=[
     root_path('apps/portfolio'),
-    root_path('tsconfig.base.json'),
     root_path('nx.json'),
     root_path('tools'),
     root_path('pnpm-lock.yaml'),
@@ -112,7 +111,6 @@ buildkit_build(
   ],
   live_update=[
     sync(root_path('apps/portfolio/src'), '/usr/src/app/apps/portfolio/src'),
-    sync(root_path('tsconfig.base.json'), '/usr/src/app/tsconfig.base.json'),
   ],
 )
 
