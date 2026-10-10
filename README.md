@@ -1,3 +1,7 @@
+> [!NOTE]
+> This is a read-only, automated mirror of my private `nexus` repository, regenerated
+> daily.
+
 # Nexus
 
 My personal internal developer platform to deploy apps in production and experiment with modern
