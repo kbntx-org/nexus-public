@@ -40,10 +40,11 @@ ESO reconciles two CRDs: a `SecretStore`/`ClusterSecretStore` (how to reach Vaul
 `ExternalSecret` (what to fetch, and which Kubernetes `Secret` to build). Workloads mount that
 `Secret` like any other, never knowing Vault is involved.
 
-**Templating is the strong point.** An `ExternalSecret`'s `target.template` can inject a Vault value
-into a larger document committed in Git, not just build a flat key/value `Secret`. Karpenter uses it
-to render a whole cloud-init `userData` around a Vault-sourced k3s agent join token (see
-<a href="https://github.com/kbntx-org/nexus/blob/main/platform/core/karpenter/templates/secrets.yaml" target="_blank" rel="noopener"><code>karpenter/templates/secrets.yaml</code></a>).
+**Templating is the strong point.** An `ExternalSecret`'s `target.template` reshapes Vault values
+into whatever `Secret` a consumer expects, not just a flat copy of the Vault keys. Smelt uses it to
+build the typed `kubernetes.io/basic-auth` `Secret` CloudNativePG needs from its Vault database keys
+(see
+<a href="https://github.com/kbntx-org/nexus/blob/main/apps/smelt/chart/templates/secrets.yaml" target="_blank" rel="noopener"><code>smelt/chart/templates/secrets.yaml</code></a>).
 
 ### How ESO authenticates to Vault
 

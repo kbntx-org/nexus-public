@@ -47,18 +47,12 @@
       "groupName": "hetzner-cloud-controller sub-charts"
     },
     {
-      "matchFileNames": [
-        "platform/core/karpenter/values.yaml",
-        "platform/core/kubernetes/upgrades/plans/values.yaml"
-      ],
+      "matchFileNames": ["platform/core/kubernetes/upgrades/plans/values.yaml"],
       "matchUpdateTypes": ["minor", "major"],
       "enabled": false
     },
     {
-      "matchFileNames": [
-        "platform/core/karpenter/values.yaml",
-        "platform/core/kubernetes/upgrades/plans/values.yaml"
-      ],
+      "matchFileNames": ["platform/core/kubernetes/upgrades/plans/values.yaml"],
       "matchUpdateTypes": ["patch"],
       "automerge": false
     }
@@ -66,10 +60,7 @@
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": [
-        "^platform/core/karpenter/values\\.yaml$",
-        "^platform/core/kubernetes/upgrades/plans/values\\.yaml$"
-      ],
+      "fileMatch": ["^platform/core/kubernetes/upgrades/plans/values\\.yaml$"],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\s+k3sVersion:\\s*(?<currentValue>\\S+)"
       ]

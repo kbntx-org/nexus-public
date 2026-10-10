@@ -93,10 +93,6 @@ Every node is `Ready`, with the labels and taints it should have.
 - **One node at a time.** The playbook runs servers first, then workers, with `serial: 1`. A node
   restarts k3s only when its config changed, but with a single server that still means a short API
   outage; workloads keep running.
-- **Karpenter nodes are excluded** from the inventory by their label and never see the role. Their
-  k3s config is a copy in the
-  <a href="https://github.com/kbntx-org/nexus/blob/main/platform/core/karpenter/templates/secrets.yaml" target="_blank" rel="noopener">Karpenter
-  cloud-init</a>: change both together, and replace running Karpenter nodes to pick it up.
 - **`--diff` prints secrets.** The rendered k3s config holds the tokens; don't paste the output
   anywhere.
 - **Check mode is meaningless on a fresh node:** it skips the install, then fails on the missing
@@ -109,7 +105,7 @@ Every node is `Ready`, with the labels and taints it should have.
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/kubernetes/configuration" target="_blank" rel="noopener"><code>platform/core/kubernetes/configuration/</code></a>
   — playbook, dynamic Hetzner inventory, `ansible.cfg` and Python project
 - <a href="https://github.com/kbntx-org/nexus/blob/main/platform/core/kubernetes/configuration/inventory/hcloud.yml" target="_blank" rel="noopener"><code>platform/core/kubernetes/configuration/inventory/hcloud.yml</code></a>
-  — how nodes are grouped, and how Karpenter nodes are left out
+  — how nodes are grouped
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/modules/k3s/ansible/roles/k3s" target="_blank" rel="noopener"><code>platform/modules/k3s/ansible/roles/k3s/</code></a>
   — the role: tasks, defaults, config templates
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/kubernetes/upgrades" target="_blank" rel="noopener"><code>platform/core/kubernetes/upgrades/</code></a>

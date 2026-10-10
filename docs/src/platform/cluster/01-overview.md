@@ -25,13 +25,8 @@ What the diagram doesn't show is why:
 
 - **Embedded etcd on a single server** lets the control plane grow to HA later without migrating the
   datastore.
-- **Static pools** are cheap enough to run continuously, so they are sized once rather than scaled.
-- **<a href="https://karpenter.sh/" target="_blank" rel="noopener">Karpenter</a> nodes** configure
-  themselves at boot through their cloud-init, which is why they are excluded from the Ansible
-  inventory. The controller comes with its
-  <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/karpenter" target="_blank" rel="noopener">Hetzner
-  provider</a>, and the cloud-init secret is rendered by
-  [ESO templating](../secrets/01-overview.md#external-secrets-operator).
+- **Static pools only, no autoscaler.** Hetzner bills servers by the hour, so nodes provisioned on
+  demand cost more than a pool sized once and left running.
 
 ## Provisioning and upgrades
 
@@ -112,8 +107,6 @@ In the order they show up on fresh VMs:
   — CNI, kube-proxy replacement, NetworkPolicy engine
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/hetzner-cloud-controller" target="_blank" rel="noopener"><code>platform/core/hetzner-cloud-controller/</code></a>
   — Hetzner CCM + CSI Helm chart
-- <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/karpenter" target="_blank" rel="noopener"><code>platform/core/karpenter/</code></a>
-  — on-demand Hetzner node provisioning and the cloud-init `userData` secret
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/sysbox" target="_blank" rel="noopener"><code>platform/core/sysbox/</code></a>
   — Sysbox installer image and DaemonSet chart
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/network" target="_blank" rel="noopener"><code>platform/core/network/</code></a>
