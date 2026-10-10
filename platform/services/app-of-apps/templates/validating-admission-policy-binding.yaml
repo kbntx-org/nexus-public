@@ -1,0 +1,11 @@
+{{- if .Values.productSourcePolicy }}
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: product-application-source
+  annotations:
+    argocd.argoproj.io/sync-wave: '-1'
+spec:
+  policyName: product-application-source
+  validationActions: ["Deny"]
+{{- end }}

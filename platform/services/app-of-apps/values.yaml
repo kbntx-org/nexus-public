@@ -1,7 +1,69 @@
+productSourcePolicy:
+  project: product
+  repository: https://github.com/kbntx-org/nexus.git
+  pathPrefix: apps/
+
 argocd-apps:
+  projects:
+    platform:
+      namespace: argocd
+      additionalAnnotations:
+        argocd.argoproj.io/sync-wave: '-1'
+      description: Cluster-level building blocks and services hosted on the platform
+      sourceRepos:
+        - https://github.com/kbntx-org/nexus.git
+        - https://github.com/kbntx-org/nexus-manifests.git
+      destinations:
+        - server: https://kubernetes.default.svc
+          namespace: '*'
+      clusterResourceWhitelist:
+        - group: '*'
+          kind: '*'
+
+    product:
+      namespace: argocd
+      additionalAnnotations:
+        argocd.argoproj.io/sync-wave: '-1'
+      description: Product applications from apps/
+      sourceRepos:
+        - https://github.com/kbntx-org/nexus.git
+        - https://github.com/kbntx-org/nexus-manifests.git
+      destinations:
+        - server: https://kubernetes.default.svc
+          namespace: portfolio
+        - server: https://kubernetes.default.svc
+          namespace: smelt
+      namespaceResourceWhitelist:
+        - group: ''
+          kind: ConfigMap
+        - group: ''
+          kind: Secret
+        - group: ''
+          kind: Service
+        - group: ''
+          kind: ServiceAccount
+        - group: ''
+          kind: PersistentVolumeClaim
+        - group: apps
+          kind: '*'
+        - group: batch
+          kind: '*'
+        - group: autoscaling
+          kind: '*'
+        - group: policy
+          kind: '*'
+        - group: cert-manager.io
+          kind: '*'
+        - group: external-secrets.io
+          kind: '*'
+        - group: postgresql.cnpg.io
+          kind: '*'
+        - group: traefik.io
+          kind: '*'
+
   applications:
     traefik-ingress:
-      project: default
+      project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
         path: platform/core/traefik
@@ -21,7 +83,7 @@ argocd-apps:
           - CreateNamespace=true
 
     argocd:
-      project: default
+      project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
         path: platform/core/argocd
@@ -37,7 +99,7 @@ argocd-apps:
           - CreateNamespace=true
 
     external-secrets:
-      project: default
+      project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
         path: platform/core/external-secrets/deploy
@@ -54,7 +116,7 @@ argocd-apps:
           - ServerSideApply=true
 
     vault:
-      project: default
+      project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
         path: platform/core/vault/server
@@ -70,7 +132,7 @@ argocd-apps:
           - CreateNamespace=true
 
     cloudnative-pg:
-      project: default
+      project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
         path: platform/core/cloudnative-pg
@@ -87,7 +149,7 @@ argocd-apps:
           - ServerSideApply=true
 
     cloudflared:
-      project: default
+      project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
         path: platform/core/cloudflared/chart
@@ -103,7 +165,7 @@ argocd-apps:
           - CreateNamespace=true
 
     external-dns:
-      project: default
+      project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
         path: platform/core/external-dns
@@ -119,7 +181,7 @@ argocd-apps:
           - CreateNamespace=true
 
     cert-manager:
-      project: default
+      project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
         path: platform/core/cert-manager
@@ -135,7 +197,7 @@ argocd-apps:
           - CreateNamespace=true
 
     cilium:
-      project: default
+      project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
         path: platform/core/cilium
@@ -152,7 +214,7 @@ argocd-apps:
           - ServerSideApply=true
 
     hetzner-cloud-controller:
-      project: default
+      project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
         path: platform/core/hetzner-cloud-controller
@@ -168,7 +230,7 @@ argocd-apps:
           - CreateNamespace=true
 
     karpenter:
-      project: default
+      project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
         path: platform/core/karpenter
@@ -184,7 +246,7 @@ argocd-apps:
           - CreateNamespace=true
 
     sysbox:
-      project: default
+      project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
         path: platform/core/sysbox/deploy
@@ -200,7 +262,7 @@ argocd-apps:
           - CreateNamespace=true
 
     monitoring:
-      project: default
+      project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
         path: platform/core/monitoring
@@ -216,7 +278,7 @@ argocd-apps:
           - CreateNamespace=true
 
     system-upgrade-controller:
-      project: default
+      project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
         path: platform/core/kubernetes/upgrades/system-upgrade-controller
@@ -232,7 +294,7 @@ argocd-apps:
           - CreateNamespace=true
 
     k3s-upgrades:
-      project: default
+      project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
         path: platform/core/kubernetes/upgrades/plans
@@ -248,7 +310,7 @@ argocd-apps:
           - CreateNamespace=true
 
     documentation:
-      project: default
+      project: platform
       sources:
         - repoURL: https://github.com/kbntx-org/nexus.git
           path: docs/helm
@@ -271,7 +333,7 @@ argocd-apps:
           - CreateNamespace=true
 
     cloudflare-controller:
-      project: default
+      project: platform
       sources:
         - repoURL: https://github.com/kbntx-org/nexus.git
           path: platform/core/cloudflare-controller/chart
@@ -294,7 +356,7 @@ argocd-apps:
           - CreateNamespace=true
 
     n8n:
-      project: default
+      project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
         path: platform/services/n8n
@@ -310,7 +372,7 @@ argocd-apps:
           - CreateNamespace=true
 
     portfolio:
-      project: default
+      project: product
       sources:
         - repoURL: https://github.com/kbntx-org/nexus.git
           path: apps/portfolio/chart
@@ -333,7 +395,7 @@ argocd-apps:
           - CreateNamespace=true
 
     kiln:
-      project: default
+      project: platform
       sources:
         - repoURL: https://github.com/kbntx-org/nexus.git
           path: platform/services/kiln/chart
@@ -356,7 +418,7 @@ argocd-apps:
           - CreateNamespace=true
 
     smelt:
-      project: default
+      project: product
       sources:
         - repoURL: https://github.com/kbntx-org/nexus.git
           path: apps/smelt/chart

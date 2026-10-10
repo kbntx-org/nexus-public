@@ -1,0 +1,29 @@
+{{- with .Values.productSourcePolicy }}
+{{- $allowedSource := printf "source.repoURL != %q || (has(source.path) && source.path.startsWith(%q) && !source.path.contains('..'))" .repository .pathPrefix }}
+{{- $message := printf "Applications in the %s project can only use %s charts under %s" .project .repository .pathPrefix }}
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: product-application-source
+  annotations:
+    argocd.argoproj.io/sync-wave: '-1'
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["argoproj.io"]
+        apiVersions: ["*"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["applications"]
+  matchConditions:
+    - name: product-project
+      expression: object.spec.project == {{ .project | quote }}
+  validations:
+    # AppProject sourceRepos only restricts repositories, so the path is checked here.
+    - expression: >-
+        !has(object.spec.source) || [object.spec.source].all(source, {{ $allowedSource }})
+      message: {{ $message }}
+    - expression: >-
+        !has(object.spec.sources) || object.spec.sources.all(source, {{ $allowedSource }})
+      message: {{ $message }}
+{{- end }}

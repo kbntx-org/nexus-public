@@ -35,9 +35,31 @@ one sync of the root; everything declared in
 is then materialized on its own: every `platform/core/*` and `platform/services/*` component plus
 the apps, all traceable back to one file.
 
+### Projects
+
+The same file declares two
+<a href="https://argo-cd.readthedocs.io/en/stable/user-guide/projects/" target="_blank" rel="noopener"><code>AppProject</code>s</a>,
+and every `Application` belongs to one of them:
+
+| Project    | Holds                                    | Permissions                                                               |
+| ---------- | ---------------------------------------- | ------------------------------------------------------------------------- |
+| `platform` | `platform/core/*`, `platform/services/*` | Any namespace, any resource, cluster-scoped included                      |
+| `product`  | `apps/*`                                 | Only its listed namespaces, no cluster-scoped resource, whitelisted kinds |
+
+An `AppProject` restricts repositories, not paths, so the same chart also ships a
+<a href="https://kubernetes.io/docs/reference/access-authn-authz/validating-admission-policy/" target="_blank" rel="noopener"><code>ValidatingAdmissionPolicy</code></a>:
+the API server rejects any `product` `Application` whose source in this repo points outside `apps/`.
+A CEL policy was chosen over an admission webhook because it runs inside the API server, with no
+server or certificate to operate. The whitelist opens whole API groups (workloads, Traefik,
+cert-manager, CNPG, ...) but names core kinds one by one, so an app cannot create a `ResourceQuota`
+or `LimitRange` to lift its own namespace limits. A product chart that needs a kind outside it fails
+to sync until the kind or its group is added to the `product` whitelist.
+
 **Runbook — add a new cluster-side workload:** drop the chart under `platform/core/<name>/` or
 `platform/services/<name>/`, add an entry under `argocd-apps.applications` in
-`app-of-apps/values.yaml`, push to `main`. No one ever clicks "create application" in the UI.
+`app-of-apps/values.yaml` with `project: platform`, push to `main`. For a product app under
+`apps/<name>/`, use `project: product` and add its namespace to the `product` project's
+`destinations`. No one ever clicks "create application" in the UI.
 
 ## Sync model
 
@@ -88,6 +110,8 @@ is not used by any workflow.
   — root chart declaring every child `Application`
 - <a href="https://github.com/kbntx-org/nexus/blob/main/platform/services/app-of-apps/values.yaml" target="_blank" rel="noopener"><code>platform/services/app-of-apps/values.yaml</code></a>
   — the full catalog of cluster workloads
+- <a href="https://github.com/kbntx-org/nexus/blob/main/platform/services/app-of-apps/templates/validating-admission-policy.yaml" target="_blank" rel="noopener"><code>platform/services/app-of-apps/templates/validating-admission-policy.yaml</code></a>
+  — keeps `product` applications on `apps/` charts
 - <a href="https://github.com/kbntx-org/nexus/blob/main/.github/workflows/renovate.yml" target="_blank" rel="noopener"><code>.github/workflows/renovate.yml</code></a>
   — scheduled Renovate pipeline
 - <a href="https://github.com/kbntx-org/nexus/blob/main/renovate.json" target="_blank" rel="noopener"><code>renovate.json</code></a>
