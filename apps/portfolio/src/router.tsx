@@ -2,7 +2,6 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 import { AppShell } from '@/shared/components/app-shell.component';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export const router = createBrowserRouter([
   {
     path: '/',

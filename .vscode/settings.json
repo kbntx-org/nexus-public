@@ -1,5 +1,5 @@
 {
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.defaultFormatter": "oxc.oxc-vscode",
   "npm.packageManager": "pnpm",
   "editor.formatOnSave": true,
   "go.lintTool": "golangci-lint-v2",
@@ -16,7 +16,7 @@
   },
   "[typescript][typescriptreact]": {
     "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": "explicit",
+      "source.fixAll.oxc": "explicit",
       "source.removeUnusedImports": "always"
     }
   },
@@ -36,7 +36,7 @@
     "README.md": "LICENSE",
     "AGENTS.md": "CLAUDE.md",
     "mise.toml": "mise.lock",
-    ".prettierrc": ".prettierignore"
+    ".oxfmtrc.json": ".oxlintrc.json"
   },
   "files.associations": {
     "Tiltfile": "tiltfile",

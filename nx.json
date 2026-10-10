@@ -11,8 +11,7 @@
       "!{projectRoot}/**/*.cy.[jt]s?(x)",
       "!{projectRoot}/cypress.config.[jt]s",
       "!{projectRoot}/src/test-setup.[jt]s",
-      "!{projectRoot}/test-setup.[jt]s",
-      "!{projectRoot}/eslint.config.mjs"
+      "!{projectRoot}/test-setup.[jt]s"
     ],
     "sharedGlobals": [
       "{workspaceRoot}/.github/workflows/affected.yml",
@@ -35,10 +34,6 @@
       "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
       "cache": true
     },
-    "lint": {
-      "inputs": ["default", "{workspaceRoot}/eslint.config.mjs"],
-      "cache": true
-    },
     "e2e": {
       "inputs": ["default", "^production"],
       "cache": true
@@ -52,7 +47,7 @@
     "@nx/react": {
       "application": {
         "style": "scss",
-        "linter": "eslint",
+        "linter": "none",
         "bundler": "vite",
         "unitTestRunner": "jest"
       },
@@ -61,7 +56,7 @@
       },
       "library": {
         "style": "scss",
-        "linter": "eslint",
+        "linter": "none",
         "unitTestRunner": "jest",
         "skipPackageJson": true
       }
@@ -69,7 +64,7 @@
   },
   "plugins": [
     {
-      "plugin": "@nx/eslint/plugin",
+      "plugin": "@nx/oxlint",
       "options": {
         "targetName": "lint"
       }

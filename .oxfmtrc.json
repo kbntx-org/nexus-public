@@ -1,0 +1,30 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "arrowParens": "avoid",
+  "printWidth": 100,
+  "singleQuote": true,
+  "trailingComma": "none",
+  "sortPackageJson": false,
+  "sortTailwindcss": {},
+  "sortImports": {},
+  "overrides": [
+    {
+      "files": ["*.md"],
+      "options": {
+        "proseWrap": "always"
+      }
+    }
+  ],
+  "ignorePatterns": [
+    "/dist",
+    "/coverage",
+    "/.nx/cache",
+    "/.nx/workspace-data",
+    "/.nx/self-healing",
+    "/node_modules",
+    "pnpm-lock.yaml",
+    "**/templates/**/*.yaml",
+    "**/templates/**/*.yml",
+    "**/cloud-init.yml"
+  ]
+}

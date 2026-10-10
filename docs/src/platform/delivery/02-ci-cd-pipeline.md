@@ -43,11 +43,12 @@ walk.
 
 0. **Affected** resolves what changed once and hands the result to every job after it (see
    [Affected detection](#affected-detection)).
-1. **Lint & format** always runs. The Prettier check (`nx format:check` against the affected base,
-   with and without `--libs-and-apps`, since each mode alone misses some files) runs on every
-   pipeline. The `lint` and `format-check` targets (`format-check` is a project's non-Prettier
-   formatter, such as `golangci-lint fmt` for a Go project) run through `nx run-many` on the
-   projects Affected computed for each, and each step is skipped when its list is empty.
+1. **Lint & format** always runs. The oxfmt check (`nx format:check` against the affected base, with
+   and without `--libs-and-apps`, since each mode alone misses some files) runs on every pipeline.
+   The `lint` targets (oxlint for TypeScript projects, inferred by `@nx/oxlint`) and `format-check`
+   targets (`format-check` is a project's non-oxfmt formatter, such as `golangci-lint fmt` for a Go
+   project) run through `nx run-many` on the projects Affected computed for each, and each step is
+   skipped when its list is empty.
 2. **Test** runs `nx run-many` on the test-affected projects; the job is skipped when that list is
    empty.
 3. **Build** builds one image per deploy target in one job and, outside a PR, pushes it to Docker
@@ -144,7 +145,7 @@ each run, so it is never edited directly.
 - <a href="https://github.com/kbntx-org/nexus/blob/main/.github/workflows/affected.yml" target="_blank" rel="noopener"><code>.github/workflows/affected.yml</code></a>
   — the single upfront job: affected + deploy-target computation, including the trunk diff-base walk
 - <a href="https://github.com/kbntx-org/nexus/blob/main/.github/workflows/lint-and-format.yml" target="_blank" rel="noopener"><code>.github/workflows/lint-and-format.yml</code></a>
-  — Prettier check plus the affected `lint` and `format-check` targets
+  — oxfmt check plus the affected `lint` and `format-check` targets
 - <a href="https://github.com/kbntx-org/nexus/blob/main/.github/workflows/build.yml" target="_blank" rel="noopener"><code>.github/workflows/build.yml</code></a>
   — runs `build-ci` for the deploy targets, pushing outside PRs
 - <a href="https://github.com/kbntx-org/nexus/blob/main/.github/actions/setup-buildx/action.yaml" target="_blank" rel="noopener"><code>.github/actions/setup-buildx/action.yaml</code></a>

@@ -1,6 +1,7 @@
+import path from 'node:path';
+
 import react from '@vitejs/plugin-react';
 import autoprefixer from 'autoprefixer';
-import path from 'node:path';
 import tailwindcss from 'tailwindcss';
 import { defineConfig } from 'vite';
 

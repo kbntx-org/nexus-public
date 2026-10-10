@@ -13,7 +13,7 @@
     "yaml": "catalog:"
   },
   "devDependencies": {
-    "@nx/eslint": "catalog:",
+    "@nx/oxlint": "catalog:",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",

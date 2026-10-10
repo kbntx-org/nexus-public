@@ -124,8 +124,8 @@ links read better in context.
 
 Any link that does **not** navigate to another page of this doc site (i.e. anything outside
 `docs/src/`, including GitHub repo links and external tech docs) must open in a new tab. Use a plain
-HTML anchor, not the `attr_list` markdown syntax — Prettier wraps long `[text](url){ ... }` lines
-and breaks the attribute list across lines, which mkdocs Material then fails to parse as attributes:
+HTML anchor, not the `attr_list` markdown syntax — oxfmt wraps long `[text](url){ ... }` lines and
+breaks the attribute list across lines, which mkdocs Material then fails to parse as attributes:
 
 ```markdown
 <a href="https://argo-cd.readthedocs.io/" target="_blank" rel="noopener">ArgoCD</a>
