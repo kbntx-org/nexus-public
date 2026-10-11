@@ -385,29 +385,6 @@ argocd-apps:
         syncOptions:
           - CreateNamespace=true
 
-    registry-cleaner:
-      project: platform
-      sources:
-        - repoURL: https://github.com/kbntx-org/nexus.git
-          path: platform/services/registry-cleaner/chart
-          targetRevision: main
-          helm:
-            valueFiles:
-              - values.yaml
-              - $values/registry-cleaner/values.yaml
-        - repoURL: https://github.com/kbntx-org/nexus-manifests.git
-          targetRevision: main
-          ref: values
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: registry-cleaner
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
-
     smelt:
       project: product
       sources:

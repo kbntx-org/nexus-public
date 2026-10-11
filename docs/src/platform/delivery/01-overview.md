@@ -119,4 +119,3 @@ is not used by any workflow.
 - [CI/CD pipeline](02-ci-cd-pipeline.md) — how source changes turn into images
 - [GitOps deploys](03-gitops-deploys.md) — the multi-source `Application` shape and the
   `nexus-manifests` flow
-- [Image retention](04-image-retention.md) — how old image tags are deleted from Docker Hub
