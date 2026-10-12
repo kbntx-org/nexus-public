@@ -28,7 +28,7 @@ catalog:
   marked: ^18.0.0
   nx: 23.2.1
   oxfmt: 0.69.0
-  oxlint: 1.85.0
+  oxlint: 1.86.0
   postcss: ^8.5.2
   react-dom: 19.3.0
   react-router-dom: ^6.30.6
