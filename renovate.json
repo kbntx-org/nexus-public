@@ -11,6 +11,7 @@
   "labels": ["dependencies"],
   "postUpdateOptions": ["pnpmDedupe"],
   "automergeType": "pr",
+  "rebaseWhen": "conflicted",
   "separateMultipleMajor": true,
   "timezone": "Europe/Berlin",
   "customEnvVariables": {

@@ -37,6 +37,11 @@ newer push to a PR cancels that PR's in-flight run, while every push to `main` g
 is never cancelled, so each trunk commit leaves a complete result for the [diff base](#diff-base)
 walk.
 
+Draft PRs skip every job, to save CI minutes while a change is still in progress; marking the PR
+ready for review triggers the full run. Checks gate is skipped on a draft, which branch protection
+treats as passing, but GitHub won't merge a draft anyway. `gh stack submit --auto` opens PRs as
+drafts, and `gh stack submit --open` marks the whole stack ready.
+
 <div class="nexus-diagram">
 --8<-- "src/assets/diagrams/pipeline.svg"
 </div>
