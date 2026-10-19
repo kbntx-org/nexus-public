@@ -43,7 +43,7 @@ COPY --from=portfolio-node-modules /pruned/package.json /pruned/pnpm-lock.yaml .
 
 RUN pnpm nx build portfolio
 
-FROM caddy:2.11.4-alpine AS prod
+FROM caddy:2.11.6-alpine AS prod
 
 COPY --from=builder /usr/src/app/dist/apps/portfolio /srv/app/
 COPY apps/portfolio/Caddyfile /etc/caddy/Caddyfile
