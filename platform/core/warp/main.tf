@@ -1,4 +1,6 @@
 locals {
+  cloudflare_account_id = "2bde0126da63a3a9c94029d14ea380db"
+
   # Default Local Domain Fallback entries recommended by Cloudflare
   default_local_domains = [
     { suffix = "corp" },
@@ -49,7 +51,7 @@ locals {
 }
 
 resource "cloudflare_zero_trust_device_default_profile" "default_profile" {
-  account_id          = var.cloudflare_account_id
+  account_id          = local.cloudflare_account_id
   dns_search_suffixes = []
 
   exclude = local.default_split_tunnel_exclude
@@ -60,7 +62,7 @@ resource "cloudflare_zero_trust_device_default_profile" "default_profile" {
 }
 
 resource "cloudflare_zero_trust_device_default_profile_local_domain_fallback" "default_profile" {
-  account_id = var.cloudflare_account_id
+  account_id = local.cloudflare_account_id
 
   domains = concat(
     local.default_local_domains,
@@ -68,11 +70,6 @@ resource "cloudflare_zero_trust_device_default_profile_local_domain_fallback" "d
       {
         suffix      = "svc.cluster.local"
         description = "Access kubernetes services directly"
-        dns_server  = ["10.43.0.10"]
-      },
-      {
-        suffix      = "internal.kbntx.com"
-        description = "Access kubernetes services directly with easy name"
         dns_server  = ["10.43.0.10"]
       }
     ]

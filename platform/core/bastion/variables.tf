@@ -10,11 +10,6 @@ variable "cloudflare_api_token" {
   sensitive   = true
 }
 
-variable "cloudflare_account_id" {
-  description = "Cloudflare account id"
-  type        = string
-}
-
 variable "email_ssh_access" {
   description = "Email user allowed to access"
   type        = string

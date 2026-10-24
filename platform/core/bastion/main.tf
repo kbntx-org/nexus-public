@@ -3,7 +3,8 @@ data "hcloud_network" "main_vpc" {
 }
 
 locals {
-  bastion_private_ip = "10.0.0.5"
+  bastion_private_ip    = "10.0.0.5"
+  cloudflare_account_id = "2bde0126da63a3a9c94029d14ea380db"
 }
 
 resource "hcloud_floating_ip" "bastion" {
@@ -15,18 +16,18 @@ resource "hcloud_floating_ip" "bastion" {
 }
 
 resource "cloudflare_zero_trust_tunnel_cloudflared" "bastion_tunnel" {
-  account_id = var.cloudflare_account_id
+  account_id = local.cloudflare_account_id
   name       = "bastion"
   config_src = "cloudflare"
 }
 
 data "cloudflare_zero_trust_tunnel_cloudflared_token" "bastion_tunnel_token" {
-  account_id = var.cloudflare_account_id
+  account_id = local.cloudflare_account_id
   tunnel_id  = cloudflare_zero_trust_tunnel_cloudflared.bastion_tunnel.id
 }
 
 resource "cloudflare_zero_trust_tunnel_cloudflared_route" "vpc_route" {
-  account_id = var.cloudflare_account_id
+  account_id = local.cloudflare_account_id
   network    = data.hcloud_network.main_vpc.ip_range
   tunnel_id  = cloudflare_zero_trust_tunnel_cloudflared.bastion_tunnel.id
   comment    = "vpc hetzner"

@@ -4,7 +4,7 @@
 data "hcloud_servers" "all" {}
 
 data "cloudflare_zero_trust_device_posture_rules" "device_posture_rules" {
-  account_id = var.cloudflare_account_id
+  account_id = local.cloudflare_account_id
 }
 
 locals {
@@ -23,7 +23,7 @@ locals {
 }
 
 resource "cloudflare_zero_trust_access_application" "ssh_infra" {
-  account_id = var.cloudflare_account_id
+  account_id = local.cloudflare_account_id
   name       = "SSH infra"
   type       = "infrastructure"
 
@@ -68,7 +68,7 @@ resource "cloudflare_zero_trust_access_application" "ssh_infra" {
 
 resource "cloudflare_zero_trust_access_infrastructure_target" "servers" {
   for_each   = local.targets
-  account_id = var.cloudflare_account_id
+  account_id = local.cloudflare_account_id
   hostname   = each.key
 
   ip = {

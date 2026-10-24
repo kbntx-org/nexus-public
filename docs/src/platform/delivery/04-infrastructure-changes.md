@@ -13,7 +13,8 @@ applies exactly the plan that was reviewed.
 ## How it works
 
 1. Comment `atlantis plan` (or `atlantis plan -p <project>`) on a PR; Atlantis posts the plan.
-2. Once the PR is mergeable, comment `atlantis apply`.
+2. Comment `atlantis apply` once the plan looks right. There are no apply requirements: as a solo
+   maintainer, no review could ever satisfy them.
 3. Merge, so `main` matches what is deployed.
 
 Every stack goes through Atlantis except the cluster nodes (`platform/core/kubernetes/provision`),

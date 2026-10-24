@@ -44,8 +44,6 @@ spec:
               value: eyes
             - name: ATLANTIS_WRITE_GIT_CREDS
               value: "true"
-            - name: ATLANTIS_GH_ALLOW_MERGEABLE_BYPASS_APPLY
-              value: "true"
             - name: ATLANTIS_DATA_DIR
               value: /atlantis
             - name: ATLANTIS_PORT

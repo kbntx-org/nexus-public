@@ -1,7 +1,6 @@
 repos:
   - id: github.com/kbntx-org/nexus
-    apply_requirements:
-      - mergeable
+    apply_requirements: []
     allow_custom_workflows: false
     autodiscover:
       mode: disabled
