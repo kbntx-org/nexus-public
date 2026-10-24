@@ -41,8 +41,11 @@ share one structure, whatever the language or framework. Copy the closest existi
 
 pnpm only. npm package versions live in the `catalog` of `pnpm-workspace.yaml`; every `package.json`
 references them as `"catalog:"`, never with an inline version. After any `package.json` or catalog
-change run `pnpm i --no-frozen-lockfile` and commit the lockfile. Before adding any npm package or
-Go module, check it is still maintained; archived or abandoned projects are not acceptable.
+change run `pnpm i --no-frozen-lockfile` and commit the lockfile. TypeScript is two aliases: the
+`typescript` catalog entry is `@typescript/typescript6`, the JavaScript API that tools such as
+typescript-eslint import, and `@typescript/native` is TypeScript 7, which provides `tsc`; a package
+that runs `tsc` depends on both. Before adding any npm package or Go module, check it is still
+maintained; archived or abandoned projects are not acceptable.
 
 ## Checks Before Finishing
 
