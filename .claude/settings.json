@@ -19,6 +19,8 @@
       "Read(**/vars.yaml)",
       "Read(vars.*.yaml)",
       "Read(**/vars.*.yaml)",
+      "Read(env.yaml)",
+      "Read(**/env.yaml)",
       "Edit(.env)",
       "Edit(.env.*)",
       "Edit(**/.env)",
@@ -33,6 +35,8 @@
       "Edit(**/vars.yaml)",
       "Edit(vars.*.yaml)",
       "Edit(**/vars.*.yaml)",
+      "Edit(env.yaml)",
+      "Edit(**/env.yaml)",
       "Write(.env)",
       "Write(.env.*)",
       "Write(**/.env)",
@@ -47,11 +51,14 @@
       "Write(**/vars.yaml)",
       "Write(vars.*.yaml)",
       "Write(**/vars.*.yaml)",
+      "Write(env.yaml)",
+      "Write(**/env.yaml)",
       "Bash(cat *.env*)",
       "Bash(cat *environment.json*)",
       "Bash(cat *.tfvars*)",
       "Bash(cat *vars.yaml*)",
       "Bash(cat *vars.*.yaml*)",
+      "Bash(cat *env.yaml*)",
       "Bash(kubectl *)"
     ]
   }

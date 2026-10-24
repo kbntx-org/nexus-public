@@ -37,7 +37,8 @@
     "README.md": "LICENSE",
     "AGENTS.md": "CLAUDE.md",
     "mise.toml": "mise.lock",
-    ".oxfmtrc.json": ".oxlintrc.json"
+    ".oxfmtrc.json": ".oxlintrc.json",
+    "env.example.yaml": "env.yaml"
   },
   "files.associations": {
     "Tiltfile": "tiltfile",

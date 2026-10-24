@@ -112,3 +112,6 @@ vars.*.yaml
 
 # Playwright MCP output (snapshots, console logs, screenshots)
 .playwright-mcp/
+
+# Local environment settings (see env.example.yaml)
+env.yaml

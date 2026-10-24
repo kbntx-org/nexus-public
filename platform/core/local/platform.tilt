@@ -7,7 +7,7 @@ update_settings(max_parallel_updates=6)
 default_registry(REGISTRY_REF)
 
 CORE_RESOURCES = ['cilium', 'vault', 'external-secrets', 'traefik', 'metrics-server-repo', 'metrics-server', 'cloudnative-pg', 'rustfs', 'watch-ingresses', 'headlamp']
-OPTIONAL_RESOURCES = ['monitoring', 'playwright-mcp']
+OPTIONAL_RESOURCES = ['monitoring', 'grafana-mcp', 'playwright-mcp']
 PERSISTED_ON_DOWN = ['cloudnative-pg', 'cilium']
 
 bootstrap_kubernetes(DOCKER_CONTEXT)
@@ -155,6 +155,25 @@ helm_resource(
   resource_deps=['vault', 'external-secrets', 'cloudnative-pg', 'traefik'],
   labels=['2-Infra'],
   links=[link('http://grafana.localhost', 'grafana.localhost')],
+)
+
+# ── Grafana MCP (lets AI agents query dashboards, metrics and logs, of the Grafana set in env.yaml) ──
+# renovate: datasource=docker depName=grafana/mcp-grafana
+GRAFANA_MCP_IMAGE = 'grafana/mcp-grafana:2.0.1'
+grafana = read_yaml(root_path('env.yaml'), default=read_yaml(root_path('env.example.yaml')))['grafana']
+local_resource(
+  'grafana-mcp',
+  serve_cmd='exec docker run --rm --network host --env GRAFANA_URL --env GRAFANA_USERNAME --env GRAFANA_PASSWORD --env GRAFANA_SERVICE_ACCOUNT_TOKEN --volume /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt:ro {image} --transport streamable-http --usage-stats=disabled'.format(
+    image=GRAFANA_MCP_IMAGE,
+  ),
+  serve_env={
+    'GRAFANA_URL': grafana['url'],
+    'GRAFANA_USERNAME': grafana.get('username', ''),
+    'GRAFANA_PASSWORD': grafana.get('password', ''),
+    'GRAFANA_SERVICE_ACCOUNT_TOKEN': grafana.get('serviceAccountToken', ''),
+  },
+  readiness_probe=probe(tcp_socket=tcp_socket_action(port=8000)),
+  labels=['2-Infra'],
 )
 
 # ── Playwright MCP (headless Chromium driven by AI agents to check frontend changes) ──
