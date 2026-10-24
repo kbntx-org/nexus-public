@@ -48,6 +48,18 @@
       "groupName": "hetzner-cloud-controller sub-charts"
     },
     {
+      "matchManagers": ["terraform"],
+      "matchDepTypes": ["required_version"],
+      "overrideDepName": "opentofu/opentofu",
+      "overridePackageName": "opentofu/opentofu",
+      "groupName": "opentofu"
+    },
+    {
+      "matchManagers": ["mise"],
+      "matchDepNames": ["opentofu"],
+      "groupName": "opentofu"
+    },
+    {
       "matchFileNames": ["platform/core/kubernetes/upgrades/plans/values.yaml"],
       "matchUpdateTypes": ["minor", "major"],
       "enabled": false

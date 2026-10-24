@@ -72,7 +72,7 @@ requests succeed and the console is clean) and screenshot it at desktop and phon
 
 Never read or edit gitignored files that may hold secrets or local config (`.env*`, `*.tfvars`,
 `vars*.yaml`, `environment.json`, and anything similar): use their `.example` counterpart. Never run
-`terraform` (`plan`, `apply`, `destroy`) and never touch a live cluster.
+`tofu` or `terraform` (`plan`, `apply`, `destroy`) and never touch a live cluster.
 
 Development happens in a Colima VM where the `sysbox-runc` Docker runtime is installed. An
 autonomous task that needs its own environment (a task on a git worktree, for example) runs in a

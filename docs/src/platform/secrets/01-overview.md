@@ -58,7 +58,7 @@ binds `system:auth-delegator` to the `external-secrets` ServiceAccount.
 A single `eso` role accepts any `ServiceAccount`. Its templated policy grants read access only to
 `platform/<namespace>` and `platform/<namespace>/*` in the KV, where `<namespace>` is the
 authenticating `ServiceAccount`'s own namespace, so apps are isolated from each other without a role
-per app. This Vault-side setup is long-lived and configured through Vault's own API, so Terraform
+per app. This Vault-side setup is long-lived and configured through Vault's own API, so OpenTofu
 applies it once from
 <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/external-secrets/provision" target="_blank" rel="noopener"><code>platform/core/external-secrets/provision/</code></a>.
 

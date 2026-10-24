@@ -30,7 +30,7 @@ What the diagram doesn't show is why:
 
 ## Provisioning and upgrades
 
-1. Terraform creates the static VMs
+1. OpenTofu creates the static VMs
    (<a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/kubernetes/provision" target="_blank" rel="noopener"><code>provision/</code></a>)
    and an Ansible k3s
    <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/kubernetes/configuration" target="_blank" rel="noopener"><code>role</code></a>
@@ -85,7 +85,7 @@ In the order they show up on fresh VMs:
 ## References
 
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/kubernetes/provision" target="_blank" rel="noopener"><code>platform/core/kubernetes/provision/</code></a>
-  — cluster-shape Terraform (control plane, static pools, firewalls)
+  — cluster-shape OpenTofu (control plane, static pools, firewalls)
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/modules/k3s/terraform" target="_blank" rel="noopener"><code>platform/modules/k3s/terraform/</code></a>
   — reusable VM-provisioning module + first-boot bootstrap script
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/modules/k3s/ansible" target="_blank" rel="noopener"><code>platform/modules/k3s/ansible/</code></a>

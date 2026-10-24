@@ -28,9 +28,11 @@ COPY apps/portfolio ./apps/portfolio
 COPY --from=portfolio-node-modules /pruned/node_modules ./node_modules
 COPY --from=portfolio-node-modules /pruned/package.json /pruned/pnpm-lock.yaml ./
 
+WORKDIR /usr/src/app/apps/portfolio
+
 EXPOSE 4200
 
-CMD ["pnpm", "nx", "run", "portfolio:serve"]
+CMD ["/usr/src/app/node_modules/.bin/vite"]
 
 FROM node-tooling AS builder
 

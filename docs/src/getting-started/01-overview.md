@@ -8,9 +8,8 @@ Nexus is a personal internal developer platform to deploy apps in production and
 modern tooling and technologies. It runs on a
 <a href="https://k3s.io/" target="_blank" rel="noopener">k3s</a> cluster on
 <a href="https://www.hetzner.com/cloud" target="_blank" rel="noopener">Hetzner Cloud</a>,
-provisioned with
-<a href="https://developer.hashicorp.com/terraform" target="_blank" rel="noopener">Terraform</a> and
-reconciled continuously from Git via
+provisioned with <a href="https://opentofu.org/docs/" target="_blank" rel="noopener">OpenTofu</a>
+and reconciled continuously from Git via
 <a href="https://argo-cd.readthedocs.io/" target="_blank" rel="noopener">ArgoCD</a>.
 
 <div class="nexus-diagram">
@@ -48,6 +47,6 @@ Ongoing work and planned improvements are tracked as
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core" target="_blank" rel="noopener"><code>platform/core/</code></a>
   — cluster-level building blocks: networking, certificates, secrets, ingress, operators
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/kubernetes" target="_blank" rel="noopener"><code>platform/core/kubernetes/</code></a>
-  — Terraform provisioning and configuration of the k3s cluster
+  — OpenTofu provisioning and configuration of the k3s cluster
 - <a href="https://github.com/kbntx-org/nexus/blob/main/mise.toml" target="_blank" rel="noopener"><code>mise.toml</code></a>
   — pinned versions of every runtime and tool

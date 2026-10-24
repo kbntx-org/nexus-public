@@ -3,7 +3,7 @@ title: Run the cluster Ansible playbook
 ---
 
 Apply the k3s <a href="https://docs.ansible.com/" target="_blank" rel="noopener">Ansible</a> role to
-the static nodes Terraform created: install k3s on a new node, or roll out a change to its
+the static nodes OpenTofu created: install k3s on a new node, or roll out a change to its
 configuration. The playbook only manages static nodes (see
 [Cluster & Compute](../platform/cluster/01-overview.md#cluster-shape)).
 
@@ -13,7 +13,7 @@ configuration. The playbook only manages static nodes (see
   <a href="https://github.com/kbntx-org/nexus/tree/main/platform/modules/k3s/ansible/roles/k3s" target="_blank" rel="noopener"><code>k3s
   role</code></a>, its templates, or
   <a href="https://github.com/kbntx-org/nexus/blob/main/platform/core/kubernetes/configuration/group_vars/all.yml" target="_blank" rel="noopener"><code>group_vars/all.yml</code></a>.
-- A new static node, after Terraform created it.
+- A new static node, after OpenTofu created it.
 - A k3s token change: read the
   [token gotcha](../platform/cluster/01-overview.md#gotcha-changing-the-agent-token-doesnt-touch-the-datastore)
   first, the playbook alone is not enough.

@@ -2,10 +2,10 @@
 title: Nexus - Kubernetes & Compute Platform
 description:
   A production-ready Kubernetes infrastructure built on Hetzner Cloud, featuring K3s cluster,
-  Terraform automation, and comprehensive networking setup.
+  OpenTofu automation, and comprehensive networking setup.
 tech:
   - Kubernetes (K3S)
-  - Terraform
+  - OpenTofu
   - Hetzner Cloud
   - Traefik Ingress
   - Cloudflared
@@ -18,7 +18,7 @@ images:
 githubUrl: https://github.com/kbntx-org/nexus-public
 features:
   - K3s cluster with multi-node setup
-  - Terraform module for minimal initialization
+  - OpenTofu module for minimal initialization
   - Cloudflared for secure tunneling and edge protection
   - Backup and disaster recovery automation
   - Gitops driven development with ArgoCD to minimize recovery while having flexibility
@@ -27,7 +27,7 @@ features:
 
 Designed and implemented a scalable Kubernetes platform using K3s on Hetzner Cloud. K3s was chosen
 because it's a lightweight kubernetes distribution and it comes with some batteries that makes its
-implementation easier. The foundational infrastructure is fully automated with a terraform module
+implementation easier. The foundational infrastructure is fully automated with an OpenTofu module
 based on a system of node-pools.
 
 <br>

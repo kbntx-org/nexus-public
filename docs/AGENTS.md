@@ -91,7 +91,7 @@ Do not hard-code specifics that can be found in the repository itself:
 
 - **No version numbers** — exact versions live in `Chart.yaml`, `values.yaml`, `package.json`, etc.
 - **No counts** — number of replicas, nodes, or workers changes; the code is the source of truth
-- **No exact CIDRs or IPs** — infrastructure details belong in Terraform configs, not docs
+- **No exact CIDRs or IPs** — infrastructure details belong in OpenTofu configs, not docs
 - **No public hostnames** — `argocd.kbntx.com`, `grafana.kbntx.com`, `vault.kbntx.com`, etc. should
   not appear in prose. Refer to services by name ("the ArgoCD UI", "the Grafana dashboard") and link
   to the Ingress template that owns the hostname. In code samples, use placeholders

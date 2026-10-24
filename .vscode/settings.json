@@ -20,9 +20,10 @@
       "source.removeUnusedImports": "always"
     }
   },
-  "[terraform][terraform-vars]": {
-    "editor.defaultFormatter": "hashicorp.terraform"
+  "[opentofu][opentofu-vars]": {
+    "editor.defaultFormatter": "opentofu.vscode-opentofu"
   },
+  "opentofu.validation.enableEnhancedValidation": false,
   "vs-kubernetes": {
     "disable-linters": ["resource-limits"]
   },

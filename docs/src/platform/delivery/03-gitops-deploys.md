@@ -100,7 +100,7 @@ deletes the `pr-<number>` branch when the PR closes, merged or not.
 The
 <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/bastion" target="_blank" rel="noopener"><code>bastion</code></a>
 is a VPS, not a cluster workload, and has no `project.json`, so neither ArgoCD nor this pipeline
-deploys it; Terraform does. That keeps the one component that can't run in the cluster out of the
+deploys it; OpenTofu does. That keeps the one component that can't run in the cluster out of the
 delivery pipeline instead of bolting a second deploy mechanism onto it. See
 [private access](../traffic/01-overview.md#private-access-via-warp) for how it is provisioned and
 why it exists.

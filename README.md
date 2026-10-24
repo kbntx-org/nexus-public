@@ -3,7 +3,7 @@
 My personal internal developer platform to deploy apps in production and experiment with modern
 tooling and technologies.
 
-The platform is GitOps-driven: Terraform provisions a k3s cluster on Hetzner, and ArgoCD reconciles
+The platform is GitOps-driven: OpenTofu provisions a k3s cluster on Hetzner, and ArgoCD reconciles
 everything running on it from this repo. It hosts the apps published under
 [kbntx.com](https://kbntx.com).
 
@@ -17,7 +17,7 @@ everything running on it from this repo. It hosts the apps published under
 ## Stack
 
 - **Apps**: React, Go, TypeScript, Nx monorepo
-- **Infrastructure**: Hetzner Cloud, k3s, Cilium, Terraform, Ansible
+- **Infrastructure**: Hetzner Cloud, k3s, Cilium, OpenTofu, Ansible
 - **GitOps & CI/CD**: ArgoCD (app-of-apps), GitHub Actions
 - **Traffic & access**: Cloudflare Tunnel and Zero Trust, Traefik, cert-manager, external-dns
 - **Secrets**: Vault, External Secrets Operator

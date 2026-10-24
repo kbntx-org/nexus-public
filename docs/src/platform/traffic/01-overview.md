@@ -27,7 +27,7 @@ sits behind, and traffic only gets in through outbound tunnels the cluster opens
 
 ## Cloudflare-k8s-controller: the tunnel isn't hand-configured
 
-Access rules used to live in Terraform, away from the workloads they protect. The repo's own
+Access rules used to live in OpenTofu, away from the workloads they protect. The repo's own
 <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/cloudflare-controller" target="_blank" rel="noopener"><code>cloudflare-controller</code></a>,
 a small controller-runtime operator, moved them next to the workload: each chart declares its
 Cloudflare objects as CRDs, and the controller reconciles them through the Cloudflare API.
@@ -37,7 +37,7 @@ Cloudflare objects as CRDs, and the controller reconciles them through the Cloud
 </div>
 
 **Gating a hostname** is an `AccessApplication` plus the `AccessPolicy` resources it references, in
-the consuming app's chart, not a Terraform or dashboard change. Policies must live in the
+the consuming app's chart, not an OpenTofu or dashboard change. Policies must live in the
 application's namespace, and the application stays not ready until each of them has been created on
 Cloudflare.
 
@@ -61,13 +61,13 @@ private paths in the figure above). Two tunnels carry private traffic, each with
 - **The bastion's tunnel routes the entire VPC subnet**: node IPs and the bastion itself, mainly for
   SSH during non-Kubernetes operations. It is the one connector that can't live in the cluster,
   because the bastion is also the VPC's NAT gateway and must be reachable when nothing else is. Its
-  <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/bastion" target="_blank" rel="noopener">Terraform</a>
+  <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/bastion" target="_blank" rel="noopener">OpenTofu</a>
   creates the tunnel and hands its token to cloud-init, which starts `cloudflared` as a container on
-  first boot, so the token never leaves Terraform.
+  first boot, so the token never leaves OpenTofu.
 
 - **The cluster's `Tunnel` routes the pod and service CIDRs**, alongside public ingress. Private DNS
   records on Cloudflare can then point at private apps and databases, reachable directly from a
-  WARP-connected device. The WARP default profile (Terraform, in
+  WARP-connected device. The WARP default profile (OpenTofu, in
   <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/warp" target="_blank" rel="noopener"><code>platform/core/warp/</code></a>)
   keeps those ranges inside the tunnel through its split-tunnel excludes, and resolves
   cluster-internal domains against the cluster DNS through local-domain fallback.
