@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: atlantis
+  labels:
+    app: atlantis
+spec:
+  serviceName: atlantis
+  replicas: 1
+  selector:
+    matchLabels:
+      app: atlantis
+  template:
+    metadata:
+      labels:
+        app: atlantis
+      annotations:
+        checksum/repos-config: {{ .Files.Get "files/repos.yaml" | sha256sum }}
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+      volumes:
+        - name: repos-config
+          configMap:
+            name: atlantis-repos-config
+      containers:
+        - name: atlantis
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          args:
+            - server
+            - --repo-config=/etc/atlantis/repos.yaml
+          env:
+            - name: ATLANTIS_ATLANTIS_URL
+              value: https://{{ .Values.ingressHost }}
+            - name: ATLANTIS_REPO_ALLOWLIST
+              value: github.com/kbntx-org/nexus
+            - name: ATLANTIS_DEFAULT_TF_DISTRIBUTION
+              value: opentofu
+            - name: ATLANTIS_DISABLE_AUTOPLAN
+              value: "true"
+            - name: ATLANTIS_EMOJI_REACTION
+              value: eyes
+            - name: ATLANTIS_WRITE_GIT_CREDS
+              value: "true"
+            - name: ATLANTIS_GH_ALLOW_MERGEABLE_BYPASS_APPLY
+              value: "true"
+            - name: ATLANTIS_DATA_DIR
+              value: /atlantis
+            - name: ATLANTIS_PORT
+              value: "4141"
+          envFrom:
+            - secretRef:
+                name: atlantis
+          volumeMounts:
+            - name: atlantis-data
+              mountPath: /atlantis
+            - name: repos-config
+              mountPath: /etc/atlantis
+              readOnly: true
+          ports:
+            - name: atlantis
+              containerPort: 4141
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          livenessProbe:
+            periodSeconds: 60
+            httpGet:
+              path: /healthz
+              port: 4141
+          readinessProbe:
+            periodSeconds: 60
+            httpGet:
+              path: /healthz
+              port: 4141
+  persistentVolumeClaimRetentionPolicy:
+    whenScaled: Retain
+    whenDeleted: Delete
+  volumeClaimTemplates:
+    - metadata:
+        name: atlantis-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: {{ .Values.storage.storageClass }}
+        resources:
+          requests:
+            storage: {{ .Values.storage.size }}

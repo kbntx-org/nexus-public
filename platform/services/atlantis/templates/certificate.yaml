@@ -1,0 +1,14 @@
+{{- if .Values.certificate.enabled }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: atlantis-tls
+spec:
+  secretName: atlantis-tls
+  issuerRef:
+    name: letsencrypt-dns01
+    kind: ClusterIssuer
+  dnsNames:
+    - {{ .Values.ingressHost }}
+    - {{ .Values.webhookHost }}
+{{- end }}

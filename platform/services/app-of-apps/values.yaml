@@ -339,6 +339,22 @@ argocd-apps:
         syncOptions:
           - CreateNamespace=true
 
+    atlantis:
+      project: platform
+      source:
+        repoURL: https://github.com/kbntx-org/nexus.git
+        path: platform/services/atlantis
+        targetRevision: main
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: atlantis
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+
     portfolio:
       project: product
       sources:

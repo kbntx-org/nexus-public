@@ -1,0 +1,14 @@
+image:
+  repository: ghcr.io/runatlantis/atlantis
+  tag: v0.48.1-alpine
+
+ingressHost: atlantis.kbntx.com
+webhookHost: atlantis-webhook.kbntx.com
+internalIngressTarget: 10.43.216.131
+
+certificate:
+  enabled: true
+
+storage:
+  storageClass: hcloud-volumes
+  size: 20Gi

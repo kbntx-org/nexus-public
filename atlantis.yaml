@@ -1,0 +1,32 @@
+version: 3
+
+projects:
+  - name: network
+    dir: platform/core/network
+    autoplan:
+      when_modified:
+        - '*.tf'
+        - .terraform.lock.hcl
+
+  - name: warp
+    dir: platform/core/warp
+    autoplan:
+      when_modified:
+        - '*.tf'
+        - .terraform.lock.hcl
+
+  - name: bastion
+    dir: platform/core/bastion
+    autoplan:
+      when_modified:
+        - '*.tf'
+        - .terraform.lock.hcl
+        - config/**
+        - ../../modules/firewall/**
+
+  - name: external-secrets
+    dir: platform/core/external-secrets/provision
+    autoplan:
+      when_modified:
+        - '*.tf'
+        - .terraform.lock.hcl

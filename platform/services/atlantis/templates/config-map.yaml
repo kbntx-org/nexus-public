@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: atlantis-repos-config
+data:
+  repos.yaml: |
+{{ .Files.Get "files/repos.yaml" | indent 4 }}
