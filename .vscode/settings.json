@@ -7,8 +7,8 @@
   "go.formatTool": "custom",
   "go.alternateTools": {
     "customFormatter": "~/.local/share/mise/shims/golangci-lint",
-    "golangci-lint-v2": "/Users/kenny/.local/share/mise/shims/golangci-lint",
-    "golangci-lint": "/Users/kenny/.local/share/mise/shims/golangci-lint"
+    "golangci-lint-v2": "~/.local/share/mise/shims/golangci-lint",
+    "golangci-lint": "~/.local/share/mise/shims/golangci-lint"
   },
   "go.formatFlags": ["fmt", "--stdin"],
   "[go]": {

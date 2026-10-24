@@ -1,0 +1,58 @@
+runtime: docker
+vmType: vz
+rosetta: true
+
+cpu: 16
+memory: 32
+disk: 200
+
+mounts: []
+
+forwardAgent: false
+
+docker:
+  log-driver: local
+  default-ulimits:
+    nofile:
+      Name: nofile
+      Soft: 1048576
+      Hard: 1048576
+    memlock:
+      Name: memlock
+      Soft: -1
+      Hard: -1
+  default-address-pools:
+    - base: 10.200.0.0/16
+      size: 24
+  runtimes:
+    sysbox-runc:
+      path: /usr/bin/sysbox-runc
+  builder:
+    gc:
+      enabled: true
+      defaultKeepStorage: 20GB
+
+provision:
+  - mode: system
+    script: |
+      #!/bin/sh
+      set -eu
+      if [ ! -f /swapfile ]; then
+        fallocate -l 1G /swapfile
+        chmod 600 /swapfile
+        mkswap /swapfile
+      fi
+      swapon --show | grep -q /swapfile || swapon /swapfile
+  - mode: after-boot
+    script: |
+      #!/bin/sh
+      set -eu
+      command -v sysbox-runc >/dev/null 2>&1 && exit 0
+      # renovate: datasource=github-releases depName=nestybox/sysbox
+      VERSION=0.7.1
+      ARCH=$(dpkg --print-architecture)
+      sudo DEBIAN_FRONTEND=noninteractive apt-get update
+      sudo DEBIAN_FRONTEND=noninteractive apt-get install -y jq wget
+      wget -qO /tmp/sysbox.deb "https://downloads.nestybox.com/sysbox/releases/v${VERSION}/sysbox-ce_${VERSION}-0.linux_${ARCH}.deb"
+      sudo DEBIAN_FRONTEND=noninteractive apt-get install -y /tmp/sysbox.deb
+      sudo systemctl restart docker || true

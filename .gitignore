@@ -109,3 +109,6 @@ vars.*.yaml
 .nx/self-healing
 
 .nx/migrate-runs
+
+# Playwright MCP output (snapshots, console logs, screenshots)
+.playwright-mcp/

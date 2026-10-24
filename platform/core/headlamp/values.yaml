@@ -1,0 +1,6 @@
+ingressHost: headlamp.localhost
+
+headlamp:
+  config:
+    # Local only: signs every visitor in as the chart's cluster-admin service account, no token prompt.
+    unsafeUseServiceAccountToken: true

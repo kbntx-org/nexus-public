@@ -26,15 +26,18 @@ everything running on it from this repo. It hosts the apps published under
 
 ## Quick start
 
-The only prerequisite is Docker; every other tool is pinned in [mise.toml](mise.toml).
+The supported setup is a [Colima](https://github.com/abiosoft/colima) VM defined by
+[colima.yaml](platform/core/local/colima.yaml), developed in through VS Code Remote - SSH; running
+directly on a machine with Docker also works. Every tool is pinned in [mise.toml](mise.toml). In the
+VM:
 
 ```sh
 platform/core/local/local.sh create   # install the tools, create the local kind cluster
 mise run dev docs                     # start an app on top of core infra → http://docs.localhost
 ```
 
-[Local development](https://docs.kbntx.com/getting-started/02-local-development/) covers how it fits
-together, tear-down and gotchas.
+[Local development](https://docs.kbntx.com/getting-started/02-local-development/) covers creating
+the VM, trusting the local certificate authority on the host, tear-down and gotchas.
 
 ## Documentation
 

@@ -60,11 +60,23 @@ the plain run covers the rest of the git diff (root `AGENTS.md`, for example). A
 in CI means this check was skipped. Linting is left to CI. Update the docs for any feature you add,
 change or remove.
 
+A user-facing change is also checked in a browser: start the app with Tilt's `playwright-mcp`
+resource (`mise run dev <app> playwright-mcp`) and use the `playwright` MCP server to smoke test the
+feature as a user would (click through the flow, fill and submit its forms, confirm the network
+requests succeed and the console is clean) and screenshot it at desktop and phone widths.
+
 ## Safety
 
 Never read or edit gitignored files that may hold secrets or local config (`.env*`, `*.tfvars`,
 `vars*.yaml`, `environment.json`, and anything similar): use their `.example` counterpart. Never run
 `terraform` (`plan`, `apply`, `destroy`) and never touch a live cluster.
+
+Development happens in a Colima VM where the `sysbox-runc` Docker runtime is installed. An
+autonomous task that needs its own environment (a task on a git worktree, for example) runs in a
+`docker run --runtime=sysbox-runc` container, which can run its own Docker daemon, kind cluster and
+Tilt (`platform/core/local/local.sh create`, then `tilt up`) without touching the VM's cluster or
+clashing with its ports. Never use `--privileged` or mount the Docker socket
+(`/var/run/docker.sock`) into a container: both give it control of the VM. Use sysbox instead.
 
 ## Tracking Work
 

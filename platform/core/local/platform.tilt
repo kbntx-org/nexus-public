@@ -6,8 +6,8 @@ update_settings(max_parallel_updates=6)
 
 default_registry(REGISTRY_REF)
 
-CORE_RESOURCES = ['cilium', 'vault', 'external-secrets', 'traefik', 'metrics-server-repo', 'metrics-server', 'cloudnative-pg', 'rustfs', 'watch-ingresses']
-OPTIONAL_RESOURCES = ['monitoring']
+CORE_RESOURCES = ['cilium', 'vault', 'external-secrets', 'traefik', 'metrics-server-repo', 'metrics-server', 'cloudnative-pg', 'rustfs', 'watch-ingresses', 'headlamp']
+OPTIONAL_RESOURCES = ['monitoring', 'playwright-mcp']
 PERSISTED_ON_DOWN = ['cloudnative-pg', 'cilium']
 
 bootstrap_kubernetes(DOCKER_CONTEXT)
@@ -92,6 +92,7 @@ helm_resource(
 )
 
 # ── Traefik (auto-started as a dependency of all product services) ─────────────
+helm_chart_deps(root_path('platform/core/traefik'))
 helm_resource(
   'traefik',
   root_path('platform/core/traefik'),
@@ -111,6 +112,19 @@ local_resource(
   deps=[root_path('platform/core/local/local.sh')],
   resource_deps=['traefik'],
   labels=['2-Infra'],
+)
+
+# ── Headlamp (Kubernetes dashboard) ───────────────────────────────────────────
+helm_chart_deps(root_path('platform/core/headlamp'))
+helm_resource(
+  'headlamp',
+  root_path('platform/core/headlamp'),
+  namespace='headlamp',
+  flags=['--create-namespace'],
+  deps=[root_path('platform/core/headlamp')],
+  resource_deps=['traefik'],
+  labels=['2-Infra'],
+  links=[link('http://headlamp.localhost', 'headlamp.localhost')],
 )
 
 # ── CloudNative-PG (Postgres operator, required by monitoring) ────────────────
@@ -138,4 +152,25 @@ helm_resource(
   resource_deps=['vault', 'external-secrets', 'cloudnative-pg', 'traefik'],
   labels=['2-Infra'],
   links=[link('http://grafana.localhost', 'grafana.localhost')],
+)
+
+# ── Playwright MCP (headless Chromium driven by AI agents to check frontend changes) ──
+# Host networking, because Chromium always resolves *.localhost to its own loopback: on the VM's,
+# kind publishes Traefik on 80/443. The image has no certutil to trust the mkcert CA, hence
+# --ignore-https-errors. Snapshots and console logs are written to files the tool responses point
+# to, so the output directory is mounted at the same path for those paths to resolve in the VM.
+# renovate: datasource=docker depName=mcr.microsoft.com/playwright/mcp
+PLAYWRIGHT_MCP_IMAGE = 'mcr.microsoft.com/playwright/mcp:v0.0.83'
+PLAYWRIGHT_MCP_PORT = '8931'
+PLAYWRIGHT_MCP_OUTPUT_DIR = root_path('.playwright-mcp')
+local_resource(
+  'playwright-mcp',
+  serve_cmd='mkdir -p {output} && exec docker run --rm --network host --user "$(id -u):$(id -g)" --env HOME=/tmp --volume {output}:{output} --workdir {workdir} {image} --port {port} --isolated --ignore-https-errors --output-dir {output}'.format(
+    output=PLAYWRIGHT_MCP_OUTPUT_DIR,
+    workdir=root_path('.'),
+    image=PLAYWRIGHT_MCP_IMAGE,
+    port=PLAYWRIGHT_MCP_PORT,
+  ),
+  readiness_probe=probe(tcp_socket=tcp_socket_action(port=int(PLAYWRIGHT_MCP_PORT))),
+  labels=['2-Infra'],
 )
