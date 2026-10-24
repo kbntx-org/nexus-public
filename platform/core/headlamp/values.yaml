@@ -1,6 +1,17 @@
-ingressHost: headlamp.localhost
+ingressHost: headlamp.kbntx.com
+internalIngressTarget: 10.43.216.131
+
+certificate:
+  enabled: true
+
+oauth2Proxy:
+  enabled: true
+  image:
+    repository: quay.io/oauth2-proxy/oauth2-proxy
+    tag: v7.15.5
+  githubOrganization: kbntx-org
+  githubTeam: platform
 
 headlamp:
   config:
-    # Local only: signs every visitor in as the chart's cluster-admin service account, no token prompt.
     unsafeUseServiceAccountToken: true

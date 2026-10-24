@@ -1,0 +1,73 @@
+{{- if .Values.oauth2Proxy.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: headlamp-oauth2-proxy
+  labels:
+    app: headlamp-oauth2-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: headlamp-oauth2-proxy
+  template:
+    metadata:
+      labels:
+        app: headlamp-oauth2-proxy
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: oauth2-proxy
+          image: "{{ .Values.oauth2Proxy.image.repository }}:{{ .Values.oauth2Proxy.image.tag }}"
+          env:
+            - name: OAUTH2_PROXY_HTTP_ADDRESS
+              value: 0.0.0.0:4180
+            - name: OAUTH2_PROXY_UPSTREAMS
+              value: http://{{ .Release.Name }}:80
+            - name: OAUTH2_PROXY_REDIRECT_URL
+              value: https://{{ .Values.ingressHost }}/oauth2/callback
+            - name: OAUTH2_PROXY_PROVIDER
+              value: github
+            - name: OAUTH2_PROXY_GITHUB_ORG
+              value: {{ .Values.oauth2Proxy.githubOrganization }}
+            - name: OAUTH2_PROXY_GITHUB_TEAM
+              value: {{ .Values.oauth2Proxy.githubTeam }}
+            - name: OAUTH2_PROXY_EMAIL_DOMAINS
+              value: '*'
+            - name: OAUTH2_PROXY_REVERSE_PROXY
+              value: "true"
+            - name: OAUTH2_PROXY_SKIP_PROVIDER_BUTTON
+              value: "true"
+            - name: OAUTH2_PROXY_SILENCE_PING_LOGGING
+              value: "true"
+            - name: OAUTH2_PROXY_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: headlamp-oauth2-proxy
+                  key: clientId
+            - name: OAUTH2_PROXY_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: headlamp-oauth2-proxy
+                  key: clientSecret
+            - name: OAUTH2_PROXY_COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: headlamp-oauth2-proxy
+                  key: cookieSecret
+          ports:
+            - name: http
+              containerPort: 4180
+          resources:
+            requests:
+              cpu: 5m
+              memory: 20Mi
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: 4180
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 4180
+{{- end }}

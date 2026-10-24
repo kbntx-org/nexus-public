@@ -245,6 +245,22 @@ argocd-apps:
         syncOptions:
           - CreateNamespace=true
 
+    headlamp:
+      project: platform
+      source:
+        repoURL: https://github.com/kbntx-org/nexus.git
+        path: platform/core/headlamp
+        targetRevision: main
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: headlamp
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+
     system-upgrade-controller:
       project: platform
       source:

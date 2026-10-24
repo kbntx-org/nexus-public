@@ -1,0 +1,15 @@
+{{- if .Values.oauth2Proxy.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: headlamp-oauth2-proxy
+  labels:
+    app: headlamp-oauth2-proxy
+spec:
+  selector:
+    app: headlamp-oauth2-proxy
+  ports:
+    - name: http
+      port: 80
+      targetPort: 4180
+{{- end }}

@@ -1,0 +1,7 @@
+ingressHost: headlamp.localhost
+
+certificate:
+  enabled: false
+
+oauth2Proxy:
+  enabled: false
