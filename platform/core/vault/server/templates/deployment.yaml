@@ -15,6 +15,10 @@ spec:
     metadata:
       labels:
         app: vault
+      {{- if .Values.dev }}
+      annotations:
+        checksum/seed-script: {{ include (print $.Template.BasePath "/seed-script.yaml") . | sha256sum }}
+      {{- end }}
     spec:
       serviceAccountName: vault-sa
       {{- if .Values.dev }}

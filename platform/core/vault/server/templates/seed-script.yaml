@@ -84,7 +84,9 @@ data:
         grafanaUser=admin \
         grafanaPassword=admin \
         postgresUser=postgres \
-        postgresPassword=grafana
+        postgresPassword=grafana \
+        mimirAccessKeyId=nexus \
+        mimirSecretAccessKey=nexus123
     fi
 
     echo "Vault seeding complete."

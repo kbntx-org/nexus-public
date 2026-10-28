@@ -1,3 +1,5 @@
+devMode: true
+
 backup:
   enabled: false
 
@@ -6,14 +8,6 @@ certificate:
 
 postgresCluster:
   storageClass: standard
-
-victoria-metrics-single:
-  server:
-    statefulSet:
-      spec:
-        persistentVolumeClaimRetentionPolicy:
-          whenDeleted: Delete
-          whenScaled: Delete
 
 externalSecrets:
   vaultServer: http://vault.default.svc.cluster.local:8200
@@ -32,19 +26,6 @@ grafana:
     auth:
       disable_login: false
       disable_login_form: false
-  datasources:
-    datasources.yaml:
-      apiVersion: 1
-      datasources:
-        - name: VictoriaMetrics
-          type: prometheus
-          url: http://monitoring-victoria-metrics-single-server:8428
-          access: proxy
-          isDefault: true
-        - name: Loki
-          type: loki
-          url: http://monitoring-loki-gateway
-          access: proxy
 
 loki:
   deploymentMode: SingleBinary
@@ -66,6 +47,8 @@ loki:
   loki:
     commonConfig:
       replication_factor: 1
+    limits_config:
+      retention_period: 24h
     storage:
       type: filesystem
     schemaConfig:
@@ -79,3 +62,23 @@ loki:
             period: 24h
     compactor:
       delete_request_store: filesystem
+
+mimir-distributed:
+  mimir:
+    structuredConfig:
+      common:
+        storage:
+          s3:
+            endpoint: rustfs.default.svc.cluster.local:9000
+            region: us-east-1
+            bucket_name: mimir
+            insecure: true
+      limits:
+        compactor_blocks_retention_period: 24h
+  ingester:
+    persistentVolume:
+      storageClass: standard
+
+k8s-monitoring:
+  cluster:
+    name: local

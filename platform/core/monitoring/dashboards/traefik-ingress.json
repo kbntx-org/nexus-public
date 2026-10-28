@@ -1,0 +1,647 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "links": [],
+  "panels": [
+    {
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "# \ud83d\ude80 Ingress Traffic Dashboard\n\nDive into real-time insights on your incoming traffic! Monitor request counts, track HTTP status codes, and see where your users are from, all in one place.\n\n- Status breakdowns to catch errors fast  \n- Geo view to spot traffic hotspots worldwide  \n- Top domains & active IPs in the mix  \n- Paths with the most errors and slowest responses  \n\nFilter, explore, and own your ingress like a boss!\n",
+        "mode": "markdown"
+      },
+      "pluginVersion": "12.3.1",
+      "transparent": true,
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "ceyzgf1ei5dz4e"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "dedupStrategy": "none",
+        "enableInfiniteScrolling": false,
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showControls": false,
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "ceyzgf1ei5dz4e"
+          },
+          "direction": "backward",
+          "editorMode": "code",
+          "expr": "{app_kubernetes_io_name=\"traefik\"} \n| json \n| RequestHost != \"\" \n| RequestHost =~ \".*$hostname.*\" \n| line_format \"{{.time}} | \\033[36m{{.RequestHost}}\\033[0m | \\033[33m{{.RequestPath}}\\033[0m | \\033[32m{{.OriginStatus}}\\033[0m\"",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Traffic logs in cluster",
+      "transparent": true,
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "ceyzgf1ei5dz4e"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "blue",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": ["sum"],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value_and_name",
+        "wideLayout": false
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "ceyzgf1ei5dz4e"
+          },
+          "direction": "backward",
+          "editorMode": "code",
+          "expr": "sum by (RequestHost) (\n  count_over_time(\n    {app_kubernetes_io_name=\"traefik\"}\n    | json\n    | RequestHost != \"\"\n    | RequestHost =~ \".*$hostname.*\"\n    [$__interval]\n  )\n)",
+          "legendFormat": "{{vhost}}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Requests per domain",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "ceyzgf1ei5dz4e"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "blue",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "^HTTP Status: [4-9][0-9][0-9]$"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": ["sum"],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value_and_name",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "ceyzgf1ei5dz4e"
+          },
+          "direction": "backward",
+          "editorMode": "code",
+          "expr": "sum by (OriginStatus) (\n  count_over_time(\n    {app_kubernetes_io_name=\"traefik\"}\n    | json\n    | RequestHost != \"\"\n    | RequestHost =~ \".*$hostname.*\"\n    [$__interval]\n  )\n)",
+          "legendFormat": "HTTP Status: {{OriginStatus}}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Requests per status code",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "ceyzgf1ei5dz4e"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "blue",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 0,
+        "y": 16
+      },
+      "id": 5,
+      "options": {
+        "basemap": {
+          "config": {},
+          "name": "Layer 0",
+          "type": "default"
+        },
+        "controls": {
+          "mouseWheelZoom": true,
+          "showAttribution": true,
+          "showDebug": false,
+          "showMeasure": false,
+          "showScale": false,
+          "showZoom": true
+        },
+        "layers": [
+          {
+            "config": {
+              "showLegend": true,
+              "style": {
+                "color": {
+                  "fixed": "light-blue"
+                },
+                "opacity": 1,
+                "rotation": {
+                  "fixed": 0,
+                  "max": 360,
+                  "min": -360,
+                  "mode": "mod"
+                },
+                "size": {
+                  "fixed": 15,
+                  "max": 15,
+                  "min": 2
+                },
+                "symbol": {
+                  "fixed": "img/icons/marker/circle.svg",
+                  "mode": "fixed"
+                },
+                "symbolAlign": {
+                  "horizontal": "center",
+                  "vertical": "center"
+                },
+                "textConfig": {
+                  "fontSize": 12,
+                  "offsetX": 0,
+                  "offsetY": 0,
+                  "textAlign": "center",
+                  "textBaseline": "middle"
+                }
+              }
+            },
+            "location": {
+              "mode": "lookup"
+            },
+            "name": "Layer 1",
+            "tooltip": true,
+            "type": "markers"
+          }
+        ],
+        "tooltip": {
+          "mode": "details"
+        },
+        "view": {
+          "allLayers": true,
+          "id": "coords",
+          "lat": 48.749231,
+          "lon": -7.135678,
+          "noRepeat": false,
+          "zoom": 3.27
+        }
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "ceyzgf1ei5dz4e"
+          },
+          "direction": "backward",
+          "editorMode": "code",
+          "expr": "sum by (request_Cf_Ipcountry) (\n  count_over_time(\n    {app_kubernetes_io_name=\"traefik\"}\n    | json\n    | RequestHost != \"\"\n    | request_Cf_Ipcountry != \"\"\n    | RequestHost =~ \".*$hostname.*\"\n    [$__interval]\n  )\n)",
+          "legendFormat": "{{country_code}}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Requests per country",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": ["sum"]
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "geomap"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "ceyzgf1ei5dz4e"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false,
+            "minWidth": 50
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "blue",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 4,
+        "x": 8,
+        "y": 16
+      },
+      "id": 6,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": false
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "ceyzgf1ei5dz4e"
+          },
+          "direction": "backward",
+          "editorMode": "code",
+          "expr": "sum by (request_Cf_Ipcountry) (\n  count_over_time(\n    {app_kubernetes_io_name=\"traefik\"}\n    | json\n    | RequestHost != \"\"\n    | request_Cf_Ipcountry != \"\"\n    | RequestHost =~ \".*$hostname.*\"\n    [$__interval]\n  )\n)",
+          "legendFormat": "{{country_code}}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Requests per country",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": ["sum"]
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "ceyzgf1ei5dz4e"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false,
+            "minWidth": 50
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "blue",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 4,
+        "x": 12,
+        "y": 16
+      },
+      "id": 7,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": false
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "ceyzgf1ei5dz4e"
+          },
+          "direction": "backward",
+          "editorMode": "code",
+          "expr": "sum by (request_X_Forwarded_For) (\n  count_over_time(\n    {app_kubernetes_io_name=\"traefik\"}\n    | json\n    | RequestHost != \"\"\n    | request_X_Forwarded_For != \"\"\n    | RequestHost =~ \".*$hostname.*\"\n    [$__interval]\n  )\n)",
+          "legendFormat": "{{country_code}}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Top IPs",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": ["sum"]
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "ceyzgf1ei5dz4e"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false,
+            "minWidth": 50
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "blue",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "ns"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 16,
+        "y": 16
+      },
+      "id": 8,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": false
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "ceyzgf1ei5dz4e"
+          },
+          "direction": "backward",
+          "editorMode": "code",
+          "expr": "topk(\n  20,\n  quantile_over_time(\n    0.95,\n    {app_kubernetes_io_name=\"traefik\"}\n    | json\n    | RequestPath != \"\"\n    | RequestHost =~ \".*$hostname.*\"\n    | unwrap Duration [$__range]\n  ) by (RequestPath)\n)",
+          "legendFormat": "{{country_code}}",
+          "queryType": "instant",
+          "refId": "A"
+        }
+      ],
+      "title": "Slowest paths",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {}
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "desc": true,
+                "field": "Value #A"
+              }
+            ]
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "table"
+    }
+  ],
+  "preload": false,
+  "schemaVersion": 42,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": "",
+          "value": ""
+        },
+        "label": "hostname",
+        "name": "hostname",
+        "options": [
+          {
+            "selected": true,
+            "text": "",
+            "value": ""
+          }
+        ],
+        "query": "",
+        "type": "textbox"
+      },
+      {
+        "baseFilters": [],
+        "datasource": {
+          "type": "loki",
+          "uid": "ceyzgf1ei5dz4e"
+        },
+        "filters": [],
+        "name": "Filters",
+        "type": "adhoc"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Traefik - Ingress",
+  "uid": "eeyzo1ys8j3eof",
+  "weekStart": ""
+}

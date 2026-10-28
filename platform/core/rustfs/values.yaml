@@ -8,6 +8,8 @@ initImage:
 rootUser: nexus
 rootPassword: nexus123
 bucket: nexus
+privateBuckets:
+  - mimir
 
 hostPath:
   enabled: true

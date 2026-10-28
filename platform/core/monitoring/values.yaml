@@ -19,31 +19,6 @@ ingress:
   prometheusHost: prometheus.kbntx.com
   internalIngressTarget: 10.43.216.131
 
-victoria-metrics-single:
-  server:
-    scrape:
-      enabled: true
-      extraScrapeConfigs:
-        - job_name: node-exporter
-          kubernetes_sd_configs:
-            - role: pod
-          relabel_configs:
-            - source_labels: [__meta_kubernetes_pod_container_name]
-              regex: node-exporter
-              action: keep
-            - source_labels: [__meta_kubernetes_pod_node_name]
-              target_label: node
-        - job_name: kube-state-metrics
-          kubernetes_sd_configs:
-            - role: pod
-          relabel_configs:
-            - source_labels: [__meta_kubernetes_pod_container_name]
-              regex: kube-state-metrics
-              action: keep
-            - source_labels: [__meta_kubernetes_pod_container_port_number]
-              regex: '8080'
-              action: keep
-
 grafana:
   admin:
     existingSecret: monitoring-secret
@@ -75,10 +50,31 @@ grafana:
 
   persistence:
     enabled: false
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      deleteDatasources:
+        - name: victoria-metrics
+          orgId: 1
+      datasources:
+        - name: mimir
+          uid: mimir
+          type: prometheus
+          url: http://monitoring-mimir-query-frontend:8080/prometheus
+          isDefault: true
+          jsonData:
+            timeInterval: 60s
+        - name: loki
+          uid: ceyzgf1ei5dz4e
+          type: loki
+          url: http://monitoring-loki-gateway
   sidecar:
     dashboards:
+      enabled: true
+      label: grafana_dashboard
+      labelValue: '1'
       provider:
-        allowUiUpdates: true
+        allowUiUpdates: false
 
 loki:
   global:
@@ -154,18 +150,118 @@ loki:
   ruler:
     enabled: false
 
-promtail:
-  tolerations:
-    - operator: Exists
-  config:
-    clients:
-      - url: http://monitoring-loki-gateway/loki/api/v1/push
-        tenant_id: 1
-    snippets:
-      extraRelabelConfigs:
-        - action: replace
-          source_labels: [__meta_kubernetes_pod_controller_kind]
-          target_label: kind_name
-        - action: replace
-          source_labels: [__meta_kubernetes_pod_controller_name]
-          target_label: controller_name
+mimir-distributed:
+  global:
+    extraEnv:
+      - name: S3_ACCESS_KEY_ID
+        valueFrom:
+          secretKeyRef:
+            name: monitoring-secret
+            key: mimirAccessKeyId
+      - name: S3_SECRET_ACCESS_KEY
+        valueFrom:
+          secretKeyRef:
+            name: monitoring-secret
+            key: mimirSecretAccessKey
+  mimir:
+    structuredConfig:
+      multitenancy_enabled: false
+      ingest_storage:
+        enabled: false
+      ingester:
+        push_grpc_method_enabled: true
+        ring:
+          replication_factor: 1
+      store_gateway:
+        sharding_ring:
+          replication_factor: 1
+      common:
+        storage:
+          backend: s3
+          s3:
+            endpoint: 2bde0126da63a3a9c94029d14ea380db.eu.r2.cloudflarestorage.com
+            region: auto
+            bucket_name: nexus-mimir
+            access_key_id: ${S3_ACCESS_KEY_ID}
+            secret_access_key: ${S3_SECRET_ACCESS_KEY}
+      limits:
+        compactor_blocks_retention_period: 360h
+  ingester:
+    replicas: 1
+    zoneAwareReplication:
+      enabled: false
+    persistentVolume:
+      storageClass: hcloud-volumes
+      size: 10Gi
+  store_gateway:
+    zoneAwareReplication:
+      enabled: false
+    persistentVolume:
+      enabled: false
+  compactor:
+    persistentVolume:
+      enabled: false
+  querier:
+    replicas: 1
+  query_scheduler:
+    replicas: 1
+  alertmanager:
+    enabled: false
+  ruler:
+    enabled: false
+  overrides_exporter:
+    enabled: false
+  rollout_operator:
+    enabled: false
+  minio:
+    enabled: false
+  kafka:
+    enabled: false
+  gateway:
+    enabled: false
+
+k8s-monitoring:
+  cluster:
+    name: nexus
+  destinations:
+    mimir:
+      type: prometheus
+      url: http://monitoring-mimir-distributor:8080/api/v1/push
+    loki:
+      type: loki
+      url: http://monitoring-loki-gateway/loki/api/v1/push
+  clusterMetrics:
+    enabled: true
+    collector: alloy-cluster
+    apiServer:
+      enabled: true
+      metricsTuning:
+        includeMetrics:
+          - apiserver_request_total
+          - apiserver_request_duration_seconds_sum
+          - apiserver_request_duration_seconds_count
+          - apiserver_current_inflight_requests
+          - process_cpu_seconds_total
+          - process_resident_memory_bytes
+  hostMetrics:
+    enabled: true
+    collector: alloy-node
+    linuxHosts:
+      enabled: true
+      source: alloy
+      metricsTuning:
+        useIntegrationAllowList: true
+  podLogsViaLoki:
+    enabled: true
+    collector: alloy-node
+  telemetryServices:
+    kube-state-metrics:
+      deploy: true
+  collectors:
+    alloy-node:
+      presets: [linux-host-monitor, filesystem-log-reader, daemonset]
+      controller:
+        tolerations:
+          - operator: Exists
+    alloy-cluster:
+      presets: [statefulset]

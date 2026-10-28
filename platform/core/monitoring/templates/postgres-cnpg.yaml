@@ -2,6 +2,10 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: grafana-postgres-cnpg
+  {{- if .Values.devMode }}
+  annotations:
+    helm.sh/resource-policy: keep
+  {{- end }}
 spec:
   instances: 1
   imageName: ghcr.io/cloudnative-pg/postgresql:17.9-system-trixie
