@@ -25,7 +25,7 @@ import (
 const (
 	tunnelFinalizer                = "cloudflare.kbntx.com/tunnel"
 	tunnelTokenSecretKey           = "tunnelToken"
-	defaultCloudflaredImage        = "cloudflare/cloudflared:2026.7.3"
+	defaultCloudflaredImage        = "cloudflare/cloudflared:2026.10.5"
 	defaultTunnelReplicas    int32 = 2
 	catchAllRule                   = "http_status:404"
 	cfargotunnelDomainSuffix       = ".cfargotunnel.com"

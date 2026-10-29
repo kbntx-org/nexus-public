@@ -1,6 +1,6 @@
 image:
   repository: n8nio/n8n
-  tag: 2.36.2
+  tag: 2.45.5
 
 internalIngressTarget: 10.43.216.131
 

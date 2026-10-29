@@ -10,7 +10,7 @@ type TunnelSpec struct {
 	Name string `json:"name,omitempty"`
 
 	// Image is the cloudflared image run by the tunnel pods.
-	// +kubebuilder:default="cloudflare/cloudflared:2026.7.3"
+	// +kubebuilder:default="cloudflare/cloudflared:2026.10.5"
 	// +optional
 	Image string `json:"image,omitempty"`
 
