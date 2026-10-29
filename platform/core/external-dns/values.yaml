@@ -1,4 +1,7 @@
 external-dns:
+  # Chart 1.23.0 ships v0.23.0, built before the Go fix that distrusts the eMudhra intermediates.
+  image:
+    tag: v0.24.0
   policy: sync
   provider:
     name: cloudflare

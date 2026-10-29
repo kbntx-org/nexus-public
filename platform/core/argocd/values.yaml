@@ -27,6 +27,10 @@ argo-cd:
         cpu: 15m
         memory: 60Mi
   repoServer:
+    # Git operations time out on large monorepos since v3.5.3 (https://github.com/argoproj/argo-cd/issues/29856);
+    # keep the repo server on v3.5.2 until a fixed release ships.
+    image:
+      tag: v3.5.2
     resources:
       requests:
         cpu: 50m

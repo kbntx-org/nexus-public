@@ -1,6 +1,6 @@
 image:
   repository: ghcr.io/runatlantis/atlantis
-  tag: v0.48.1-alpine
+  tag: v0.48.2-alpine
 
 ingressHost: atlantis.kbntx.com
 webhookHost: atlantis-webhook.kbntx.com
