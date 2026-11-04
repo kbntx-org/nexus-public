@@ -159,24 +159,25 @@ the agent reads them.
 
 ## Grafana for AI agents
 
-The optional `grafana-mcp` resource runs the
+`.mcp.json` declares two
 <a href="https://github.com/grafana/mcp-grafana" target="_blank" rel="noopener">Grafana MCP
-server</a>, so an AI agent can search dashboards, run metric and log queries and read alert rules
-against a Grafana instance, for instance to check that a change emits the metrics and logs it
-should, or to investigate a production incident. Start it with `tilt enable grafana-mcp` or from the
-Tilt UI; `.mcp.json` connects Claude Code to it.
+server</a> profiles, `grafana-local` and `grafana-prod`, so an AI agent can search dashboards, run
+metric and log queries and read alert rules, for instance to check that a change emits the metrics
+and logs it should, or to investigate a production incident. Claude Code starts each one on demand
+through
+<a href="https://github.com/kbntx-org/nexus/blob/main/tools/grafana-mcp.sh" target="_blank" rel="noopener"><code>tools/grafana-mcp.sh</code></a>,
+which runs the server as a Docker container over stdio, so there is no Tilt resource and no port to
+manage.
 
-Which Grafana it signs in to comes from the gitignored `env.yaml` at the repository root, falling
-back to
-<a href="https://github.com/kbntx-org/nexus/blob/main/env.example.yaml" target="_blank" rel="noopener"><code>env.example.yaml</code></a>,
-which targets the local stack (start monitoring too) with its dev admin credentials. To target
-production, with WARP on:
+The profiles come from the gitignored `env.yaml` at the repository root, falling back to
+<a href="https://github.com/kbntx-org/nexus/blob/main/env.example.yaml" target="_blank" rel="noopener"><code>env.example.yaml</code></a>.
+`grafana.local` targets the local stack (start monitoring too) with its dev admin credentials. To
+reach production, with WARP on:
 
 1. Sign in to the production Grafana with GitHub and create a service account with the **Viewer**
    role under **Administration → Users and access → Service accounts**, then add a token.
-2. Copy `env.example.yaml` to `env.yaml`, set `grafana.url` to the production Grafana and replace
-   the username and password with `grafana.serviceAccountToken`. Tilt restarts the server when it
-   changes.
+2. Copy `env.example.yaml` to `env.yaml`, set `grafana.prod.url` to the production Grafana and
+   `grafana.prod.serviceAccountToken` to the token.
 
 The Viewer role keeps the agent read-only. `env.yaml` holds every local setting of this kind,
 validated by
@@ -184,11 +185,9 @@ validated by
 which the example references for editor completion; a new setting goes in the schema and the example
 together.
 
-It runs as a Docker container on the host network rather than in the cluster, so it reaches the
-internal production Grafana through WARP like your browser does, and the token stays on your
-machine. The VM's CA bundle is mounted in, so it trusts the mkcert certificate locally and the
-public one in production. The server has no SSO: anything on your machine that can reach its port
-acts with that token.
+The container runs on your machine rather than in the cluster, so it reaches the internal production
+Grafana through WARP like your browser does, and the token stays local. The VM's CA bundle is
+mounted in, so it trusts the mkcert certificate locally and the public one in production.
 
 ## References
 

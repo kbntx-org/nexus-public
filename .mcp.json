@@ -1,8 +1,12 @@
 {
   "mcpServers": {
-    "grafana": {
-      "type": "http",
-      "url": "http://localhost:8000/mcp"
+    "grafana-local": {
+      "command": "tools/grafana-mcp.sh",
+      "args": ["local"]
+    },
+    "grafana-prod": {
+      "command": "tools/grafana-mcp.sh",
+      "args": ["prod"]
     },
     "playwright": {
       "type": "http",
