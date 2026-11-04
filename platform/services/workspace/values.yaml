@@ -1,0 +1,9 @@
+image:
+  repository: kbntx/workspace
+  tag: latest
+
+ingressHost: workspace.kbntx.com
+internalIngressTarget: 10.43.216.131
+
+certificate:
+  enabled: true

@@ -2,6 +2,46 @@
 
 lockfile_version = 1
 
+[[tools.claude-code]]
+version = "2.1.306"
+backend = "aqua:anthropics/claude-code"
+specifiers = ["2.1.306"]
+
+[tools.claude-code."platforms.linux-arm64"]
+checksum = "sha256:871fd7f46210c13a95a38506e03ac90abfc5125fc25a1d4f840fbab551b5cd2e"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.306/claude-linux-arm64.tar.gz"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/661106612"
+
+[tools.claude-code."platforms.linux-arm64-musl"]
+checksum = "sha256:a8a2609c24bd22ab613bfb6fe27619a71f584c6b3e916fecd288c4c25a7850c2"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.306/claude-linux-arm64-musl.tar.gz"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/661106602"
+
+[tools.claude-code."platforms.linux-x64"]
+checksum = "sha256:9dc640d16d8228eff9620bde9e0f70d38385a2124f4e7d0a959d0337f0e4b14a"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.306/claude-linux-x64.tar.gz"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/661106756"
+
+[tools.claude-code."platforms.linux-x64-musl"]
+checksum = "sha256:1265b043e2f50043b6ba5c1b440281a7ed5ab8cb385be172439ec2cbd292aa32"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.306/claude-linux-x64-musl.tar.gz"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/661106605"
+
+[tools.claude-code."platforms.macos-arm64"]
+checksum = "sha256:7d83cdfb0a9457f712881bb2f86b0f8fd655c818dbb8abf679c43fd04de44171"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.306/claude-darwin-arm64.tar.gz"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/661106615"
+
+[tools.claude-code."platforms.macos-x64"]
+checksum = "sha256:f28e81593425000a1c69db74dc12a5d2272067c8dc2be23857b2c93300eac427"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.306/claude-darwin-x64.tar.gz"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/661106603"
+
+[tools.claude-code."platforms.windows-x64"]
+checksum = "sha256:f19d03a5d67dcf73d23c854c9a8520eae25443f903ba3067657bb8fb6391a293"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.306/claude-win32-x64.zip"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/661106776"
+
 [[tools.colima]]
 version = "0.10.3"
 backend = "aqua:abiosoft/colima"
@@ -36,6 +76,32 @@ url_api = "https://api.github.com/repos/abiosoft/colima/releases/assets/43845672
 checksum = "sha256:3082737fe8a98afda11cba7d9a20b6e56fe80c6153464beda04bec630758770b"
 url = "https://github.com/abiosoft/colima/releases/download/v0.10.3/colima-Darwin-x86_64"
 url_api = "https://api.github.com/repos/abiosoft/colima/releases/assets/438456722"
+
+[[tools.docker-cli]]
+version = "29.9.2"
+backend = "aqua:docker/cli"
+specifiers = ["29.9.2"]
+
+[tools.docker-cli."platforms.linux-arm64"]
+url = "https://download.docker.com/linux/static/stable/aarch64/docker-29.9.2.tgz"
+
+[tools.docker-cli."platforms.linux-arm64-musl"]
+url = "https://download.docker.com/linux/static/stable/aarch64/docker-29.9.2.tgz"
+
+[tools.docker-cli."platforms.linux-x64"]
+url = "https://download.docker.com/linux/static/stable/x86_64/docker-29.9.2.tgz"
+
+[tools.docker-cli."platforms.linux-x64-musl"]
+url = "https://download.docker.com/linux/static/stable/x86_64/docker-29.9.2.tgz"
+
+[tools.docker-cli."platforms.macos-arm64"]
+url = "https://download.docker.com/mac/static/stable/aarch64/docker-29.9.2.tgz"
+
+[tools.docker-cli."platforms.macos-x64"]
+url = "https://download.docker.com/mac/static/stable/x86_64/docker-29.9.2.tgz"
+
+[tools.docker-cli."platforms.windows-x64"]
+url = "https://download.docker.com/win/static/stable/x86_64/docker-29.9.2.zip"
 
 [[tools.github-cli]]
 version = "2.101.0"

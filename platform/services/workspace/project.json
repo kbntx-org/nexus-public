@@ -1,0 +1,18 @@
+{
+  "name": "workspace",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "platform/services/workspace",
+  "tags": [],
+  "metadata": {
+    "manifestsValuesPath": "workspace/values.yaml"
+  },
+  "targets": {
+    "build-ci": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tools/docker-build-and-push.sh platform/services/workspace/Dockerfile platform/services/workspace kbntx/workspace:$IMAGE_TAG --build-arg DOCKER_VERSION=$(mise current docker-cli) --build-arg MISE_VERSION=$(yq -p toml '.min_version' mise.toml)"
+      }
+    }
+  }
+}

@@ -27,6 +27,11 @@ What the diagram doesn't show is why:
   datastore.
 - **Static pools only, no autoscaler.** Hetzner bills servers by the hour, so nodes provisioned on
   demand cost more than a pool sized once and left running.
+- **A tainted `workspace` pool for the always-on workspace.** The workspace pod
+  (<a href="https://github.com/kbntx-org/nexus/tree/main/platform/services/workspace" target="_blank" rel="noopener"><code>platform/services/workspace/</code></a>)
+  runs Claude Code and its own Docker daemon under Sysbox, which needs more memory than the shared
+  nodes can spare. A dedicated node, tainted so nothing else lands on it, keeps it from squeezing
+  production workloads.
 
 ## Provisioning and upgrades
 

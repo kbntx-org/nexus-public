@@ -1,0 +1,120 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: workspace
+  labels:
+    app: workspace
+spec:
+  serviceName: workspace
+  replicas: 1
+  selector:
+    matchLabels:
+      app: workspace
+  template:
+    metadata:
+      labels:
+        app: workspace
+      annotations:
+        checksum/bootstrap: {{ .Files.Get "files/bootstrap.sh" | sha256sum }}
+    spec:
+      runtimeClassName: sysbox-runc
+      hostUsers: false
+      automountServiceAccountToken: false
+      nodeSelector:
+        node-type: workspace
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: workspace
+          effect: NoSchedule
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+      volumes:
+        - name: bootstrap
+          configMap:
+            name: workspace-bootstrap
+            defaultMode: 0555
+        - name: scratch
+          emptyDir:
+            sizeLimit: 40Gi
+        - name: docker-socket
+          emptyDir: {}
+      containers:
+        - name: dockerd
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command:
+            - dockerd
+            - --host=unix:///var/run/docker/docker.sock
+            - --group=workspace
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - name: docker-socket
+              mountPath: /var/run/docker
+        - name: workspace
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command:
+            - bash
+            - -c
+            - /bootstrap/bootstrap.sh && exec code-server --bind-addr 0.0.0.0:8080 --auth password "${CHECKOUT_PATH}"
+          env:
+            - name: CHECKOUT_PATH
+              value: /workspace/nexus
+            - name: DOCKER_HOST
+              value: unix:///var/run/docker/docker.sock
+            - name: CLAUDE_CONFIG_DIR
+              value: /claude-config
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: workspace
+                  key: CODE_SERVER_PASSWORD
+          envFrom:
+            - secretRef:
+                name: workspace
+          ports:
+            - name: http
+              containerPort: 8080
+          resources:
+            requests:
+              cpu: "1"
+              memory: 2Gi
+            limits:
+              memory: 6Gi
+          volumeMounts:
+            - name: bootstrap
+              mountPath: /bootstrap
+              readOnly: true
+            - name: scratch
+              mountPath: /workspace
+            - name: claude-config
+              mountPath: /claude-config
+            - name: docker-socket
+              mountPath: /var/run/docker
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 10
+            failureThreshold: 60
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 60
+  persistentVolumeClaimRetentionPolicy:
+    whenScaled: Retain
+    whenDeleted: Delete
+  volumeClaimTemplates:
+    - metadata:
+        name: claude-config
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: hcloud-volumes
+        resources:
+          requests:
+            storage: 10Gi
