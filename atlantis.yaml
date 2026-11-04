@@ -5,28 +5,30 @@ projects:
     dir: platform/core/network
     autoplan:
       when_modified:
-        - '*.tf'
-        - .terraform.lock.hcl
+        - '**/*'
 
   - name: warp
     dir: platform/core/warp
     autoplan:
       when_modified:
-        - '*.tf'
-        - .terraform.lock.hcl
+        - '**/*'
 
   - name: bastion
     dir: platform/core/bastion
     autoplan:
       when_modified:
-        - '*.tf'
-        - .terraform.lock.hcl
-        - config/**
-        - ../../modules/firewall/**
+        - '**/*'
+        - ../../modules/**
 
   - name: external-secrets
     dir: platform/core/external-secrets/provision
     autoplan:
       when_modified:
-        - '*.tf'
-        - .terraform.lock.hcl
+        - '**/*'
+
+  - name: kubernetes
+    dir: platform/core/kubernetes/provision
+    autoplan:
+      when_modified:
+        - '**/*'
+        - ../../../modules/**

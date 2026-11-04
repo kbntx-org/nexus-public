@@ -39,6 +39,21 @@ module "nexus_cluster" {
       server_type = "cx33"
       location    = "nbg1"
     }
+    "workspace" = {
+      count       = 1
+      server_type = "cx33"
+      location    = "hel1"
+      labels = {
+        "node-type" = "workspace"
+      }
+      taints = [
+        {
+          key    = "dedicated"
+          value  = "workspace"
+          effect = "NoSchedule"
+        }
+      ]
+    }
   }
 }
 
