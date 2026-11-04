@@ -61,6 +61,15 @@ to sync until the kind or its group is added to the `product` whitelist.
 `apps/<name>/`, use `project: product` and add its namespace to the `product` project's
 `destinations`. No one ever clicks "create application" in the UI.
 
+Every child carries the
+<a href="https://argo-cd.readthedocs.io/en/stable/user-guide/app_deletion/#about-the-deletion-finalizer" target="_blank" rel="noopener">resources
+finalizer</a>, so deleting its entry cascades: ArgoCD deletes everything the app deployed before the
+`Application` itself, instead of orphaning it. It is the foreground variant, so a deletion stuck on
+a resource stays visible as an `Application` in the UI rather than failing silently. Two gotchas:
+the finalizer must be live before the entry is removed, so add it in an earlier sync for a new app;
+and keep a product app's namespace in the `product` `destinations` until its deletion completes.
+Removing a stateful app's entry deletes its data with it.
+
 ## Sync model
 
 | Workload             | Source of truth                             | Why                                                                |

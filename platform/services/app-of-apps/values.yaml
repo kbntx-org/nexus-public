@@ -63,6 +63,8 @@ argocd-apps:
 
   applications:
     traefik-ingress:
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
       project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
@@ -83,6 +85,8 @@ argocd-apps:
           - CreateNamespace=true
 
     argocd:
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
       project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
@@ -99,6 +103,8 @@ argocd-apps:
           - CreateNamespace=true
 
     external-secrets:
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
       project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
@@ -116,6 +122,8 @@ argocd-apps:
           - ServerSideApply=true
 
     vault:
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
       project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
@@ -132,6 +140,8 @@ argocd-apps:
           - CreateNamespace=true
 
     cloudnative-pg:
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
       project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
@@ -149,6 +159,8 @@ argocd-apps:
           - ServerSideApply=true
 
     cloudflared:
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
       project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
@@ -165,6 +177,8 @@ argocd-apps:
           - CreateNamespace=true
 
     external-dns:
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
       project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
@@ -181,6 +195,8 @@ argocd-apps:
           - CreateNamespace=true
 
     cert-manager:
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
       project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
@@ -197,6 +213,8 @@ argocd-apps:
           - CreateNamespace=true
 
     cilium:
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
       project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
@@ -214,6 +232,8 @@ argocd-apps:
           - ServerSideApply=true
 
     hetzner-cloud-controller:
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
       project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
@@ -230,6 +250,8 @@ argocd-apps:
           - CreateNamespace=true
 
     monitoring:
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
       project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
@@ -246,6 +268,8 @@ argocd-apps:
           - CreateNamespace=true
 
     headlamp:
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
       project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
@@ -262,6 +286,8 @@ argocd-apps:
           - CreateNamespace=true
 
     system-upgrade-controller:
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
       project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
@@ -278,6 +304,8 @@ argocd-apps:
           - CreateNamespace=true
 
     k3s-upgrades:
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
       project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
@@ -294,6 +322,8 @@ argocd-apps:
           - CreateNamespace=true
 
     documentation:
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
       project: platform
       sources:
         - repoURL: https://github.com/kbntx-org/nexus.git
@@ -317,6 +347,8 @@ argocd-apps:
           - CreateNamespace=true
 
     cloudflare-controller:
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
       project: platform
       sources:
         - repoURL: https://github.com/kbntx-org/nexus.git
@@ -340,6 +372,8 @@ argocd-apps:
           - CreateNamespace=true
 
     n8n:
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
       project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
@@ -356,6 +390,8 @@ argocd-apps:
           - CreateNamespace=true
 
     atlantis:
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
       project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
@@ -395,6 +431,8 @@ argocd-apps:
           - CreateNamespace=true
 
     kiln:
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
       project: platform
       sources:
         - repoURL: https://github.com/kbntx-org/nexus.git
@@ -418,6 +456,8 @@ argocd-apps:
           - CreateNamespace=true
 
     smelt:
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
       project: product
       sources:
         - repoURL: https://github.com/kbntx-org/nexus.git
