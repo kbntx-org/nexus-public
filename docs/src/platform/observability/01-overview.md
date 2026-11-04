@@ -69,14 +69,23 @@ Not wired up yet. The natural next piece is
 family and S3-backed like Loki. Traces matter here for things like CI/CD visibility (global data,
 test failures).
 
-## Dashboards and datasources
+## Dashboards, datasources and scraping
 
-Both live in the chart, so Git is the source of truth. Dashboards are JSON files in
-<a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/monitoring/dashboards" target="_blank" rel="noopener"><code>dashboards/</code></a>,
-each loaded by Grafana's sidecar from a ConfigMap. There are no folders: a dashboard's title starts
-with what it covers (`K8S - Nodes`, `Traefik - Ingress`), and the file is named after it. Each one
-opens with a short text panel saying what it shows and how to read it. Datasources are declared in
-the chart's `values.yaml`.
+Everything is declared in Git, and each chart ships its own observability next to its workload.
+Grafana's sidecar watches every namespace and loads whatever carries its label:
+
+- **Dashboards** are JSON files in a `dashboards/` folder of the chart that owns them (cluster-wide
+  ones in the
+  <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/monitoring/dashboards" target="_blank" rel="noopener"><code>monitoring
+  chart</code></a>, a component's own next to its chart), rendered into a ConfigMap labelled
+  `grafana_dashboard`. There are no folders: a dashboard's title starts with what it covers
+  (`K8S - Nodes`, `Traefik - Ingress`), and the file is named after it. Each one opens with a short
+  text panel saying what it shows and how to read it.
+- **Datasources** without a secret are declared in the monitoring chart's `values.yaml`. One that
+  needs a secret is an ExternalSecret in the owning chart whose template renders the datasource YAML
+  into a Secret labelled `grafana_datasource`, so the credential never touches Git.
+- **Scraping** goes through `ServiceMonitor` and `PodMonitor` objects in the owning chart. Alloy
+  discovers them and pushes to Mimir; the CRDs come with the monitoring chart.
 
 Provisioned dashboards can't be saved from the UI. To change one, edit it in Grafana locally, export
 it as JSON (Share → Export, without "Export for sharing externally") and overwrite the file. Keep
