@@ -19,6 +19,8 @@ mkcert = "1.4.4"
 github-cli = "2.101.0"
 claude-code = "2.1.306"
 docker-cli = "29.9.2"
+docker-compose = "5.5.1"
+"github:docker/buildx" = { version = "0.37.1", bin = "docker-buildx" }
 helm = "3.22.1"
 python = "3.14.7"
 uv = "0.12.20"

@@ -40,31 +40,14 @@ spec:
         - name: scratch
           emptyDir:
             sizeLimit: 40Gi
-        - name: docker-socket
-          emptyDir: {}
       containers:
-        - name: dockerd
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          command:
-            - dockerd
-            - --host=unix:///var/run/docker/docker.sock
-            - --group=workspace
-          securityContext:
-            runAsUser: 0
-          volumeMounts:
-            - name: docker-socket
-              mountPath: /var/run/docker
         - name: workspace
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          command:
-            - bash
-            - -c
-            - /bootstrap/bootstrap.sh && exec code-server --bind-addr 0.0.0.0:8080 --auth password "${CHECKOUT_PATH}"
+          args:
+            - /bootstrap/bootstrap.sh
           env:
             - name: CHECKOUT_PATH
               value: /workspace/nexus
-            - name: DOCKER_HOST
-              value: unix:///var/run/docker/docker.sock
             - name: CLAUDE_CONFIG_DIR
               value: /claude-config
             - name: PASSWORD
@@ -92,8 +75,6 @@ spec:
               mountPath: /workspace
             - name: claude-config
               mountPath: /claude-config
-            - name: docker-socket
-              mountPath: /var/run/docker
           startupProbe:
             httpGet:
               path: /healthz

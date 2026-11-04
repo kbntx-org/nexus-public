@@ -28,3 +28,17 @@ RUN curl -fsSL https://mise.run | MISE_VERSION="v${MISE_VERSION}" sh
 RUN echo 'eval "$(mise activate bash)"' >> /home/workspace/.bashrc
 
 ENV PATH="/home/workspace/.local/bin:/home/workspace/.local/share/mise/shims:${PATH}"
+
+COPY --chmod=0755 <<'SCRIPT' /usr/local/bin/entrypoint
+#!/usr/bin/env bash
+set -euo pipefail
+
+docker_start_timeout_seconds=60
+
+sudo dockerd --group "$(id -gn)" >/tmp/dockerd.log 2>&1 &
+timeout "${docker_start_timeout_seconds}" bash -c 'until docker info >/dev/null 2>&1; do sleep 1; done'
+
+exec "$@"
+SCRIPT
+
+ENTRYPOINT ["entrypoint"]
