@@ -1,7 +1,7 @@
 load('ext://helm_resource', 'helm_resource')
 load('./lib.tilt', 'buildkit_build', 'mise_tool_version', 'root_path')
 
-PRODUCT_RESOURCES = ['docs', 'kiln', 'portfolio', 'smelt']
+PRODUCT_RESOURCES = ['docs', 'kiln', 'smelt']
 
 NODE_VERSION = mise_tool_version('node')
 PNPM_VERSION = mise_tool_version('pnpm')
@@ -90,42 +90,6 @@ helm_resource(
     '--create-namespace',
   ],
   links=[link('http://kiln.localhost', 'kiln.localhost')],
-  labels=['1-Product'],
-)
-
-# ── Portfolio ─────────────────────────────────────────────────────────────────
-buildkit_build(
-  'portfolio',
-  root_path('.'),
-  dockerfile=root_path('apps/portfolio/Dockerfile'),
-  target='local',
-  build_args={'NODE_VERSION': NODE_VERSION, 'PNPM_VERSION': PNPM_VERSION},
-  only=[
-    root_path('apps/portfolio'),
-    root_path('nx.json'),
-    root_path('tools'),
-    root_path('pnpm-lock.yaml'),
-    root_path('package.json'),
-    root_path('.pnpmfile.mjs'),
-    root_path('pnpm-workspace.yaml'),
-  ],
-  live_update=[
-    sync(root_path('apps/portfolio/src'), '/usr/src/app/apps/portfolio/src'),
-  ],
-)
-
-helm_resource(
-  'portfolio',
-  root_path('apps/portfolio/chart'),
-  deps=[root_path('apps/portfolio/chart')],
-  image_deps=['portfolio'],
-  image_keys=[('image.repository', 'image.tag')],
-  namespace='default',
-  flags=[
-    '--values', root_path('apps/portfolio/chart/values.local.yaml'),
-    '--create-namespace',
-  ],
-  links=[link('http://portfolio.localhost', 'portfolio.localhost')],
   labels=['1-Product'],
 )
 

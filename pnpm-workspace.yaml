@@ -26,7 +26,6 @@ catalog:
   glob: ^13.0.0
   js-yaml: ^5.0.0
   lucide-react: ^0.577.0
-  marked: ^18.0.0
   nx: 23.2.1
   oxfmt: 0.69.0
   oxlint: 1.86.0
@@ -44,7 +43,6 @@ catalog:
   yaml: ^2.9.1
 
 packages:
-  - 'apps/portfolio'
   - 'apps/smelt/frontend'
   - 'platform/services/kiln/client'
 

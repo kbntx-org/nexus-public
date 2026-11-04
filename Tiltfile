@@ -3,7 +3,7 @@ load('./platform/core/local/apps.tilt', 'PRODUCT_RESOURCES')
 
 # Resources named on the command line (e.g. `tilt up -- docs`) are enabled in
 # addition to CORE_RESOURCES. Nothing outside CORE_RESOURCES runs by default —
-# start docs/portfolio/monitoring explicitly, or enable them from the Tilt UI.
+# start docs/smelt/monitoring explicitly, or enable them from the Tilt UI.
 config.define_string_list("resources", args=True)
 requestedResources = config.parse().get("resources", [])
 

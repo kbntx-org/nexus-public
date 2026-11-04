@@ -3,8 +3,8 @@ description: >
   Creates a docker-container Buildx builder and sets it as the default for the rest of the job.
   GitHub-hosted runners' out-of-the-box "default" builder uses the docker driver, which runs
   BuildKit inside the Docker Engine daemon rather than a dedicated container and doesn't support
-  newer Dockerfile frontend features — notably COPY --parents, used by the portfolio and kiln
-  Dockerfiles to preserve directory structure when copying multiple workspace package.json files.
+  newer Dockerfile frontend features — notably COPY --parents, used by the kiln
+  Dockerfile to preserve directory structure when copying multiple workspace package.json files.
   Builds using those features fail on the default builder with an unrecognized-flag error until a
   docker-container builder is created and selected.
 

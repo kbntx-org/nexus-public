@@ -1,9 +1,0 @@
-replicas: 1
-healthProbes: false
-ingressHosts:
-  - portfolio.localhost
-  - portfolio-local.kbntx.com
-deploymentStrategy: Recreate
-
-certificate:
-  enabled: false

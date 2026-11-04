@@ -30,8 +30,6 @@ argocd-apps:
         - https://github.com/kbntx-org/nexus-manifests.git
       destinations:
         - server: https://kubernetes.default.svc
-          namespace: portfolio
-        - server: https://kubernetes.default.svc
           namespace: smelt
       namespaceResourceWhitelist:
         - group: ''
@@ -400,29 +398,6 @@ argocd-apps:
       destination:
         server: https://kubernetes.default.svc
         namespace: atlantis
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
-
-    portfolio:
-      project: product
-      sources:
-        - repoURL: https://github.com/kbntx-org/nexus.git
-          path: apps/portfolio/chart
-          targetRevision: main
-          helm:
-            valueFiles:
-              - values.yaml
-              - $values/portfolio/values.yaml
-        - repoURL: https://github.com/kbntx-org/nexus-manifests.git
-          targetRevision: main
-          ref: values
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: portfolio
       syncPolicy:
         automated:
           prune: true
