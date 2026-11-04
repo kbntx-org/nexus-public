@@ -78,12 +78,12 @@ Grafana's sidecar watches every namespace and loads whatever carries its label:
   ones in the
   <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/monitoring/dashboards" target="_blank" rel="noopener"><code>monitoring
   chart</code></a>, a component's own next to its chart), rendered into a ConfigMap labelled
-  `grafana_dashboard`. There are no folders: a dashboard's title starts with what it covers
+  `grafana-dashboard`. There are no folders: a dashboard's title starts with what it covers
   (`K8S - Nodes`, `Traefik - Ingress`), and the file is named after it. Each one opens with a short
   text panel saying what it shows and how to read it.
 - **Datasources** without a secret are declared in the monitoring chart's `values.yaml`. One that
   needs a secret is an ExternalSecret in the owning chart whose template renders the datasource YAML
-  into a Secret labelled `grafana_datasource`, so the credential never touches Git.
+  into a Secret labelled `grafana-datasource`, so the credential never touches Git.
 - **Scraping** goes through `ServiceMonitor` and `PodMonitor` objects in the owning chart. Alloy
   discovers them and pushes to Mimir; the CRDs come with the monitoring chart.
 

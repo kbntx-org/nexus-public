@@ -6,7 +6,7 @@ kind: ConfigMap
 metadata:
   name: dashboard-{{ $name }}
   labels:
-    grafana_dashboard: '1'
+    grafana-dashboard: '1'
 data:
   {{ $name }}.json: |-
 {{ $.Files.Get $path | indent 4 }}
