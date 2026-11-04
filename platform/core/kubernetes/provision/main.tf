@@ -44,7 +44,8 @@ module "nexus_cluster" {
       server_type = "cx33"
       location    = "hel1"
       labels = {
-        "node-type" = "workspace"
+        "node-type"      = "workspace"
+        "sysbox-install" = "yes"
       }
       taints = [
         {
