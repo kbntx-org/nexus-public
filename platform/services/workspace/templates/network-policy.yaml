@@ -14,6 +14,13 @@ spec:
         - ports:
             - port: "8080"
               protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: cloudflared
+      toPorts:
+        - ports:
+            - port: "22022"
+              protocol: TCP
   egress:
     - toEndpoints:
         - matchLabels:

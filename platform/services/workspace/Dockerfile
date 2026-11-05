@@ -8,7 +8,7 @@ ARG MISE_VERSION
 ARG CODE_SERVER_VERSION=4.144.0
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends ca-certificates curl git iptables sudo tmux xz-utils \
+    && apt-get install -y --no-install-recommends ca-certificates curl git iptables openssh-server sudo tmux xz-utils \
     && rm -rf /var/lib/apt/lists/*
 
 RUN curl -fsSL "https://download.docker.com/linux/static/stable/$(uname -m)/docker-${DOCKER_VERSION}.tgz" \
@@ -20,8 +20,21 @@ RUN curl -fsSL https://mise.run | MISE_INSTALL_PATH=/usr/local/bin/mise MISE_VER
     && echo 'eval "$(mise activate bash)"' >> /etc/bash.bashrc
 
 RUN useradd --create-home --uid 1000 --shell /bin/bash workspace \
+    && usermod --password '*' workspace \
     && echo "workspace ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/workspace \
     && chmod 0440 /etc/sudoers.d/workspace
+
+COPY <<'SSHD' /etc/ssh/sshd_config.d/workspace.conf
+Port 22022
+HostKey /home/workspace/.ssh/ssh_host_ed25519_key
+AuthorizedKeysFile /home/workspace/.ssh/authorized_keys
+AllowUsers workspace
+PermitRootLogin no
+PasswordAuthentication no
+KbdInteractiveAuthentication no
+UsePAM no
+StrictModes no
+SSHD
 
 USER workspace
 WORKDIR /home/workspace

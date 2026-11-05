@@ -11,3 +11,6 @@ spec:
     - name: http
       port: 80
       targetPort: 8080
+    - name: ssh
+      port: 22022
+      targetPort: 22022
