@@ -68,6 +68,9 @@ spec:
               readOnly: true
             - name: home
               mountPath: /home/workspace
+            - name: home
+              mountPath: /var/lib/docker
+              subPath: docker
           startupProbe:
             httpGet:
               path: /healthz

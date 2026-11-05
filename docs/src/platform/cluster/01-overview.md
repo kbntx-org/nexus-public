@@ -32,12 +32,14 @@ What the diagram doesn't show is why:
   runs Claude Code and its own Docker daemon under Sysbox, which needs more memory than the shared
   nodes can spare. A dedicated node, tainted so nothing else lands on it, keeps it from squeezing
   production workloads. The whole home folder, with the checkout, the Claude login and the tool
-  installs, lives on one persistent volume, and a detached `tmux` session runs Claude Code's Remote
-  Control so the Claude app can drive the workspace from a phone. A key-only SSH server, on a
-  non-default port and with its keys coming from Vault, is reachable over WARP through the Service's
-  cluster DNS name. Docker's daemon starts from the image's entrypoint, and Compose and Buildx come
-  from `mise.toml`, symlinked into the Docker CLI plugins folder by the bootstrap. Any other machine
-  with mise (a Colima VM, for example) gets them the same way:
+  installs, lives on one persistent volume, shared with Docker's data folder so images and
+  containers survive a pod restart (otherwise Sysbox keeps them on the node's disk and deletes them
+  with the pod), and a detached `tmux` session runs Claude Code's Remote Control so the Claude app
+  can drive the workspace from a phone. A key-only SSH server, on a non-default port and with its
+  keys coming from Vault, is reachable over WARP through the Service's cluster DNS name. Docker's
+  daemon starts from the image's entrypoint, and Compose and Buildx come from `mise.toml`, symlinked
+  into the Docker CLI plugins folder by the bootstrap. Any other machine with mise (a Colima VM, for
+  example) gets them the same way:
 
   ```sh
   mkdir -p ~/.docker/cli-plugins
