@@ -16,6 +16,9 @@ RUN curl -fsSL "https://download.docker.com/linux/static/stable/$(uname -m)/dock
 
 RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version "${CODE_SERVER_VERSION}"
 
+RUN curl -fsSL https://mise.run | MISE_INSTALL_PATH=/usr/local/bin/mise MISE_VERSION="v${MISE_VERSION}" sh \
+    && echo 'eval "$(mise activate bash)"' >> /etc/bash.bashrc
+
 RUN useradd --create-home --uid 1000 --shell /bin/bash workspace \
     && echo "workspace ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/workspace \
     && chmod 0440 /etc/sudoers.d/workspace
@@ -23,11 +26,7 @@ RUN useradd --create-home --uid 1000 --shell /bin/bash workspace \
 USER workspace
 WORKDIR /home/workspace
 
-RUN curl -fsSL https://mise.run | MISE_VERSION="v${MISE_VERSION}" sh
-
-RUN echo 'eval "$(mise activate bash)"' >> /home/workspace/.bashrc
-
-ENV PATH="/home/workspace/.local/bin:/home/workspace/.local/share/mise/shims:${PATH}"
+ENV PATH="/home/workspace/.local/share/mise/shims:${PATH}"
 
 COPY --chmod=0755 <<'SCRIPT' /usr/local/bin/entrypoint
 #!/usr/bin/env bash

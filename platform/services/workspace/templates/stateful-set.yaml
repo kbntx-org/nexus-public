@@ -37,9 +37,6 @@ spec:
           configMap:
             name: workspace-bootstrap
             defaultMode: 0555
-        - name: scratch
-          emptyDir:
-            sizeLimit: 40Gi
       containers:
         - name: workspace
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -47,9 +44,7 @@ spec:
             - /bootstrap/bootstrap.sh
           env:
             - name: CHECKOUT_PATH
-              value: /workspace/nexus
-            - name: CLAUDE_CONFIG_DIR
-              value: /claude-config
+              value: /home/workspace/nexus
             - name: PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -71,10 +66,8 @@ spec:
             - name: bootstrap
               mountPath: /bootstrap
               readOnly: true
-            - name: scratch
-              mountPath: /workspace
-            - name: claude-config
-              mountPath: /claude-config
+            - name: home
+              mountPath: /home/workspace
           startupProbe:
             httpGet:
               path: /healthz
@@ -91,11 +84,11 @@ spec:
     whenDeleted: Delete
   volumeClaimTemplates:
     - metadata:
-        name: claude-config
+        name: home
       spec:
         accessModes:
           - ReadWriteOnce
         storageClassName: hcloud-volumes
         resources:
           requests:
-            storage: 10Gi
+            storage: 100Gi
