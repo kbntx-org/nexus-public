@@ -4,6 +4,7 @@ data "cloudflare_zero_trust_organization" "this" {
 
 locals {
   internal_ingress_address = "10.43.216.131"
+  private_network_ranges   = ["10.0.0.0/16", "10.42.0.0/16", "10.43.0.0/16"]
   ci_identity              = "identity.email == \"non_identity@${data.cloudflare_zero_trust_organization.this.auth_domain}\""
 }
 
@@ -36,15 +37,15 @@ resource "cloudflare_zero_trust_gateway_policy" "ci_allow_registry" {
   traffic    = "net.dst.ip == ${local.internal_ingress_address} and net.dst.port == 443"
 }
 
-resource "cloudflare_zero_trust_gateway_policy" "ci_block_everything_else" {
+resource "cloudflare_zero_trust_gateway_policy" "ci_block_private_network" {
   account_id = local.cloudflare_account_id
-  name       = "GitHub Actions: block everything else"
+  name       = "GitHub Actions: block the private network"
   action     = "block"
   enabled    = true
   precedence = 1001
   filters    = ["l4"]
   identity   = local.ci_identity
-  traffic    = "net.dst.ip in {0.0.0.0/0}"
+  traffic    = "net.dst.ip in {${join(" ", local.private_network_ranges)}}"
 
   depends_on = [cloudflare_zero_trust_gateway_policy.ci_allow_registry]
 }
