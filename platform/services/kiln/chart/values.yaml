@@ -1,5 +1,5 @@
 image:
-  repository: kbntx/kiln
+  repository: registry.kbntx.com/kiln
   tag: latest
 internalIngressTarget: 10.43.216.131
 containerPort: 8080
@@ -12,7 +12,7 @@ deploymentStrategy: RollingUpdate
 devMode: false
 frontend:
   image:
-    repository: kbntx/kiln-client
+    repository: registry.kbntx.com/kiln-client
     tag: latest
   containerPort: 5173
 

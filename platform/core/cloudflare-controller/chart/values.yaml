@@ -1,5 +1,5 @@
 image:
-  repository: kbntx/cloudflare-controller
+  repository: registry.kbntx.com/cloudflare-controller
   tag: latest
 
 replicas: 1

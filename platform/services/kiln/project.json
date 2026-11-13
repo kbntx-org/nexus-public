@@ -25,7 +25,7 @@
     "build-ci": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "tools/docker-build-and-push.sh platform/services/kiln/Dockerfile . --tag kbntx/kiln:$IMAGE_TAG --tag registry.kbntx.com/kiln:$IMAGE_TAG --build-arg GO_VERSION=$(mise current go) --build-arg NODE_VERSION=$(mise current node) --build-arg PNPM_VERSION=$(mise current pnpm)"
+        "command": "tools/docker-build-and-push.sh platform/services/kiln/Dockerfile . --tag registry.kbntx.com/kiln:$IMAGE_TAG --build-arg GO_VERSION=$(mise current go) --build-arg NODE_VERSION=$(mise current node) --build-arg PNPM_VERSION=$(mise current pnpm)"
       }
     }
   }

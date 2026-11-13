@@ -1,5 +1,5 @@
 image:
-  repository: kbntx/documentation
+  repository: registry.kbntx.com/documentation
   tag: latest
 containerPort: 80
 replicas: 2

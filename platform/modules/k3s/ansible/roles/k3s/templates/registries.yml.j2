@@ -11,4 +11,15 @@ configs:
     auth:
       username: {{ k3s_zot_username }}
       password: {{ k3s_zot_password }}
+mirrors:
+  docker.io:
+    endpoint:
+      - "https://{{ k3s_zot_host }}"
+    rewrite:
+      "^(.*)$": "dockerhub/$1"
+  ghcr.io:
+    endpoint:
+      - "https://{{ k3s_zot_host }}"
+    rewrite:
+      "^(.*)$": "ghcr/$1"
 {% endif %}

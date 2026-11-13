@@ -10,13 +10,14 @@ other piece of cluster infrastructure (see [Overview](01-overview.md)).
 
 ## Why zot over an external registry
 
-Docker Hub and GHCR both work fine for images this repo already pushes there, but a self-hosted
-registry gives the platform a place to hold artifacts that shouldn't leave the cluster network (or
-shouldn't depend on a third party's uptime): cached upstream images, internal build outputs, and
-anything the GitOps loop needs to pull from a source it fully controls. zot was picked over heavier
-options like <a href="https://goharbor.io/" target="_blank" rel="noopener">Harbor</a> because it
-ships the same core needs — a UI, browsing, garbage collection, and optional auth — without a
-multi-service Postgres + Redis + Trivy stack to operate.
+Docker Hub works, but a self-hosted registry gives the platform a place to hold artifacts that
+shouldn't leave the cluster network (or shouldn't depend on a third party's uptime): cached upstream
+images, internal build outputs, and anything the GitOps loop needs to pull from a source it fully
+controls. Every image this repo builds lives only in zot, and Docker Hub is only an upstream the
+cache reads from. zot was picked over heavier options like
+<a href="https://goharbor.io/" target="_blank" rel="noopener">Harbor</a> because it ships the same
+core needs — a UI, browsing, garbage collection, and optional auth — without a multi-service
+Postgres + Redis + Trivy stack to operate.
 
 ## Configuration
 
@@ -63,16 +64,18 @@ only reachable over [WARP](../traffic/01-overview.md#private-access-via-warp). E
 the public tunnel instead would put every push behind Cloudflare's proxy, which rejects request
 bodies over 100 MB on the Free and Pro plans, and a layer is sent as a single request.
 
-- **Pushes** — every image is dual-written: each project's `build-ci` command lists a Docker Hub tag
-  and a zot tag, and zot keeps the bare image name, without the Docker Hub namespace. The build
-  workflow connects the runner to WARP with a service token (`platform/core/warp/ci-access.tf`),
-  then logs in as `ci` with the `ZOT_CI_USER` and `ZOT_CI_PASSWORD` repository secrets. Pull
-  requests connect and log in too, but don't push.
+- **Pushes** — each project's `build-ci` command tags its image with the bare image name in zot. The
+  build workflow connects the runner to WARP with a service token
+  (`platform/core/warp/ci-access.tf`), then logs in as `ci` with the `ZOT_CI_USER` and
+  `ZOT_CI_PASSWORD` repository secrets. Pull requests connect and log in too, but don't push.
 - **Pulls** — the k3s role writes the `node` credentials into `registries.yaml` when
   `k3s_zot_password` is set (see
-  [Run the cluster Ansible playbook](../../runbooks/02-run-the-cluster-ansible-playbook.md)). Docker
-  Hub and GHCR pulls are not redirected to zot: the cache has no upstream credentials, so it would
-  trade the nodes' authenticated Docker Hub limits for anonymous ones.
+  [Run the cluster Ansible playbook](../../runbooks/02-run-the-cluster-ansible-playbook.md)), and
+  mirrors `docker.io` and `ghcr.io` to the cache, so every Docker Hub and GHCR image a pod asks for
+  is pulled through zot. containerd always tries the original registry last, so a pull still
+  succeeds when zot is down, which keeps the platform components zot itself depends on from
+  deadlocking. The cache has no upstream credentials, so the fetches it makes are anonymous and rate
+  limited; the nodes' own Docker Hub credentials only apply to that fallback.
 
 ## Provisioning the R2 bucket
 

@@ -1,5 +1,5 @@
 image:
-  repository: kbntx/workspace
+  repository: registry.kbntx.com/workspace
   tag: latest
 
 ingressHost: workspace.kbntx.com
