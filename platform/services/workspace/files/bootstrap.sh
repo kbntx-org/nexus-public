@@ -30,6 +30,4 @@ mkdir -p "${HOME}/.docker/cli-plugins"
 ln -sf "$(mise which docker-compose)" "${HOME}/.docker/cli-plugins/docker-compose"
 ln -sf "$(mise which docker-buildx)" "${HOME}/.docker/cli-plugins/docker-buildx"
 
-tmux new-session -d -s claude -c "${CHECKOUT_PATH}" claude remote-control
-
 exec code-server --bind-addr "0.0.0.0:${port}" --auth password "${CHECKOUT_PATH}"
