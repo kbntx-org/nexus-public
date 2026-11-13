@@ -46,14 +46,14 @@
     group: root
     mode: '0755'
 
-- name: Configure Docker Hub registry credentials
+- name: Configure registry credentials
   ansible.builtin.template:
     src: registries.yml.j2
     dest: /etc/rancher/k3s/registries.yaml
     owner: root
     group: root
     mode: '0600'
-  when: k3s_docker_hub_username != '' and k3s_docker_hub_password != ''
+  when: (k3s_docker_hub_username != '' and k3s_docker_hub_password != '') or k3s_zot_password != ''
   notify: Restart k3s
 
 - name: Template the k3s config file

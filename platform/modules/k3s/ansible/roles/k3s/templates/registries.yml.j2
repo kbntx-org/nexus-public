@@ -1,6 +1,14 @@
 {{ ansible_managed | comment }}
 configs:
+{% if k3s_docker_hub_username != '' and k3s_docker_hub_password != '' %}
   "docker.io":
     auth:
       username: {{ k3s_docker_hub_username }}
       password: {{ k3s_docker_hub_password }}
+{% endif %}
+{% if k3s_zot_password != '' %}
+  "{{ k3s_zot_host }}":
+    auth:
+      username: {{ k3s_zot_username }}
+      password: {{ k3s_zot_password }}
+{% endif %}

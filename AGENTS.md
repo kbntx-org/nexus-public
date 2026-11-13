@@ -82,6 +82,13 @@ Tilt (`platform/core/local/local.sh create`, then `tilt up`) without touching th
 clashing with its ports. Never use `--privileged` or mount the Docker socket
 (`/var/run/docker.sock`) into a container: both give it control of the VM. Use sysbox instead.
 
+## Working Mode
+
+At the start of every task, ask whether to work in **auto** or **pair programming** mode, and do not
+commit, amend or rebase before the answer. In pair programming, make the edits, run the checks, then
+stop and show the diff; commit, amend or rebase only when told to. In auto mode, decide the steps
+and commit, then report at the end. Pushing needs an explicit request in both modes (see below).
+
 ## Tracking Work
 
 Features and bugs are tracked as GitHub issues and shipped as stacked PRs (`gh stack`). Stack only

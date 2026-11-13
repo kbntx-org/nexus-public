@@ -73,6 +73,13 @@
   "customManagers": [
     {
       "customType": "regex",
+      "fileMatch": ["^\\.github/actions/setup-warp/action\\.yaml$"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+) registryUrl=(?<registryUrl>\\S+)\\s+WARP_VERSION: (?<currentValue>\\S+)"
+      ]
+    },
+    {
+      "customType": "regex",
       "fileMatch": ["^platform/core/kubernetes/upgrades/plans/values\\.yaml$"],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\s+k3sVersion:\\s*(?<currentValue>\\S+)"

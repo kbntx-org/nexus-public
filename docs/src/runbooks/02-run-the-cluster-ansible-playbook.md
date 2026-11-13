@@ -42,6 +42,8 @@ configuration. The playbook only manages static nodes (see
   # Optional, raises Docker Hub pull limits:
   k3s_docker_hub_username: <username>
   k3s_docker_hub_password: <access-token>
+  # Optional, lets nodes pull from registry.kbntx.com (the `node` user's password):
+  k3s_zot_password: <node-password>
   ```
 
 ## Steps

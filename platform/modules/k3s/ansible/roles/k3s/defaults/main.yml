@@ -11,6 +11,10 @@ k3s_agent_token: ''
 k3s_docker_hub_username: ''
 k3s_docker_hub_password: ''
 
+k3s_zot_host: registry.kbntx.com
+k3s_zot_username: node
+k3s_zot_password: ''
+
 k3s_server_node_taints:
   - 'node-role.kubernetes.io/control-plane=true:NoSchedule'
 

@@ -12,6 +12,9 @@ on:
         required: true
         type: string
 
+env:
+  MIRROR_REGISTRY: registry.kbntx.com
+
 jobs:
   build:
     name: Build
@@ -30,15 +33,29 @@ jobs:
         run: pnpm install
         shell: bash
 
+      - name: Connect to WARP
+        uses: ./.github/actions/setup-warp
+        with:
+          action: connect
+          organization: ${{ vars.WARP_ORGANIZATION }}
+          client-id: ${{ secrets.WARP_CLIENT_ID }}
+          client-secret: ${{ secrets.WARP_CLIENT_SECRET }}
+
       - name: Set up Buildx builder
         uses: ./.github/actions/setup-buildx
 
       - name: Login to Docker registry
-        if: github.event_name != 'pull_request'
         uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+      - name: Login to zot
+        uses: docker/login-action@v4
+        with:
+          registry: ${{ env.MIRROR_REGISTRY }}
+          username: ${{ secrets.ZOT_CI_USER }}
+          password: ${{ secrets.ZOT_CI_PASSWORD }}
 
       - name: Build and push affected images
         env:
@@ -46,3 +63,9 @@ jobs:
           PUSH: ${{ github.event_name != 'pull_request' && 'true' || 'false' }}
         run: pnpm nx run-many --target=build-ci --projects="${{ inputs.deploy_targets_csv }}" --outputStyle=stream
         shell: bash
+
+      - name: Disconnect from WARP
+        if: always()
+        uses: ./.github/actions/setup-warp
+        with:
+          action: disconnect

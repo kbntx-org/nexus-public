@@ -1,0 +1,114 @@
+name: WARP
+description: >
+  Connects a Linux runner to Cloudflare WARP, or disconnects it. Connecting installs the client,
+  enrolls it with a service token and waits until it is connected, so the rest of the job can reach
+  the private network. Docker resolves through the runner's DNS too, so containers (the Buildx
+  builder, for one) see private hostnames; connect before the Buildx builder is created, since it
+  restarts Docker. Disconnecting installs nothing and does nothing when WARP is not connected, so
+  it is safe in an always() step.
+
+inputs:
+  action:
+    description: connect or disconnect.
+    required: true
+  organization:
+    description: Name of the Zero Trust organization (the team name). Required to connect.
+    required: false
+    default: ''
+  client-id:
+    description: Client ID of the service token allowed to enroll devices. Required to connect.
+    required: false
+    default: ''
+  client-secret:
+    description: Client secret of the service token allowed to enroll devices. Required to connect.
+    required: false
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    - name: Connect to WARP
+      if: inputs.action == 'connect'
+      shell: bash
+      env:
+        # renovate: datasource=deb depName=cloudflare-warp registryUrl=https://pkg.cloudflareclient.com/?suite=noble&components=main&binaryArch=amd64
+        WARP_VERSION: 2026.8.2115.0
+        WARP_ORGANIZATION: ${{ inputs.organization }}
+        WARP_CLIENT_ID: ${{ inputs.client-id }}
+        WARP_CLIENT_SECRET: ${{ inputs.client-secret }}
+        DOCKER_BRIDGE_ADDRESS: 172.17.0.1
+        CONNECT_TIMEOUT_SECONDS: '60'
+        COMMAND_TIMEOUT_SECONDS: '10'
+      run: |
+        set -euo pipefail
+
+        echo "==> 1/4 Point Docker at the runner's DNS"
+        echo "{\"dns\": [\"${DOCKER_BRIDGE_ADDRESS}\"]}" | sudo tee /etc/docker/daemon.json >/dev/null
+        echo "DNSStubListenerExtra=${DOCKER_BRIDGE_ADDRESS}" | sudo tee -a /etc/systemd/resolved.conf >/dev/null
+        sudo systemctl restart docker systemd-resolved
+        echo "Docker now resolves through ${DOCKER_BRIDGE_ADDRESS}"
+
+        echo "==> 2/4 Install cloudflare-warp ${WARP_VERSION}"
+        echo "::group::Download and install the package"
+        curl -fsSL -o warp.deb "https://downloads.cloudflareclient.com/v1/download/$(lsb_release -cs)-intel/version/${WARP_VERSION}"
+        sudo apt-get -o DPkg::Lock::Timeout=-1 update
+        sudo apt-get -o DPkg::Lock::Timeout=-1 install -y --no-install-recommends ./warp.deb
+        rm warp.deb
+        echo "::endgroup::"
+
+        echo "==> 3/4 Enroll with the service token"
+        sudo install -m 0600 /dev/null /var/lib/cloudflare-warp/mdm.xml
+        sudo tee /var/lib/cloudflare-warp/mdm.xml >/dev/null <<MANAGED_CONFIGURATION
+        <dict>
+          <key>auth_client_id</key><string>${WARP_CLIENT_ID}</string>
+          <key>auth_client_secret</key><string>${WARP_CLIENT_SECRET}</string>
+          <key>auto_connect</key><integer>1</integer>
+          <key>onboarding</key><false/>
+          <key>organization</key><string>${WARP_ORGANIZATION}</string>
+          <key>service_mode</key><string>warp</string>
+        </dict>
+        MANAGED_CONFIGURATION
+        sudo systemctl restart warp-svc
+        echo "Wrote the managed configuration for ${WARP_ORGANIZATION} and restarted warp-svc"
+
+        echo "==> 4/4 Wait until connected"
+        started=$SECONDS
+        deadline=$((started + CONNECT_TIMEOUT_SECONDS))
+        previous=''
+        while true; do
+          status=$(timeout "$COMMAND_TIMEOUT_SECONDS" warp-cli --accept-tos status 2>&1 || true)
+          summary=${status//$'\n'/ | }
+          if [ "$summary" != "$previous" ]; then
+            echo "[$((SECONDS - started))s] ${summary:-no output}"
+            previous=$summary
+          fi
+          if grep -q 'Status update: Connected' <<<"$status"; then
+            break
+          fi
+          if [ "$SECONDS" -ge "$deadline" ]; then
+            echo "::error::WARP did not connect within ${CONNECT_TIMEOUT_SECONDS}s"
+            echo "::group::warp-cli registration show"
+            timeout "$COMMAND_TIMEOUT_SECONDS" warp-cli --accept-tos registration show || true
+            echo "::endgroup::"
+            echo "::group::warp-svc log"
+            sudo journalctl --unit warp-svc --no-pager --lines 100 || true
+            echo "::endgroup::"
+            exit 1
+          fi
+          sleep 2
+        done
+        echo "Connected after $((SECONDS - started))s"
+
+    - name: Disconnect from WARP
+      if: inputs.action == 'disconnect'
+      shell: bash
+      env:
+        COMMAND_TIMEOUT_SECONDS: '10'
+      run: |
+        status=$(timeout "$COMMAND_TIMEOUT_SECONDS" warp-cli --accept-tos status 2>&1 || true)
+        if grep -q 'Status update: Connected' <<<"$status"; then
+          timeout "$COMMAND_TIMEOUT_SECONDS" warp-cli --accept-tos disconnect
+          echo "Disconnected from WARP"
+        else
+          echo "WARP is not connected, nothing to do"
+        fi
