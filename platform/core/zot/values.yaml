@@ -76,12 +76,14 @@ zot:
               {
                 "urls": ["https://index.docker.io"],
                 "onDemand": true,
+                "manifestCheckInterval": "1h",
                 "tlsVerify": true,
                 "content": [{ "prefix": "**", "destination": "/dockerhub" }]
               },
               {
                 "urls": ["https://ghcr.io"],
                 "onDemand": true,
+                "manifestCheckInterval": "1h",
                 "tlsVerify": true,
                 "content": [{ "prefix": "**", "destination": "/ghcr" }]
               }

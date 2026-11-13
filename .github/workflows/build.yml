@@ -12,9 +12,6 @@ on:
         required: true
         type: string
 
-env:
-  MIRROR_REGISTRY: registry.kbntx.com
-
 jobs:
   build:
     name: Build
@@ -53,7 +50,7 @@ jobs:
       - name: Login to zot
         uses: docker/login-action@v4
         with:
-          registry: ${{ env.MIRROR_REGISTRY }}
+          registry: registry.kbntx.com
           username: ${{ secrets.ZOT_CI_USER }}
           password: ${{ secrets.ZOT_CI_PASSWORD }}
 

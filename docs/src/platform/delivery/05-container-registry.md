@@ -47,10 +47,11 @@ for storage and the extensions below.
   bucket come in as `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY` env vars from a Vault-backed secret
   (see [Secrets management](../secrets/01-overview.md)) rather than living in `config.json` itself.
 - **Pull-through cache** — `extensions.sync` mirrors Docker Hub and GHCR on demand: the first pull
-  of an upstream image through zot fetches and caches it, every pull after that is served locally.
-  Each upstream is routed to its own path (`/dockerhub`, `/ghcr`) via `content[].destination`, so
-  `registry.kbntx.com/dockerhub/<image>` and `registry.kbntx.com/ghcr/<image>` behave like local
-  mirrors of their upstream. See zot's
+  of an upstream image through zot fetches and caches it, every pull after that is served locally. A
+  cached tag is re-checked against its upstream at most once an hour (`manifestCheckInterval`), so a
+  pull no longer contacts Docker Hub or GHCR each time. Each upstream is routed to its own path
+  (`/dockerhub`, `/ghcr`) via `content[].destination`, so `registry.kbntx.com/dockerhub/<image>` and
+  `registry.kbntx.com/ghcr/<image>` behave like local mirrors of their upstream. See zot's
   <a href="https://zotregistry.dev/latest/articles/mirroring/" target="_blank" rel="noopener">mirroring
   guide</a> for the full `sync` schema (scheduled sync, tag filters, credentials for private
   upstreams).
@@ -62,10 +63,11 @@ only reachable over [WARP](../traffic/01-overview.md#private-access-via-warp). E
 the public tunnel instead would put every push behind Cloudflare's proxy, which rejects request
 bodies over 100 MB on the Free and Pro plans, and a layer is sent as a single request.
 
-- **Pushes** — every image is dual-written: `tools/docker-build-and-push.sh` tags each build for
-  both Docker Hub and zot. The build workflow connects the runner to WARP with a service token
-  (`platform/core/warp/ci-access.tf`), then logs in as `ci` with the `ZOT_CI_USER` and
-  `ZOT_CI_PASSWORD` repository secrets. Pull requests connect and log in too, but don't push.
+- **Pushes** — every image is dual-written: each project's `build-ci` command lists a Docker Hub tag
+  and a zot tag, and zot keeps the bare image name, without the Docker Hub namespace. The build
+  workflow connects the runner to WARP with a service token (`platform/core/warp/ci-access.tf`),
+  then logs in as `ci` with the `ZOT_CI_USER` and `ZOT_CI_PASSWORD` repository secrets. Pull
+  requests connect and log in too, but don't push.
 - **Pulls** — the k3s role writes the `node` credentials into `registries.yaml` when
   `k3s_zot_password` is set (see
   [Run the cluster Ansible playbook](../../runbooks/02-run-the-cluster-ansible-playbook.md)). Docker

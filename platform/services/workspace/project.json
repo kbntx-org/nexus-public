@@ -11,7 +11,7 @@
     "build-ci": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "tools/docker-build-and-push.sh platform/services/workspace/Dockerfile platform/services/workspace kbntx/workspace:$IMAGE_TAG --build-arg DOCKER_VERSION=$(mise current docker-cli) --build-arg MISE_VERSION=$(yq -p toml '.min_version' mise.toml)"
+        "command": "tools/docker-build-and-push.sh platform/services/workspace/Dockerfile platform/services/workspace --tag kbntx/workspace:$IMAGE_TAG --tag registry.kbntx.com/workspace:$IMAGE_TAG --build-arg DOCKER_VERSION=$(mise current docker-cli) --build-arg MISE_VERSION=$(yq -p toml '.min_version' mise.toml)"
       }
     }
   }
