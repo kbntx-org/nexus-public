@@ -135,7 +135,7 @@ a recovered one keeps the schema from the backup.
 ## Encryption at rest
 
 k3s runs with `secrets-encryption: true`
-(<a href="https://github.com/kbntx-org/nexus/blob/main/platform/modules/k3s/ansible/roles/k3s/templates/k3s-config.yml.j2" target="_blank" rel="noopener">k3s
+(<a href="https://github.com/kbntx-org/nexus/blob/main/platform/core/kubernetes/configuration/roles/k3s/templates/k3s-config.yml.j2" target="_blank" rel="noopener">k3s
 config template</a>), so every Kubernetes `Secret`, including those ESO writes, is encrypted in etcd
 rather than stored as plain base64. It is cluster-wide, not opt-in, and does **not** cover Postgres
 data (see [Databases](../databases/01-overview.md#encryption-at-rest)).

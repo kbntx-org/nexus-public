@@ -10,7 +10,7 @@ configuration. The playbook only manages static nodes (see
 ## When to run it
 
 - A change to the
-  <a href="https://github.com/kbntx-org/nexus/tree/main/platform/modules/k3s/ansible/roles/k3s" target="_blank" rel="noopener"><code>k3s
+  <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/kubernetes/configuration/roles/k3s" target="_blank" rel="noopener"><code>k3s
   role</code></a>, its templates, or
   <a href="https://github.com/kbntx-org/nexus/blob/main/platform/core/kubernetes/configuration/group_vars/all.yml" target="_blank" rel="noopener"><code>group_vars/all.yml</code></a>.
 - A new static node, after OpenTofu created it.
@@ -105,7 +105,7 @@ Every node is `Ready`, with the labels and taints it should have.
   — playbook, dynamic Hetzner inventory, `ansible.cfg` and Python project
 - <a href="https://github.com/kbntx-org/nexus/blob/main/platform/core/kubernetes/configuration/inventory/hcloud.yml" target="_blank" rel="noopener"><code>platform/core/kubernetes/configuration/inventory/hcloud.yml</code></a>
   — how nodes are grouped
-- <a href="https://github.com/kbntx-org/nexus/tree/main/platform/modules/k3s/ansible/roles/k3s" target="_blank" rel="noopener"><code>platform/modules/k3s/ansible/roles/k3s/</code></a>
+- <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/kubernetes/configuration/roles/k3s" target="_blank" rel="noopener"><code>platform/core/kubernetes/configuration/roles/k3s/</code></a>
   — the role: tasks, defaults, config templates
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/kubernetes/upgrades" target="_blank" rel="noopener"><code>platform/core/kubernetes/upgrades/</code></a>
   — the k3s upgrade plans
