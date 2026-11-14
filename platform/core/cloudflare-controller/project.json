@@ -36,6 +36,13 @@
         "command": "golangci-lint fmt --config ../../../.golangci.yml --diff ./..."
       }
     },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "platform/core/cloudflare-controller",
+        "command": "go test ./..."
+      }
+    },
     "build-ci": {
       "executor": "nx:run-commands",
       "options": {

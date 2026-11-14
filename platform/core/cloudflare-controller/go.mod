@@ -4,7 +4,6 @@ go 1.26.0
 
 require (
 	github.com/caarlos0/env/v11 v11.4.1
-	github.com/cloudflare/cloudflare-go/v7 v7.11.0
 	github.com/go-logr/logr v1.4.4
 	k8s.io/api v0.37.1
 	k8s.io/apimachinery v0.37.1
@@ -52,10 +51,6 @@ require (
 	github.com/prometheus/procfs v0.21.1 // indirect
 	github.com/spf13/cobra v1.10.2 // indirect
 	github.com/spf13/pflag v1.0.10 // indirect
-	github.com/tidwall/gjson v1.14.4 // indirect
-	github.com/tidwall/match v1.1.1 // indirect
-	github.com/tidwall/pretty v1.2.1 // indirect
-	github.com/tidwall/sjson v1.2.5 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
 	go.yaml.in/yaml/v2 v2.4.4 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect

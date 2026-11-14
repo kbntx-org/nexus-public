@@ -3,23 +3,48 @@ package cloudflare
 import (
 	"context"
 	"fmt"
+	"net/http"
+	"net/url"
+)
 
-	cloudflaresdk "github.com/cloudflare/cloudflare-go/v7"
-	"github.com/cloudflare/cloudflare-go/v7/option"
-	"github.com/cloudflare/cloudflare-go/v7/shared"
-	"github.com/cloudflare/cloudflare-go/v7/zero_trust"
+const (
+	policiesPath            = "accounts/%s/access/policies"
+	policyPath              = "accounts/%s/access/policies/%s"
+	applicationsPath        = "accounts/%s/access/apps"
+	applicationPath         = "accounts/%s/access/apps/%s"
+	tunnelsPath             = "accounts/%s/cfd_tunnel"
+	tunnelPath              = "accounts/%s/cfd_tunnel/%s"
+	tunnelTokenPath         = "accounts/%s/cfd_tunnel/%s/token"
+	tunnelConfigurationPath = "accounts/%s/cfd_tunnel/%s/configurations"
+	routesPath              = "accounts/%s/teamnet/routes"
+	routePath               = "accounts/%s/teamnet/routes/%s"
+
+	tunnelConfigSourceCloudflare = "cloudflare"
+	tunnelIDQueryParameter       = "tunnel_id"
 )
 
 type Client struct {
-	sdk       *cloudflaresdk.Client
+	api       *apiClient
 	accountID string
 }
 
 func NewClient(apiToken, accountID string) *Client {
+	return newClient(defaultBaseURL, apiToken, accountID)
+}
+
+func newClient(baseURL, apiToken, accountID string) *Client {
 	return &Client{
-		sdk:       cloudflaresdk.NewClient(option.WithAPIToken(apiToken)),
+		api:       &apiClient{httpClient: http.DefaultClient, baseURL: baseURL, apiToken: apiToken},
 		accountID: accountID,
 	}
+}
+
+func (c *Client) accountPath(format string, identifiers ...string) string {
+	segments := []any{url.PathEscape(c.accountID)}
+	for _, identifier := range identifiers {
+		segments = append(segments, url.PathEscape(identifier))
+	}
+	return fmt.Sprintf(format, segments...)
 }
 
 type Rule struct {
@@ -45,118 +70,132 @@ type ApplicationPayload struct {
 	Policies        []string
 }
 
-func toAccessRules(rules []Rule) []zero_trust.AccessRuleUnionParam {
-	converted := make([]zero_trust.AccessRuleUnionParam, len(rules))
-	for i, rule := range rules {
-		converted[i] = toAccessRule(rule)
+type emptyRule struct{}
+
+type emailRule struct {
+	Email string `json:"email"`
+}
+
+type emailDomainRule struct {
+	Domain string `json:"domain"`
+}
+
+type ipRule struct {
+	IP string `json:"ip"`
+}
+
+type accessRule struct {
+	Email       *emailRule       `json:"email,omitempty"`
+	EmailDomain *emailDomainRule `json:"email_domain,omitempty"`
+	Everyone    *emptyRule       `json:"everyone,omitempty"`
+	IP          *ipRule          `json:"ip,omitempty"`
+}
+
+// Fields are alphabetical, matching the Cloudflare SDK's request bodies that the tests pin.
+type policyBody struct {
+	Decision string       `json:"decision"`
+	Exclude  []accessRule `json:"exclude"`
+	Include  []accessRule `json:"include"`
+	Name     string       `json:"name"`
+	Require  []accessRule `json:"require"`
+}
+
+type applicationBody struct {
+	Domain          string   `json:"domain"`
+	Name            string   `json:"name"`
+	Policies        []string `json:"policies"`
+	SessionDuration string   `json:"session_duration"`
+	Type            string   `json:"type"`
+}
+
+type createdResource struct {
+	ID string `json:"id"`
+}
+
+func toAccessRules(rules []Rule) []accessRule {
+	converted := make([]accessRule, len(rules))
+	for index, rule := range rules {
+		converted[index] = toAccessRule(rule)
 	}
 	return converted
 }
 
-func toAccessRule(rule Rule) zero_trust.AccessRuleUnionParam {
+func toAccessRule(rule Rule) accessRule {
 	switch {
 	case rule.Everyone:
-		return zero_trust.EveryoneRuleParam{Everyone: cloudflaresdk.F(zero_trust.EveryoneRuleEveryoneParam{})}
+		return accessRule{Everyone: &emptyRule{}}
 	case rule.Email != "":
-		return zero_trust.EmailRuleParam{Email: cloudflaresdk.F(zero_trust.EmailRuleEmailParam{Email: cloudflaresdk.F(rule.Email)})}
+		return accessRule{Email: &emailRule{Email: rule.Email}}
 	case rule.EmailDomain != "":
-		return zero_trust.DomainRuleParam{EmailDomain: cloudflaresdk.F(zero_trust.DomainRuleEmailDomainParam{Domain: cloudflaresdk.F(rule.EmailDomain)})}
+		return accessRule{EmailDomain: &emailDomainRule{Domain: rule.EmailDomain}}
 	default:
-		return zero_trust.IPRuleParam{IP: cloudflaresdk.F(zero_trust.IPRuleIPParam{IP: cloudflaresdk.F(rule.IPRange)})}
+		return accessRule{IP: &ipRule{IP: rule.IPRange}}
+	}
+}
+
+func toPolicyBody(payload PolicyPayload) policyBody {
+	return policyBody{
+		Decision: payload.Decision,
+		Exclude:  toAccessRules(payload.Exclude),
+		Include:  toAccessRules(payload.Include),
+		Name:     payload.Name,
+		Require:  toAccessRules(payload.Require),
+	}
+}
+
+func toApplicationBody(payload ApplicationPayload) applicationBody {
+	policies := payload.Policies
+	if policies == nil {
+		policies = []string{}
+	}
+	return applicationBody{
+		Domain:          payload.Domain,
+		Name:            payload.Name,
+		Policies:        policies,
+		SessionDuration: payload.SessionDuration,
+		Type:            payload.Type,
 	}
 }
 
 func (c *Client) CreatePolicy(ctx context.Context, payload PolicyPayload) (string, error) {
-	result, err := c.sdk.ZeroTrust.Access.Policies.New(ctx, zero_trust.AccessPolicyNewParams{
-		AccountID: cloudflaresdk.F(c.accountID),
-		Decision:  cloudflaresdk.F(zero_trust.Decision(payload.Decision)),
-		Include:   cloudflaresdk.F(toAccessRules(payload.Include)),
-		Name:      cloudflaresdk.F(payload.Name),
-		Exclude:   cloudflaresdk.F(toAccessRules(payload.Exclude)),
-		Require:   cloudflaresdk.F(toAccessRules(payload.Require)),
-	})
-	if err != nil {
+	var created createdResource
+	if err := c.api.do(ctx, http.MethodPost, c.accountPath(policiesPath), nil, toPolicyBody(payload), &created); err != nil {
 		return "", fmt.Errorf("create access policy: %w", err)
 	}
-	return result.ID, nil
+	return created.ID, nil
 }
 
 func (c *Client) UpdatePolicy(ctx context.Context, id string, payload PolicyPayload) error {
-	_, err := c.sdk.ZeroTrust.Access.Policies.Update(ctx, id, zero_trust.AccessPolicyUpdateParams{
-		AccountID: cloudflaresdk.F(c.accountID),
-		Decision:  cloudflaresdk.F(zero_trust.Decision(payload.Decision)),
-		Include:   cloudflaresdk.F(toAccessRules(payload.Include)),
-		Name:      cloudflaresdk.F(payload.Name),
-		Exclude:   cloudflaresdk.F(toAccessRules(payload.Exclude)),
-		Require:   cloudflaresdk.F(toAccessRules(payload.Require)),
-	})
-	if err != nil {
+	if err := c.api.do(ctx, http.MethodPut, c.accountPath(policyPath, id), nil, toPolicyBody(payload), nil); err != nil {
 		return fmt.Errorf("update access policy %q: %w", id, err)
 	}
 	return nil
 }
 
 func (c *Client) DeletePolicy(ctx context.Context, id string) error {
-	_, err := c.sdk.ZeroTrust.Access.Policies.Delete(ctx, id, zero_trust.AccessPolicyDeleteParams{
-		AccountID: cloudflaresdk.F(c.accountID),
-	})
-	if err != nil {
+	if err := c.api.do(ctx, http.MethodDelete, c.accountPath(policyPath, id), nil, nil, nil); err != nil {
 		return fmt.Errorf("delete access policy %q: %w", id, err)
 	}
 	return nil
 }
 
-func toApplicationPolicies(policyIDs []string) []zero_trust.AccessApplicationNewParamsBodySelfHostedApplicationPolicyUnion {
-	policies := make([]zero_trust.AccessApplicationNewParamsBodySelfHostedApplicationPolicyUnion, len(policyIDs))
-	for i, id := range policyIDs {
-		policies[i] = shared.UnionString(id)
-	}
-	return policies
-}
-
 func (c *Client) CreateApplication(ctx context.Context, payload ApplicationPayload) (string, error) {
-	result, err := c.sdk.ZeroTrust.Access.Applications.New(ctx, zero_trust.AccessApplicationNewParams{
-		AccountID: cloudflaresdk.F(c.accountID),
-		Body: zero_trust.AccessApplicationNewParamsBodySelfHostedApplication{
-			Domain:          cloudflaresdk.F(payload.Domain),
-			Type:            cloudflaresdk.F(zero_trust.ApplicationType(payload.Type)),
-			Name:            cloudflaresdk.F(payload.Name),
-			SessionDuration: cloudflaresdk.F(payload.SessionDuration),
-			Policies:        cloudflaresdk.F(toApplicationPolicies(payload.Policies)),
-		},
-	})
-	if err != nil {
+	var created createdResource
+	if err := c.api.do(ctx, http.MethodPost, c.accountPath(applicationsPath), nil, toApplicationBody(payload), &created); err != nil {
 		return "", fmt.Errorf("create access application: %w", err)
 	}
-	return result.ID, nil
+	return created.ID, nil
 }
 
 func (c *Client) UpdateApplication(ctx context.Context, id string, payload ApplicationPayload) error {
-	policies := make([]zero_trust.AccessApplicationUpdateParamsBodySelfHostedApplicationPolicyUnion, len(payload.Policies))
-	for i, policyID := range payload.Policies {
-		policies[i] = shared.UnionString(policyID)
-	}
-	_, err := c.sdk.ZeroTrust.Access.Applications.Update(ctx, id, zero_trust.AccessApplicationUpdateParams{
-		AccountID: cloudflaresdk.F(c.accountID),
-		Body: zero_trust.AccessApplicationUpdateParamsBodySelfHostedApplication{
-			Domain:          cloudflaresdk.F(payload.Domain),
-			Type:            cloudflaresdk.F(zero_trust.ApplicationType(payload.Type)),
-			Name:            cloudflaresdk.F(payload.Name),
-			SessionDuration: cloudflaresdk.F(payload.SessionDuration),
-			Policies:        cloudflaresdk.F(policies),
-		},
-	})
-	if err != nil {
+	if err := c.api.do(ctx, http.MethodPut, c.accountPath(applicationPath, id), nil, toApplicationBody(payload), nil); err != nil {
 		return fmt.Errorf("update access application %q: %w", id, err)
 	}
 	return nil
 }
 
 func (c *Client) DeleteApplication(ctx context.Context, id string) error {
-	_, err := c.sdk.ZeroTrust.Access.Applications.Delete(ctx, id, zero_trust.AccessApplicationDeleteParams{
-		AccountID: cloudflaresdk.F(c.accountID),
-	})
-	if err != nil {
+	if err := c.api.do(ctx, http.MethodDelete, c.accountPath(applicationPath, id), nil, nil, nil); err != nil {
 		return fmt.Errorf("delete access application %q: %w", id, err)
 	}
 	return nil
@@ -167,23 +206,32 @@ type Route struct {
 	Network string
 }
 
+type tunnelBody struct {
+	ConfigSource string `json:"config_src"`
+	Name         string `json:"name"`
+}
+
+type routeBody struct {
+	Network  string `json:"network"`
+	TunnelID string `json:"tunnel_id"`
+}
+
+type routeResult struct {
+	ID      string `json:"id"`
+	Network string `json:"network"`
+}
+
 func (c *Client) CreateTunnel(ctx context.Context, name string) (string, error) {
-	result, err := c.sdk.ZeroTrust.Tunnels.Cloudflared.New(ctx, zero_trust.TunnelCloudflaredNewParams{
-		AccountID: cloudflaresdk.F(c.accountID),
-		Name:      cloudflaresdk.F(name),
-		ConfigSrc: cloudflaresdk.F(zero_trust.TunnelCloudflaredNewParamsConfigSrcCloudflare),
-	})
-	if err != nil {
+	var created createdResource
+	body := tunnelBody{ConfigSource: tunnelConfigSourceCloudflare, Name: name}
+	if err := c.api.do(ctx, http.MethodPost, c.accountPath(tunnelsPath), nil, body, &created); err != nil {
 		return "", fmt.Errorf("create tunnel: %w", err)
 	}
-	return result.ID, nil
+	return created.ID, nil
 }
 
 func (c *Client) DeleteTunnel(ctx context.Context, id string) error {
-	_, err := c.sdk.ZeroTrust.Tunnels.Cloudflared.Delete(ctx, id, zero_trust.TunnelCloudflaredDeleteParams{
-		AccountID: cloudflaresdk.F(c.accountID),
-	})
-	if err != nil {
+	if err := c.api.do(ctx, http.MethodDelete, c.accountPath(tunnelPath, id), nil, nil, nil); err != nil {
 		return fmt.Errorf("delete tunnel %q: %w", id, err)
 	}
 	return nil
@@ -192,48 +240,36 @@ func (c *Client) DeleteTunnel(ctx context.Context, id string) error {
 // TunnelToken is safe to call on every reconcile without caching: Cloudflare derives it
 // deterministically from the tunnel's stored secret, so it's stable across calls.
 func (c *Client) TunnelToken(ctx context.Context, id string) (string, error) {
-	token, err := c.sdk.ZeroTrust.Tunnels.Cloudflared.Token.Get(ctx, id, zero_trust.TunnelCloudflaredTokenGetParams{
-		AccountID: cloudflaresdk.F(c.accountID),
-	})
-	if err != nil {
+	var token string
+	if err := c.api.do(ctx, http.MethodGet, c.accountPath(tunnelTokenPath, id), nil, nil, &token); err != nil {
 		return "", fmt.Errorf("fetch tunnel token %q: %w", id, err)
 	}
-	return *token, nil
+	return token, nil
 }
 
 func (c *Client) ListRoutes(ctx context.Context, tunnelID string) ([]Route, error) {
-	var routes []Route
-	iter := c.sdk.ZeroTrust.Networks.Routes.ListAutoPaging(ctx, zero_trust.NetworkRouteListParams{
-		AccountID: cloudflaresdk.F(c.accountID),
-		TunnelID:  cloudflaresdk.F(tunnelID),
-	})
-	for iter.Next() {
-		route := iter.Current()
-		routes = append(routes, Route{ID: route.ID, Network: route.Network})
-	}
-	if err := iter.Err(); err != nil {
+	query := url.Values{tunnelIDQueryParameter: {tunnelID}}
+	results, err := listAllPages[routeResult](ctx, c.api, c.accountPath(routesPath), query)
+	if err != nil {
 		return nil, fmt.Errorf("list routes for tunnel %q: %w", tunnelID, err)
+	}
+	var routes []Route
+	for _, result := range results {
+		routes = append(routes, Route(result))
 	}
 	return routes, nil
 }
 
 func (c *Client) CreateRoute(ctx context.Context, tunnelID, network string) error {
-	_, err := c.sdk.ZeroTrust.Networks.Routes.New(ctx, zero_trust.NetworkRouteNewParams{
-		AccountID: cloudflaresdk.F(c.accountID),
-		Network:   cloudflaresdk.F(network),
-		TunnelID:  cloudflaresdk.F(tunnelID),
-	})
-	if err != nil {
+	body := routeBody{Network: network, TunnelID: tunnelID}
+	if err := c.api.do(ctx, http.MethodPost, c.accountPath(routesPath), nil, body, nil); err != nil {
 		return fmt.Errorf("create route %q: %w", network, err)
 	}
 	return nil
 }
 
 func (c *Client) DeleteRoute(ctx context.Context, routeID string) error {
-	_, err := c.sdk.ZeroTrust.Networks.Routes.Delete(ctx, routeID, zero_trust.NetworkRouteDeleteParams{
-		AccountID: cloudflaresdk.F(c.accountID),
-	})
-	if err != nil {
+	if err := c.api.do(ctx, http.MethodDelete, c.accountPath(routePath, routeID), nil, nil, nil); err != nil {
 		return fmt.Errorf("delete route %q: %w", routeID, err)
 	}
 	return nil
@@ -249,30 +285,35 @@ type OriginRequest struct {
 	MatchSNIToHost bool
 }
 
+type ingressBody struct {
+	Hostname      string             `json:"hostname,omitempty"`
+	OriginRequest *originRequestBody `json:"originRequest,omitempty"`
+	Service       string             `json:"service"`
+}
+
+type originRequestBody struct {
+	MatchSNIToHost bool `json:"matchSNItoHost"`
+}
+
+type tunnelConfigurationBody struct {
+	Config tunnelConfiguration `json:"config"`
+}
+
+type tunnelConfiguration struct {
+	Ingress []ingressBody `json:"ingress"`
+}
+
 func (c *Client) PutTunnelConfiguration(ctx context.Context, tunnelID string, rules []IngressRule) error {
-	ingress := make([]zero_trust.TunnelCloudflaredConfigurationUpdateParamsConfigIngress, len(rules))
-	for i, rule := range rules {
-		entry := zero_trust.TunnelCloudflaredConfigurationUpdateParamsConfigIngress{
-			Service: cloudflaresdk.F(rule.Service),
-		}
-		if rule.Hostname != "" {
-			entry.Hostname = cloudflaresdk.F(rule.Hostname)
-		}
+	ingress := make([]ingressBody, len(rules))
+	for index, rule := range rules {
+		ingress[index] = ingressBody{Hostname: rule.Hostname, Service: rule.Service}
 		if rule.OriginRequest != nil {
-			entry.OriginRequest = cloudflaresdk.F(zero_trust.TunnelCloudflaredConfigurationUpdateParamsConfigIngressOriginRequest{
-				MatchSnItoHost: cloudflaresdk.F(rule.OriginRequest.MatchSNIToHost),
-			})
+			ingress[index].OriginRequest = &originRequestBody{MatchSNIToHost: rule.OriginRequest.MatchSNIToHost}
 		}
-		ingress[i] = entry
 	}
 
-	_, err := c.sdk.ZeroTrust.Tunnels.Cloudflared.Configurations.Update(ctx, tunnelID, zero_trust.TunnelCloudflaredConfigurationUpdateParams{
-		AccountID: cloudflaresdk.F(c.accountID),
-		Config: cloudflaresdk.F(zero_trust.TunnelCloudflaredConfigurationUpdateParamsConfig{
-			Ingress: cloudflaresdk.F(ingress),
-		}),
-	})
-	if err != nil {
+	body := tunnelConfigurationBody{Config: tunnelConfiguration{Ingress: ingress}}
+	if err := c.api.do(ctx, http.MethodPut, c.accountPath(tunnelConfigurationPath, tunnelID), nil, body, nil); err != nil {
 		return fmt.Errorf("update tunnel configuration %q: %w", tunnelID, err)
 	}
 	return nil
