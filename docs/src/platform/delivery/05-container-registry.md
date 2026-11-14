@@ -37,7 +37,15 @@ for storage and the extensions below.
   <a href="https://zotregistry.dev/latest/articles/authn-authz/" target="_blank" rel="noopener">authn/authz
   guide</a>.
 - **Garbage collection** — `storage.gc` reclaims blobs orphaned by manifest deletion on a schedule
-  (`gcInterval`), with `gcDelay` giving in-flight pulls time to finish before a blob is swept.
+  (`gcInterval`), and the first sweep starts when zot starts, so restarting the pod forces one. A
+  blob is only swept once it is older than `gcDelay`, which must outlast the longest push, since a
+  push uploads its layers before its manifest. Each sweep re-walks the repositories in R2, so its
+  request count grows faster than the repository count: keep `gcInterval` in hours, not minutes.
+- **Retention** — `storage.retention` keeps the three most recently pushed tags of each image this
+  repo builds and removes the rest on the next GC sweep. The policy lists those repositories by
+  name: a repository that matches no policy keeps everything, which is what the pull-through cache
+  wants. If zot has no statistics for a repository it skips the deletes and keeps every tag, so a
+  restart can't wipe images. A rollback to a build older than the last three needs a rebuild.
 - **UI and search** — the `extensions.ui` and `extensions.search` blocks turn on the registry's
   browsable web UI, which depends on the search extension being enabled to index repositories.
 - **Storage** — `storage.storageDriver` points zot at an R2 bucket, the same object storage used for

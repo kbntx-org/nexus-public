@@ -35,8 +35,23 @@ zot:
         "storage": {
           "rootDirectory": "/var/lib/registry",
           "gc": true,
-          "gcDelay": "1h",
-          "gcInterval": "24h",
+          "gcDelay": "15m",
+          "gcInterval": "1h",
+          "retention": {
+            "policies": [
+              {
+                "repositories": [
+                  "cloudflare-controller",
+                  "documentation",
+                  "kiln",
+                  "smelt",
+                  "sysbox-deploy-k8s",
+                  "workspace"
+                ],
+                "keepTags": [{ "mostRecentlyPushedCount": 3 }]
+              }
+            ]
+          },
           "dedupe": false,
           "storageDriver": {
             "name": "s3",
