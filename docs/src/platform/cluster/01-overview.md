@@ -54,7 +54,7 @@ What the diagram doesn't show is why:
    <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/kubernetes/configuration" target="_blank" rel="noopener"><code>role</code></a>
    configures them; see
    [Run the cluster Ansible playbook](../../runbooks/02-run-the-cluster-ansible-playbook.md).
-2. <a href="https://github.com/kbntx-org/nexus/blob/main/platform/modules/k3s/terraform/config/init-core-cluster-dependencies.sh" target="_blank" rel="noopener"><code>init-core-cluster-dependencies.sh</code></a>
+2. <a href="https://github.com/kbntx-org/nexus/blob/main/platform/core/kubernetes/provision/config/init-core-cluster-dependencies.sh" target="_blank" rel="noopener"><code>init-core-cluster-dependencies.sh</code></a>
    installs the critical components below.
 3. Later k3s upgrades go through Rancher's
    <a href="https://github.com/rancher/system-upgrade-controller" target="_blank" rel="noopener">system-upgrade-controller</a>.
@@ -65,7 +65,7 @@ What the diagram doesn't show is why:
 restart, yet new nodes still join with the old token.
 
 **Cause:** `k3s_token` and `k3s_agent_token` (consumed by the
-<a href="https://github.com/kbntx-org/nexus/blob/main/platform/modules/k3s/ansible/roles/k3s/templates/k3s-config.yml.j2" target="_blank" rel="noopener"><code>k3s
+<a href="https://github.com/kbntx-org/nexus/blob/main/platform/core/kubernetes/configuration/roles/k3s/templates/k3s-config.yml.j2" target="_blank" rel="noopener"><code>k3s
 role's config template</code></a>) are written into the encrypted bootstrap data on the datastore
 only when a server first initializes (`cluster-init`). Re-running the role updates
 `/etc/rancher/k3s/config.yaml` on disk, but the datastore keeps the init-time value (the server
@@ -113,13 +113,10 @@ In the order they show up on fresh VMs:
 ## References
 
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/kubernetes/provision" target="_blank" rel="noopener"><code>platform/core/kubernetes/provision/</code></a>
-  — cluster-shape OpenTofu (control plane, static pools, firewalls)
-- <a href="https://github.com/kbntx-org/nexus/tree/main/platform/modules/k3s/terraform" target="_blank" rel="noopener"><code>platform/modules/k3s/terraform/</code></a>
-  — reusable VM-provisioning module + first-boot bootstrap script
-- <a href="https://github.com/kbntx-org/nexus/tree/main/platform/modules/k3s/ansible" target="_blank" rel="noopener"><code>platform/modules/k3s/ansible/</code></a>
-  — the `k3s` role that actually installs/configures k3s
+  — cluster-shape OpenTofu (control plane, static pools, firewalls) and the first-boot bootstrap
+  script
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/kubernetes/configuration" target="_blank" rel="noopener"><code>platform/core/kubernetes/configuration/</code></a>
-  — dynamic Hetzner inventory + playbook running the role
+  — dynamic Hetzner inventory, playbook and the `k3s` role that installs/configures k3s
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/kubernetes/upgrades" target="_blank" rel="noopener"><code>platform/core/kubernetes/upgrades/</code></a>
   — system-upgrade-controller and the k3s upgrade plans
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/cilium" target="_blank" rel="noopener"><code>platform/core/cilium/</code></a>

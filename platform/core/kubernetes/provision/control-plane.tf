@@ -7,10 +7,10 @@ resource "random_password" "cluster_token" {
 }
 
 resource "hcloud_server" "control_plane" {
-  name                     = "${var.cluster_name}-k3s-control-plane"
-  server_type              = var.control_plane.server_type
+  name                     = "${local.cluster_name}-k3s-control-plane"
+  server_type              = "cx33"
   image                    = "ubuntu-24.04"
-  location                 = var.control_plane.location
+  location                 = "fsn1"
   keep_disk                = true
   shutdown_before_deletion = true
   user_data                = data.cloudinit_config.control_plane.rendered
@@ -22,14 +22,16 @@ resource "hcloud_server" "control_plane" {
   }
 
   public_net {
-    ipv4_enabled = var.nat_gateway_ip == ""
-    ipv6_enabled = var.nat_gateway_ip == ""
+    ipv4_enabled = false
+    ipv6_enabled = false
   }
 
-  labels = merge({
-    "type" : "control-plane"
-    "cluster-name" : var.cluster_name
-  }, var.control_plane.labels)
+  labels = {
+    "type"         = "control-plane"
+    "cluster-name" = local.cluster_name
+    "node-type"    = "control-plane"
+    "environment"  = "production"
+  }
 
   lifecycle {
     ignore_changes = [user_data, ssh_keys]
@@ -39,23 +41,6 @@ resource "hcloud_server" "control_plane" {
 resource "hcloud_server_network" "control_plane_network" {
   server_id  = hcloud_server.control_plane.id
   network_id = data.hcloud_network.main_network.id
-}
-
-resource "hcloud_placement_group" "cluster_placement_group" {
-  name = "${var.cluster_name}-k3s-placement-group"
-  type = "spread"
-}
-
-
-output "cluster_token" {
-  description = "The generated cluster token"
-  value       = random_password.cluster_token.result
-  sensitive   = true
-}
-
-output "control_plane_ip" {
-  description = "Private IP of the control-plane node on the cluster's network"
-  value       = hcloud_server_network.control_plane_network.ip
 }
 
 data "cloudinit_config" "control_plane" {
@@ -69,4 +54,9 @@ data "cloudinit_config" "control_plane" {
       type = "control-plane"
     }))
   }
+}
+
+output "cluster_token" {
+  value     = random_password.cluster_token.result
+  sensitive = true
 }

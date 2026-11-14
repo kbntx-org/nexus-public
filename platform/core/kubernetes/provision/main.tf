@@ -7,55 +7,20 @@ data "hcloud_server" "bastion" {
 }
 
 locals {
-  # Hetzner gateway in vpc is on X.X.X.1
-  network_gateway_ip = cidrhost(data.hcloud_network.main_network.ip_range, 1)
+  cluster_name = "nexus"
+
+  cloud_init_base = {
+    cloudflare_access_ssh_ca_public_key = file("${path.module}/config/ca.pub")
+    init_script_b64                     = base64encode(file("${path.module}/config/init-core-cluster-dependencies.sh"))
+    nat_ip                              = one(data.hcloud_server.bastion.network).ip
+    # Hetzner gateway in vpc is on X.X.X.1
+    network_gateway_ip = cidrhost(data.hcloud_network.main_network.ip_range, 1)
+  }
 }
 
-module "nexus_cluster" {
-  source = "../../../modules/k3s/terraform"
-
-  cluster_name       = "nexus"
-  vpc_name           = "main-vpc"
-  nat_gateway_ip     = one(data.hcloud_server.bastion.network).ip
-  network_gateway_ip = local.network_gateway_ip
-
-  control_plane = {
-    server_type = "cx33"
-    location    = "fsn1"
-    labels = {
-      "node-type"   = "control-plane"
-      "environment" = "production"
-    }
-  }
-
-  node_pools = {
-    "default" = {
-      count       = 3
-      server_type = "cx33"
-      location    = "fsn1"
-    }
-    "default-nbg1" = {
-      count       = 1
-      server_type = "cx33"
-      location    = "nbg1"
-    }
-    "workspace" = {
-      count       = 1
-      server_type = "cx33"
-      location    = "hel1"
-      labels = {
-        "node-type"      = "workspace"
-        "sysbox-install" = "yes"
-      }
-      taints = [
-        {
-          key    = "dedicated"
-          value  = "workspace"
-          effect = "NoSchedule"
-        }
-      ]
-    }
-  }
+resource "hcloud_placement_group" "cluster_placement_group" {
+  name = "${local.cluster_name}-k3s-placement-group"
+  type = "spread"
 }
 
 module "control_plane_firewall" {
@@ -80,7 +45,7 @@ resource "cloudflare_dns_record" "nexus_control_plane" {
   zone_id = data.cloudflare_zone.kbntx.zone_id
   name    = "nexus-control-plane"
   type    = "A"
-  content = module.nexus_cluster.control_plane_ip
+  content = hcloud_server_network.control_plane_network.ip
   ttl     = 300
   proxied = false
 }
@@ -94,9 +59,4 @@ module "worker_nodes_firewall" {
   ]
 
   label_selector = "type=worker,cluster-name=nexus"
-}
-
-output "cluster_token" {
-  value     = module.nexus_cluster.cluster_token
-  sensitive = true
 }
