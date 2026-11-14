@@ -23,10 +23,12 @@ invoke, through the
 composite action right after checkout, instead of running on a pre-baked image: `node pnpm` for a
 plain Nx job, `node pnpm go golangci-lint` for a job whose `lint` target shells out to both.
 
-Versions come from the root
-<a href="https://github.com/kbntx-org/nexus/blob/main/mise.toml" target="_blank" rel="noopener"><code>mise.toml</code></a>,
-the single source of truth for every pinned runtime and the same file a contributor's shell reads
-locally (see [Local Development](../../getting-started/02-local-development.md)).
+Versions come from mise's config, the single source of truth for every pinned runtime and the same
+config a contributor's shell reads locally: language toolchains in
+<a href="https://github.com/kbntx-org/nexus/tree/main/.config/mise/conf.d" target="_blank" rel="noopener"><code>.config/mise/conf.d/</code></a>,
+every other tool in the root
+<a href="https://github.com/kbntx-org/nexus/blob/main/mise.toml" target="_blank" rel="noopener"><code>mise.toml</code></a>
+(see [Local Development](../../getting-started/02-local-development.md)).
 
 ## Pipeline shape
 
@@ -74,14 +76,35 @@ drafts, and `gh stack submit --open` marks the whole stack ready.
 after it follows that answer. Each question the pipeline asks (what to lint, format-check, test or
 build) is the same call: `nx show projects --affected --base <base> --with-target <target>`.
 
-What makes a project affected is entirely Nx `inputs`; there's no hand-rolled path matching.
-`nx.json`'s `sharedGlobals` named input holds the files whose change must re-run the whole pipeline:
-the `mise.toml` toolchain pins and the pnpm lockfile. Every project's `default` input (and so
-`production`, and every target built on it) includes `sharedGlobals`. Touching either file therefore
-re-lints, re-tests, rebuilds and redeploys everything, because either could change what every target
-produces. The workflows are not in it: editing one changes how the pipeline runs, not what a target
-produces, and the PR that edits it already runs the new version, so redeploying every project for it
-would buy nothing.
+What makes a project affected is entirely Nx `inputs`; there's no hand-rolled path matching. A
+project is affected when a file under its root changes, when a workspace file one of its target
+inputs names changes, or when a project it depends on is affected. Nothing outside a project marks
+every project affected: a workflow change alters how the pipeline runs, not what a target produces,
+and the PR that edits a workflow already runs the new version.
+
+Toolchains are scoped per project: every project's `default` input (and so `production`, and every
+target built on it) includes a `toolchain` named input, empty in `nx.json` and overridden in a
+project's `project.json` with the toolchains it builds with (`goToolchain`, `nodeToolchain`), each
+pointing at its file in `.config/mise/conf.d/`. A Go bump then rebuilds only Go projects, and a bump
+of a tool in the root `mise.toml` (Tilt, kind, Colima) rebuilds nothing that doesn't opt into it.
+Splitting by file rather than using an Nx `runtime` input (`mise current go`) is deliberate: a
+`runtime` input only changes the cache hash, and `affected` only sees changed files, so a Go bump
+would never redeploy anything. The folder is `.config/mise/conf.d/` because mise loads every file
+there with no `MISE_ENV` (a root `mise.go.toml` is an environment file, loaded only when
+`MISE_ENV=go`), and Renovate's mise manager matches it by default. Its tools are locked in a
+separate `.config/mise/mise.lock`.
+
+npm packages are scoped the same way. `nx.json` sets the JS plugin's
+`projectsAffectedByDependencyUpdates` to `auto`: Nx parses the pnpm lockfile at both revisions,
+diffs the packages, and walks the project graph back from the changed ones, so a Vite bump affects
+only the projects that depend on Vite, directly or transitively. A project depends on a package
+through its `package.json` and its imports (`analyzePackageJson`, `analyzeSourceFiles`). When Nx
+can't map a change (a removed package, an unreadable base revision), it falls back to marking every
+project affected. A package only the root tooling uses (oxfmt) affects nothing.
+
+A deploy target whose image bundles another project declares it in `implicitDependencies` (kiln on
+`kiln-client`), since the graph can't see a Dockerfile; without it, a change to the bundled project
+alone would never rebuild the image.
 
 A deploy target is a project with a `build-ci`
 <a href="https://nx.dev/reference/project-configuration#targets" target="_blank" rel="noopener">Nx
@@ -143,7 +166,9 @@ each run, so it is never edited directly.
 - <a href="https://github.com/kbntx-org/nexus/blob/main/.github/actions/mise-install/action.yaml" target="_blank" rel="noopener"><code>.github/actions/mise-install/action.yaml</code></a>
   — per-job toolchain provisioning
 - <a href="https://github.com/kbntx-org/nexus/blob/main/mise.toml" target="_blank" rel="noopener"><code>mise.toml</code></a>
-  — pinned runtime versions
+  — pinned versions of the tools no build depends on
+- <a href="https://github.com/kbntx-org/nexus/tree/main/.config/mise/conf.d" target="_blank" rel="noopener"><code>.config/mise/conf.d/</code></a>
+  — pinned language toolchains, one file per toolchain
 - <a href="https://github.com/kbntx-org/nexus/tree/main/.github/workflows" target="_blank" rel="noopener"><code>.github/workflows/</code></a>
   — workflow definitions
 - <a href="https://github.com/kbntx-org/nexus/blob/main/.github/workflows/checks.yml" target="_blank" rel="noopener"><code>.github/workflows/checks.yml</code></a>
@@ -160,6 +185,6 @@ each run, so it is never edited directly.
 - <a href="https://github.com/kbntx-org/nexus/blob/main/tools/docker-build-and-push.sh" target="_blank" rel="noopener"><code>tools/docker-build-and-push.sh</code></a>
   — the shared build/push script every `build-ci` target runs
 - <a href="https://github.com/kbntx-org/nexus/blob/main/nx.json" target="_blank" rel="noopener"><code>nx.json</code></a>
-  — `sharedGlobals` and target input defaults
+  — toolchain named inputs, the JS plugin's lockfile mode and target input defaults
 - <a href="https://github.com/kbntx-org/nexus/blob/main/.github/workflows/sync-nexus-public.yml" target="_blank" rel="noopener"><code>.github/workflows/sync-nexus-public.yml</code></a>
   — daily public mirror with filtered history

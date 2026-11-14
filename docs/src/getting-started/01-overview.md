@@ -49,4 +49,5 @@ Ongoing work and planned improvements are tracked as
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/kubernetes" target="_blank" rel="noopener"><code>platform/core/kubernetes/</code></a>
   — OpenTofu provisioning and configuration of the k3s cluster
 - <a href="https://github.com/kbntx-org/nexus/blob/main/mise.toml" target="_blank" rel="noopener"><code>mise.toml</code></a>
-  — pinned versions of every runtime and tool
+  — pinned versions of every tool; language toolchains live in
+  <a href="https://github.com/kbntx-org/nexus/tree/main/.config/mise/conf.d" target="_blank" rel="noopener"><code>.config/mise/conf.d/</code></a>

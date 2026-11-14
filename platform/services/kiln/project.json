@@ -4,6 +4,10 @@
   "projectType": "application",
   "sourceRoot": "platform/services/kiln",
   "tags": [],
+  "implicitDependencies": ["kiln-client"],
+  "namedInputs": {
+    "toolchain": ["goToolchain", "nodeToolchain"]
+  },
   "metadata": {
     "manifestsValuesPath": "kiln/values.yaml"
   },

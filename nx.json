@@ -2,7 +2,7 @@
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "useInferencePlugins": false,
   "namedInputs": {
-    "default": ["{projectRoot}/**/*", "sharedGlobals"],
+    "default": ["{projectRoot}/**/*", "toolchain"],
     "production": [
       "default",
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
@@ -13,7 +13,17 @@
       "!{projectRoot}/src/test-setup.[jt]s",
       "!{projectRoot}/test-setup.[jt]s"
     ],
-    "sharedGlobals": ["{workspaceRoot}/mise.toml", "{workspaceRoot}/pnpm-lock.yaml"]
+    "toolchain": [],
+    "goToolchain": ["{workspaceRoot}/.config/mise/conf.d/go.toml"],
+    "nodeToolchain": ["{workspaceRoot}/.config/mise/conf.d/node.toml"],
+    "miseToolchain": ["{workspaceRoot}/mise.toml"]
+  },
+  "pluginsConfig": {
+    "@nx/js": {
+      "analyzeSourceFiles": true,
+      "analyzePackageJson": true,
+      "projectsAffectedByDependencyUpdates": "auto"
+    }
   },
   "targetDefaults": {
     "build": {

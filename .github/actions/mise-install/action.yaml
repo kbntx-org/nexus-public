@@ -1,14 +1,14 @@
 name: Install mise-managed tools
 description: >
   Ensures the mise CLI is available (installing it if this runner doesn't already have one), then
-  installs the given mise.toml-tracked tools at their pinned versions and puts them on PATH for
-  the rest of the job.
+  installs the given mise-tracked tools (root mise.toml and .config/mise/conf.d/*.toml) at their
+  pinned versions and puts them on PATH for the rest of the job.
 
 inputs:
   tools:
     description: >
-      Space-separated mise.toml tool names to install, e.g. "node pnpm go". Omit to install every
-      tool declared in mise.toml.
+      Space-separated mise tool names to install, e.g. "node pnpm go". Omit to install every tool
+      the mise config declares.
     required: false
     default: ''
 

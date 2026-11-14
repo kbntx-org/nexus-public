@@ -22,7 +22,9 @@ The VM's prerequisites on the host are Colima,
 <a href="https://code.visualstudio.com/docs/remote/ssh" target="_blank" rel="noopener">VS Code
 Remote - SSH</a> to develop inside the VM. Colima and Lima are pinned in
 <a href="https://github.com/kbntx-org/nexus/blob/main/mise.toml" target="_blank" rel="noopener"><code>mise.toml</code></a>
-with every other tool, which the bootstrap below installs in the VM.
+with every other tool (language toolchains sit in
+<a href="https://github.com/kbntx-org/nexus/tree/main/.config/mise/conf.d" target="_blank" rel="noopener"><code>.config/mise/conf.d/</code></a>),
+which the bootstrap below installs in the VM.
 
 ### Isolated environments in the VM
 
@@ -197,3 +199,5 @@ mounted in, so it trusts the mkcert certificate locally and the public one in pr
   — `lib.tilt`, `platform.tilt`, `apps.tilt`, and `local.sh`
 - <a href="https://github.com/kbntx-org/nexus/blob/main/mise.toml" target="_blank" rel="noopener"><code>mise.toml</code></a>
   — every pinned local tool version, plus the `cluster` and `dev` tasks
+- <a href="https://github.com/kbntx-org/nexus/tree/main/.config/mise/conf.d" target="_blank" rel="noopener"><code>.config/mise/conf.d/</code></a>
+  — pinned language toolchains (Go, Node), one file per toolchain

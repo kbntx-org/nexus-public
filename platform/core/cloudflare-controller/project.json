@@ -4,6 +4,9 @@
   "projectType": "application",
   "sourceRoot": "platform/core/cloudflare-controller",
   "tags": [],
+  "namedInputs": {
+    "toolchain": ["goToolchain"]
+  },
   "metadata": {
     "manifestsValuesPath": "cloudflare-controller/values.yaml"
   },

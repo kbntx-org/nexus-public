@@ -4,6 +4,9 @@
   "projectType": "application",
   "sourceRoot": "platform/services/workspace",
   "tags": [],
+  "namedInputs": {
+    "toolchain": ["miseToolchain"]
+  },
   "metadata": {
     "manifestsValuesPath": "workspace/values.yaml"
   },

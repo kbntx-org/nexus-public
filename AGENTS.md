@@ -9,8 +9,13 @@ Global conventions. Documentation rules live in [`docs/AGENTS.md`](docs/AGENTS.m
   operators).
 - `platform/services`: workloads hosted on the platform that are not product apps.
 
-`mise.toml` at the root is the only source of runtime and tool versions; never hardcode them
-elsewhere.
+mise is the only source of runtime and tool versions; never hardcode them elsewhere. Language
+toolchains that change what a project builds live in one file each under `.config/mise/conf.d/`
+(`go.toml`, `node.toml`), every other tool in the root `mise.toml`. A project opts into the
+toolchains it uses by setting its `toolchain` named input in `project.json` (`goToolchain`,
+`nodeToolchain`), so a toolchain bump marks only those projects affected. A project whose image
+bundles another project lists it in `implicitDependencies`, or a change to the bundled project alone
+never rebuilds the image.
 
 ## Architecture Standards
 
