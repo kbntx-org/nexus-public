@@ -76,10 +76,12 @@ build) is the same call: `nx show projects --affected --base <base> --with-targe
 
 What makes a project affected is entirely Nx `inputs`; there's no hand-rolled path matching.
 `nx.json`'s `sharedGlobals` named input holds the files whose change must re-run the whole pipeline:
-the pipeline workflows, the `mise.toml` toolchain pins and the pnpm lockfile. Every project's
-`default` input (and so `production`, and every target built on it) includes `sharedGlobals`.
-Touching any of those files therefore re-lints, re-tests, rebuilds and redeploys everything, because
-any of them could change what every target produces.
+the `mise.toml` toolchain pins and the pnpm lockfile. Every project's `default` input (and so
+`production`, and every target built on it) includes `sharedGlobals`. Touching either file therefore
+re-lints, re-tests, rebuilds and redeploys everything, because either could change what every target
+produces. The workflows are not in it: editing one changes how the pipeline runs, not what a target
+produces, and the PR that edits it already runs the new version, so redeploying every project for it
+would buy nothing.
 
 A deploy target is a project with a `build-ci`
 <a href="https://nx.dev/reference/project-configuration#targets" target="_blank" rel="noopener">Nx
