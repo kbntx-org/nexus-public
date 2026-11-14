@@ -8,9 +8,6 @@ k3s_token: ''
 # Required: shared token used by worker nodes to join the cluster. Unlike
 k3s_agent_token: ''
 
-k3s_docker_hub_username: ''
-k3s_docker_hub_password: ''
-
 k3s_zot_host: registry.kbntx.com
 k3s_zot_username: node
 k3s_zot_password: ''

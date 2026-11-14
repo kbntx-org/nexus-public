@@ -39,9 +39,6 @@ configuration. The playbook only manages static nodes (see
   hcloud_token: <hetzner-api-token>
   k3s_token: <server-token>
   k3s_agent_token: <agent-token>
-  # Optional, raises Docker Hub pull limits:
-  k3s_docker_hub_username: <username>
-  k3s_docker_hub_password: <access-token>
   # Optional, lets nodes pull from registry.kbntx.com (the `node` user's password):
   k3s_zot_password: <node-password>
   ```

@@ -53,7 +53,7 @@
     owner: root
     group: root
     mode: '0600'
-  when: (k3s_docker_hub_username != '' and k3s_docker_hub_password != '') or k3s_zot_password != ''
+  when: k3s_zot_password != ''
   notify: Restart k3s
 
 - name: Template the k3s config file

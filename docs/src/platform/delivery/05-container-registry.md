@@ -75,7 +75,7 @@ bodies over 100 MB on the Free and Pro plans, and a layer is sent as a single re
   is pulled through zot. containerd always tries the original registry last, so a pull still
   succeeds when zot is down, which keeps the platform components zot itself depends on from
   deadlocking. The cache has no upstream credentials, so the fetches it makes are anonymous and rate
-  limited; the nodes' own Docker Hub credentials only apply to that fallback.
+  limited, and so is the fallback to Docker Hub.
 
 ## Provisioning the R2 bucket
 
