@@ -28,5 +28,5 @@ jobs:
         shell: bash
 
       - name: Test
-        run: pnpm nx run-many --target=test --projects="${{ inputs.test_projects_csv }}" --parallel --outputStyle=stream
+        run: pnpm nx run-many --target=test --projects="${{ inputs.test_projects_csv }}" --outputStyle=stream
         shell: bash
