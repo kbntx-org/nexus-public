@@ -29,6 +29,7 @@ node_modules
 
 .env
 environment.json
+environment.local.json
 *.tsbuildinfo
 
 # misc

@@ -4,3 +4,4 @@ apps/**/node_modules
 .vscode
 tmp
 .nx
+**/environment.local.json

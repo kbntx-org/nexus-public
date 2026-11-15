@@ -31,7 +31,7 @@ def helm_chart_deps(chartPath):
       local('helm repo add %s %s --force-update' % (dependency['name'], repository), quiet=True)
   local('helm dependency build ' + chartPath, quiet=True)
 
-def buildkit_build(ref, context, dockerfile=None, target=None, only=[], build_args={}, live_update=[]):
+def buildkit_build(ref, context, dockerfile=None, target=None, only=[], ignore=[], build_args={}, live_update=[]):
   dockerfilePath = dockerfile or (context + '/Dockerfile')
   flags = ['--file', dockerfilePath]
   if target:
@@ -52,6 +52,7 @@ def buildkit_build(ref, context, dockerfile=None, target=None, only=[], build_ar
       '--provenance=false',
     ] + flags + [context]),
     deps=deps,
+    ignore=ignore,
     live_update=live_update,
     skips_local_docker=True,
     disable_push=True,

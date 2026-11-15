@@ -59,6 +59,12 @@ lists are the source of truth), `apps.tilt` for product apps, and `lib.tilt` for
 An app with a more involved setup (smelt, for example) keeps its own Tiltfile, included from
 `apps.tilt`.
 
+An app configured by one JSON file (smelt) commits `environment.base.json` with working local
+values. Secrets such as an API key go in a gitignored `environment.local.json` next to it; the
+Tiltfile deep-merges the two with `yq` and applies the result as the same `Secret` the app reads in
+production, so the app never knows which environment it runs in. Editing either file restarts the
+pod.
+
 ## Getting started
 
 Steps marked **host** run on your machine; every other command runs in the VM, from a VS Code
