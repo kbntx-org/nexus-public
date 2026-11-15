@@ -1,3 +1,5 @@
+email: redacted@example.com
+
 cert-manager:
   crds:
     enabled: true
