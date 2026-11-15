@@ -1,0 +1,35 @@
+load('./lib.tilt', 'root_path')
+
+MCP_RESOURCES = ['playwright-mcp', 'grafana-mcp-local', 'grafana-mcp-prod']
+
+# ── Playwright MCP (headless Chromium driven by AI agents to check frontend changes) ──
+# Host networking, because Chromium always resolves *.localhost to its own loopback: on the VM's,
+# kind publishes Traefik on 80/443. The image has no certutil to trust the mkcert CA, hence
+# --ignore-https-errors. Snapshots and console logs are written to files the tool responses point
+# to, so the output directory is mounted at the same path for those paths to resolve in the VM.
+# renovate: datasource=docker depName=mcr.microsoft.com/playwright/mcp
+PLAYWRIGHT_MCP_IMAGE = 'mcr.microsoft.com/playwright/mcp:v0.0.83'
+PLAYWRIGHT_MCP_PORT = '8931'
+PLAYWRIGHT_MCP_OUTPUT_DIR = root_path('.playwright-mcp')
+local_resource(
+  'playwright-mcp',
+  serve_cmd='mkdir -p {output} && exec docker run --rm --network host --user "$(id -u):$(id -g)" --env HOME=/tmp --volume {output}:{output} --workdir {workdir} {image} --port {port} --isolated --ignore-https-errors --output-dir {output}'.format(
+    output=PLAYWRIGHT_MCP_OUTPUT_DIR,
+    workdir=root_path('.'),
+    image=PLAYWRIGHT_MCP_IMAGE,
+    port=PLAYWRIGHT_MCP_PORT,
+  ),
+  readiness_probe=probe(tcp_socket=tcp_socket_action(port=int(PLAYWRIGHT_MCP_PORT))),
+  labels=['3-MCP'],
+)
+
+# ── Grafana MCP (one shared server per Grafana profile of env.yaml, see tools/grafana-mcp.sh) ──
+GRAFANA_MCP_PORTS = {'local': '8932', 'prod': '8933'}
+for profile, port in GRAFANA_MCP_PORTS.items():
+  local_resource(
+    'grafana-mcp-' + profile,
+    serve_cmd=[root_path('tools/grafana-mcp.sh'), profile, port],
+    deps=[root_path('tools/grafana-mcp.sh')],
+    readiness_probe=probe(tcp_socket=tcp_socket_action(port=int(port))),
+    labels=['3-MCP'],
+  )

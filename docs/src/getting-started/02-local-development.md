@@ -55,9 +55,9 @@ The root
 is a thin entrypoint; the real setup lives in
 <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/local" target="_blank" rel="noopener"><code>platform/core/local/</code></a>:
 `platform.tilt` for core infra (its `CORE_RESOURCES`, `OPTIONAL_RESOURCES` and `PERSISTED_ON_DOWN`
-lists are the source of truth), `apps.tilt` for product apps, and `lib.tilt` for the shared helpers.
-An app with a more involved setup (smelt, for example) keeps its own Tiltfile, included from
-`apps.tilt`.
+lists are the source of truth), `apps.tilt` for product apps, `mcp.tilt` for the MCP servers AI
+agents use, and `lib.tilt` for the shared helpers. An app with a more involved setup (smelt, for
+example) keeps its own Tiltfile, included from `apps.tilt`.
 
 An app configured by one JSON file (smelt) commits `environment.base.json` with working local
 values. Secrets such as an API key go in a gitignored `environment.local.json` next to it; the
@@ -171,11 +171,13 @@ the agent reads them.
 <a href="https://github.com/grafana/mcp-grafana" target="_blank" rel="noopener">Grafana MCP
 server</a> profiles, `grafana-local` and `grafana-prod`, so an AI agent can search dashboards, run
 metric and log queries and read alert rules, for instance to check that a change emits the metrics
-and logs it should, or to investigate a production incident. Claude Code starts each one on demand
-through
-<a href="https://github.com/kbntx-org/nexus/blob/main/tools/grafana-mcp.sh" target="_blank" rel="noopener"><code>tools/grafana-mcp.sh</code></a>,
-which runs the server as a Docker container over stdio, so there is no Tilt resource and no port to
-manage.
+and logs it should, or to investigate a production incident. Each profile is an optional Tilt
+resource, `grafana-mcp-local` and `grafana-mcp-prod` (`mise run dev docs grafana-mcp-prod`, or from
+the Tilt UI/CLI), that runs
+<a href="https://github.com/kbntx-org/nexus/blob/main/tools/grafana-mcp.sh" target="_blank" rel="noopener"><code>tools/grafana-mcp.sh</code></a>:
+one Docker container serving MCP over HTTP on a localhost port. Every Claude Code session connects
+to that one server; a stdio server would instead start a container per session and per profile. The
+script passes the credentials to Docker by variable name, so they never appear in `ps`.
 
 The profiles come from the gitignored `env.yaml` at the repository root, falling back to
 <a href="https://github.com/kbntx-org/nexus/blob/main/env.example.yaml" target="_blank" rel="noopener"><code>env.example.yaml</code></a>.
@@ -202,7 +204,7 @@ mounted in, so it trusts the mkcert certificate locally and the public one in pr
 - <a href="https://github.com/kbntx-org/nexus/blob/main/Tiltfile" target="_blank" rel="noopener"><code>Tiltfile</code></a>
   — local dev entrypoint (resource enablement and what `tilt down` keeps)
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/local" target="_blank" rel="noopener"><code>platform/core/local/</code></a>
-  — `lib.tilt`, `platform.tilt`, `apps.tilt`, and `local.sh`
+  — `lib.tilt`, `platform.tilt`, `apps.tilt`, `mcp.tilt`, and `local.sh`
 - <a href="https://github.com/kbntx-org/nexus/blob/main/mise.toml" target="_blank" rel="noopener"><code>mise.toml</code></a>
   — every pinned local tool version, plus the `cluster` and `dev` tasks
 - <a href="https://github.com/kbntx-org/nexus/tree/main/.config/mise/conf.d" target="_blank" rel="noopener"><code>.config/mise/conf.d/</code></a>
