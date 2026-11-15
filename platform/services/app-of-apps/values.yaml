@@ -1,6 +1,6 @@
-productSourcePolicy:
+applicationSourcePolicy:
   project: product
-  repository: https://github.com/kbntx-org/nexus.git
+  repository: https://github.com/kbntx-org/nexus
   pathPrefix: apps/
 
 argocd-apps:
@@ -59,476 +59,75 @@ argocd-apps:
         - group: traefik.io
           kind: '*'
 
-  # Keeps the root app from pruning these Applications while an ApplicationSet adopts them.
-  applications:
-    traefik-ingress:
-      additionalAnnotations:
-        argocd.argoproj.io/sync-options: Prune=false
-      finalizers:
-        - resources-finalizer.argocd.argoproj.io
-      project: platform
-      source:
-        repoURL: https://github.com/kbntx-org/nexus.git
-        path: platform/core/traefik
-        targetRevision: main
-        helm:
-          valueFiles:
-            - values.yaml
-            - values.prod.yaml
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: traefik-ingress
+  applicationsets:
+    applications:
+      namespace: argocd
+      goTemplate: true
+      goTemplateOptions:
+        - missingkey=error
+      generators:
+        - matrix:
+            generators:
+              - git:
+                  repoURL: https://github.com/kbntx-org/nexus.git
+                  revision: main
+                  files:
+                    - path: '**/argo.yaml'
+              - list:
+                  elementsYaml: '{{ .environments | toJson }}'
+      # Lets auto-sync be turned off from the ArgoCD UI, during an incident or a database restore,
+      # without the ApplicationSet turning it back on.
+      ignoreApplicationDifferences:
+        - jsonPointers:
+            - /spec/syncPolicy/automated
       syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
-
-    argocd:
-      additionalAnnotations:
-        argocd.argoproj.io/sync-options: Prune=false
-      finalizers:
-        - resources-finalizer.argocd.argoproj.io
-      project: platform
-      source:
-        repoURL: https://github.com/kbntx-org/nexus.git
-        path: platform/core/argocd
-        targetRevision: main
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: argocd
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
-
-    external-secrets:
-      additionalAnnotations:
-        argocd.argoproj.io/sync-options: Prune=false
-      finalizers:
-        - resources-finalizer.argocd.argoproj.io
-      project: platform
-      source:
-        repoURL: https://github.com/kbntx-org/nexus.git
-        path: platform/core/external-secrets/deploy
-        targetRevision: main
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: external-secrets
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
-          - ServerSideApply=true
-
-    vault:
-      additionalAnnotations:
-        argocd.argoproj.io/sync-options: Prune=false
-      finalizers:
-        - resources-finalizer.argocd.argoproj.io
-      project: platform
-      source:
-        repoURL: https://github.com/kbntx-org/nexus.git
-        path: platform/core/vault/server
-        targetRevision: main
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: vault
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
-
-    cloudnative-pg:
-      additionalAnnotations:
-        argocd.argoproj.io/sync-options: Prune=false
-      finalizers:
-        - resources-finalizer.argocd.argoproj.io
-      project: platform
-      source:
-        repoURL: https://github.com/kbntx-org/nexus.git
-        path: platform/core/cloudnative-pg
-        targetRevision: main
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: cloudnative-pg
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
-          - ServerSideApply=true
-
-    cloudflared:
-      additionalAnnotations:
-        argocd.argoproj.io/sync-options: Prune=false
-      finalizers:
-        - resources-finalizer.argocd.argoproj.io
-      project: platform
-      source:
-        repoURL: https://github.com/kbntx-org/nexus.git
-        path: platform/core/cloudflared/chart
-        targetRevision: main
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: cloudflared
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
-
-    external-dns:
-      additionalAnnotations:
-        argocd.argoproj.io/sync-options: Prune=false
-      finalizers:
-        - resources-finalizer.argocd.argoproj.io
-      project: platform
-      source:
-        repoURL: https://github.com/kbntx-org/nexus.git
-        path: platform/core/external-dns
-        targetRevision: main
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: external-dns
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
-
-    cert-manager:
-      additionalAnnotations:
-        argocd.argoproj.io/sync-options: Prune=false
-      finalizers:
-        - resources-finalizer.argocd.argoproj.io
-      project: platform
-      source:
-        repoURL: https://github.com/kbntx-org/nexus.git
-        path: platform/core/cert-manager
-        targetRevision: main
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: cert-manager
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
-
-    cilium:
-      additionalAnnotations:
-        argocd.argoproj.io/sync-options: Prune=false
-      finalizers:
-        - resources-finalizer.argocd.argoproj.io
-      project: platform
-      source:
-        repoURL: https://github.com/kbntx-org/nexus.git
-        path: platform/core/cilium
-        targetRevision: main
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: kube-system
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
-          - ServerSideApply=true
-
-    hetzner-cloud-controller:
-      additionalAnnotations:
-        argocd.argoproj.io/sync-options: Prune=false
-      finalizers:
-        - resources-finalizer.argocd.argoproj.io
-      project: platform
-      source:
-        repoURL: https://github.com/kbntx-org/nexus.git
-        path: platform/core/hetzner-cloud-controller
-        targetRevision: main
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: kube-system
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
-
-    sysbox:
-      additionalAnnotations:
-        argocd.argoproj.io/sync-options: Prune=false
-      project: platform
-      source:
-        repoURL: https://github.com/kbntx-org/nexus.git
-        path: platform/core/sysbox/deploy
-        targetRevision: main
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: kube-system
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
-
-    zot:
-      additionalAnnotations:
-        argocd.argoproj.io/sync-options: Prune=false
-      project: default
-      source:
-        repoURL: https://github.com/kbntx-org/nexus.git
-        path: platform/core/zot
-        targetRevision: main
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: zot
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
-
-    monitoring:
-      additionalAnnotations:
-        argocd.argoproj.io/sync-options: Prune=false
-      finalizers:
-        - resources-finalizer.argocd.argoproj.io
-      project: platform
-      source:
-        repoURL: https://github.com/kbntx-org/nexus.git
-        path: platform/core/monitoring
-        targetRevision: main
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: monitoring
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
-          - ServerSideApply=true
-
-    headlamp:
-      additionalAnnotations:
-        argocd.argoproj.io/sync-options: Prune=false
-      finalizers:
-        - resources-finalizer.argocd.argoproj.io
-      project: platform
-      source:
-        repoURL: https://github.com/kbntx-org/nexus.git
-        path: platform/core/headlamp
-        targetRevision: main
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: headlamp
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
-
-    system-upgrade-controller:
-      additionalAnnotations:
-        argocd.argoproj.io/sync-options: Prune=false
-      finalizers:
-        - resources-finalizer.argocd.argoproj.io
-      project: platform
-      source:
-        repoURL: https://github.com/kbntx-org/nexus.git
-        path: platform/core/kubernetes/upgrades/system-upgrade-controller
-        targetRevision: main
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: system-upgrade
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
-
-    k3s-upgrades:
-      additionalAnnotations:
-        argocd.argoproj.io/sync-options: Prune=false
-      finalizers:
-        - resources-finalizer.argocd.argoproj.io
-      project: platform
-      source:
-        repoURL: https://github.com/kbntx-org/nexus.git
-        path: platform/core/kubernetes/upgrades/plans
-        targetRevision: main
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: system-upgrade
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
-
-    documentation:
-      additionalAnnotations:
-        argocd.argoproj.io/sync-options: Prune=false
-      finalizers:
-        - resources-finalizer.argocd.argoproj.io
-      project: platform
-      sources:
-        - repoURL: https://github.com/kbntx-org/nexus.git
-          path: docs/helm
-          targetRevision: main
-          helm:
-            valueFiles:
-              - values.yaml
-              - $values/documentation/values.yaml
-        - repoURL: https://github.com/kbntx-org/nexus-manifests.git
-          targetRevision: main
-          ref: values
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: documentation
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
-
-    cloudflare-controller:
-      additionalAnnotations:
-        argocd.argoproj.io/sync-options: Prune=false
-      finalizers:
-        - resources-finalizer.argocd.argoproj.io
-      project: platform
-      sources:
-        - repoURL: https://github.com/kbntx-org/nexus.git
-          path: platform/core/cloudflare-controller/chart
-          targetRevision: main
-          helm:
-            valueFiles:
-              - values.yaml
-              - $values/cloudflare-controller/values.yaml
-        - repoURL: https://github.com/kbntx-org/nexus-manifests.git
-          targetRevision: main
-          ref: values
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: cloudflare-controller
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
-
-    n8n:
-      additionalAnnotations:
-        argocd.argoproj.io/sync-options: Prune=false
-      finalizers:
-        - resources-finalizer.argocd.argoproj.io
-      project: platform
-      source:
-        repoURL: https://github.com/kbntx-org/nexus.git
-        path: platform/services/n8n
-        targetRevision: main
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: n8n
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
-
-    atlantis:
-      additionalAnnotations:
-        argocd.argoproj.io/sync-options: Prune=false
-      finalizers:
-        - resources-finalizer.argocd.argoproj.io
-      project: platform
-      source:
-        repoURL: https://github.com/kbntx-org/nexus.git
-        path: platform/services/atlantis
-        targetRevision: main
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: atlantis
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
-
-    kiln:
-      additionalAnnotations:
-        argocd.argoproj.io/sync-options: Prune=false
-      finalizers:
-        - resources-finalizer.argocd.argoproj.io
-      project: platform
-      sources:
-        - repoURL: https://github.com/kbntx-org/nexus.git
-          path: platform/services/kiln/chart
-          targetRevision: main
-          helm:
-            valueFiles:
-              - values.yaml
-              - $values/kiln/values.yaml
-        - repoURL: https://github.com/kbntx-org/nexus-manifests.git
-          targetRevision: main
-          ref: values
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: kiln
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
-
-    smelt:
-      additionalAnnotations:
-        argocd.argoproj.io/sync-options: Prune=false
-      finalizers:
-        - resources-finalizer.argocd.argoproj.io
-      project: product
-      sources:
-        - repoURL: https://github.com/kbntx-org/nexus.git
-          path: apps/smelt/chart
-          targetRevision: main
-          helm:
-            valueFiles:
-              - values.yaml
-              - $values/smelt/values.yaml
-        - repoURL: https://github.com/kbntx-org/nexus-manifests.git
-          targetRevision: main
-          ref: values
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: smelt
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
+        # Removing an argo.yaml never deletes the app or its data; decommissioning is deliberate.
+        applicationsSync: create-update
+        preserveResourcesOnDeletion: true
+      # prod keeps the bare names the Applications had before the ApplicationSet adopted them.
+      template:
+        metadata:
+          name: '{{ .app }}{{ if ne .env "prod" }}-{{ .env }}{{ end }}'
+        spec:
+          project: '{{ .project }}'
+          destination:
+            server: https://kubernetes.default.svc
+            namespace: '{{ dig "namespace" .app . }}{{ if ne .env "prod" }}-{{ .env }}{{ end }}'
+      # The template only reads the argo.yaml keys listed in argo.schema.json.
+      templatePatch: |
+        {{- $valueFiles := dig "valueFiles" (list) . }}
+        {{- if dig "deleteResources" true . }}
+        metadata:
+          finalizers:
+            - resources-finalizer.argocd.argoproj.io
+        {{- end }}
+        spec:
+          {{- with dig "manifestsValues" "" . }}
+          sources:
+            - repoURL: https://github.com/kbntx-org/nexus.git
+              path: {{ $.path.path | quote }}
+              targetRevision: main
+              helm:
+                valueFiles: {{ append (default (list "values.yaml") $valueFiles) (printf "$values/%s" .) | toJson }}
+            - repoURL: https://github.com/kbntx-org/nexus-manifests.git
+              targetRevision: main
+              ref: values
+          {{- else }}
+          source:
+            repoURL: https://github.com/kbntx-org/nexus.git
+            path: {{ .path.path | quote }}
+            targetRevision: main
+            {{- with $valueFiles }}
+            helm:
+              valueFiles: {{ toJson . }}
+            {{- end }}
+          {{- end }}
+          syncPolicy:
+            automated:
+              prune: true
+              selfHeal: true
+            syncOptions:
+              - CreateNamespace=true
+              {{- if dig "serverSideApply" false . }}
+              - ServerSideApply=true
+              {{- end }}

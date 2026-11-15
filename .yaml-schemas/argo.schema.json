@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "argo.yaml",
+  "description": "Deploys the Helm chart in this directory: the applications ApplicationSet generates one ArgoCD Application per environment listed here.",
+  "type": "object",
+  "required": ["app", "project", "environments"],
+  "additionalProperties": false,
+  "properties": {
+    "app": {
+      "description": "Application name, unique across the repository.",
+      "$ref": "#/definitions/name"
+    },
+    "project": {
+      "description": "ArgoCD project. A chart under apps/ must use product, any other chart platform; the API server rejects any other pairing.",
+      "enum": ["platform", "product"]
+    },
+    "namespace": {
+      "description": "Destination namespace. Defaults to app.",
+      "$ref": "#/definitions/name"
+    },
+    "environments": {
+      "description": "Environments the chart is deployed to.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["env"],
+        "additionalProperties": false,
+        "properties": {
+          "env": {
+            "description": "Environment name.",
+            "enum": ["prod"]
+          },
+          "valueFiles": {
+            "description": "Helm value files, relative to this directory. Defaults to the chart's values.yaml.",
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "manifestsValues": {
+      "description": "Values file in nexus-manifests, added as the last value file: CI's deploy job writes the image tag it ships into it.",
+      "type": "string",
+      "pattern": "^([a-z0-9][-a-z0-9]*/)*[a-z0-9][-a-z0-9.]*\\.yaml$"
+    },
+    "serverSideApply": {
+      "description": "Sync with server-side apply, for charts whose resources exceed the client-side apply annotation size.",
+      "type": "boolean",
+      "default": false
+    },
+    "deleteResources": {
+      "description": "Delete the app's resources with its Application. Set to false for resources that must outlive it.",
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "definitions": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+    }
+  }
+}

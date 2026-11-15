@@ -28,47 +28,79 @@ image, then hand ArgoCD a new tag. See [CI/CD pipeline](02-ci-cd-pipeline.md) an
 A single root `Application`, registered by hand once at bootstrap, points at the
 <a href="https://github.com/kbntx-org/nexus/tree/main/platform/services/app-of-apps" target="_blank" rel="noopener"><code>app-of-apps</code></a>
 chart, a thin wrapper around
-<a href="https://github.com/argoproj/argo-helm/tree/main/charts/argocd-apps" target="_blank" rel="noopener"><code>argocd-apps</code></a>
-that declares every other `Application` the platform needs as a child. Bootstrapping the platform is
-one sync of the root; everything declared in
-<a href="https://github.com/kbntx-org/nexus/blob/main/platform/services/app-of-apps/values.yaml" target="_blank" rel="noopener"><code>app-of-apps/values.yaml</code></a>
-is then materialized on its own: every `platform/core/*` and `platform/services/*` component plus
-the apps, all traceable back to one file.
+<a href="https://github.com/argoproj/argo-helm/tree/main/charts/argocd-apps" target="_blank" rel="noopener"><code>argocd-apps</code></a>.
+It declares the two projects, the admission policy below and one
+<a href="https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/" target="_blank" rel="noopener"><code>ApplicationSet</code></a>,
+`applications`, that generates every other `Application` from the `argo.yaml` files of the repo.
+Bootstrapping the platform is one sync of the root.
+
+### argo.yaml
+
+Each deployed Helm chart has an `argo.yaml` next to its `Chart.yaml`, validated in the editor by
+<a href="https://github.com/kbntx-org/nexus/blob/main/.yaml-schemas/argo.schema.json" target="_blank" rel="noopener"><code>argo.schema.json</code></a>:
+
+```yaml
+app: smelt # Application name, unique across the repo
+project: product # product under apps/, platform anywhere else
+environments:
+  - env: prod
+manifestsValues: smelt/values.yaml # nexus-manifests file CI writes the image tag to
+```
+
+The `ApplicationSet` generates one `Application` per entry of `environments`, so a chart's whole
+deployment is described next to the chart instead of in a central list. `prod` keeps the bare `app`
+name and namespace; any other environment gets a `-<env>` suffix on both, so adding one never
+touches what prod runs. The remaining keys (`namespace`, per-environment `valueFiles`,
+`serverSideApply`, `deleteResources`) are described in the schema; the template reads nothing else,
+and the repositories and the cluster are fixed in it. The same file is meant to grow with the
+platform: new environments, and the promotion pipeline between them, derive from it.
+
+Auto-sync is the one setting the UI owns: turning it off on an `Application` sticks, because the
+`ApplicationSet` ignores that field once the `Application` exists. It is the incident switch, and a
+paused app shows as such in the UI instead of hiding in a git diff.
+
+Removing an `argo.yaml` does not delete its app: the `ApplicationSet` creates and updates
+`Application`s but never deletes one (`applicationsSync: create-update`), so a moved or broken file
+can't take a database with it. Decommissioning is deliberate: delete the file, then the
+`Application` from the ArgoCD UI.
 
 ### Projects
 
-The same file declares two
-<a href="https://argo-cd.readthedocs.io/en/stable/user-guide/projects/" target="_blank" rel="noopener"><code>AppProject</code>s</a>,
-and every `Application` belongs to one of them:
+Every `Application` belongs to one of two
+<a href="https://argo-cd.readthedocs.io/en/stable/user-guide/projects/" target="_blank" rel="noopener"><code>AppProject</code>s</a>:
 
-| Project    | Holds                                    | Permissions                                                               |
-| ---------- | ---------------------------------------- | ------------------------------------------------------------------------- |
-| `platform` | `platform/core/*`, `platform/services/*` | Any namespace, any resource, cluster-scoped included                      |
-| `product`  | `apps/*`                                 | Only its listed namespaces, no cluster-scoped resource, whitelisted kinds |
+| Project    | Holds                       | Permissions                                                               |
+| ---------- | --------------------------- | ------------------------------------------------------------------------- |
+| `platform` | Every chart outside `apps/` | Any namespace, any resource, cluster-scoped included                      |
+| `product`  | Charts under `apps/`        | Only its listed namespaces, no cluster-scoped resource, whitelisted kinds |
 
-An `AppProject` restricts repositories, not paths, so the same chart also ships a
-<a href="https://kubernetes.io/docs/reference/access-authn-authz/validating-admission-policy/" target="_blank" rel="noopener"><code>ValidatingAdmissionPolicy</code></a>:
-the API server rejects any `product` `Application` whose source in this repo points outside `apps/`.
-A CEL policy was chosen over an admission webhook because it runs inside the API server, with no
-server or certificate to operate. The whitelist opens whole API groups (workloads, Traefik,
-cert-manager, CNPG, ...) but names core kinds one by one, so an app cannot create a `ResourceQuota`
-or `LimitRange` to lift its own namespace limits. A product chart that needs a kind outside it fails
-to sync until the kind or its group is added to the `product` whitelist.
+`argo.yaml` names its project, but the API server enforces the pairing: a
+<a href="https://kubernetes.io/docs/reference/access-authn-authz/validating-admission-policy/" target="_blank" rel="noopener"><code>ValidatingAdmissionPolicy</code></a>
+rejects any `Application` whose chart is under `apps/` and whose project is not `product`, or the
+reverse. A wrong project fails loudly at sync instead of silently granting a product chart the
+platform's permissions, which an `AppProject` alone can't prevent since it restricts repositories,
+not paths. The same policy forbids moving an existing `Application` into `product`: an `argo.yaml`
+reusing a platform app's name updates that `Application` instead of creating a new one, and would
+otherwise take it over. A CEL policy was chosen over an admission webhook because it runs inside the
+API server, with no server or certificate to operate.
 
-**Runbook — add a new cluster-side workload:** drop the chart under `platform/core/<name>/` or
-`platform/services/<name>/`, add an entry under `argocd-apps.applications` in
-`app-of-apps/values.yaml` with `project: platform`, push to `main`. For a product app under
-`apps/<name>/`, use `project: product` and add its namespace to the `product` project's
-`destinations`. No one ever clicks "create application" in the UI.
+The `product` whitelist opens whole API groups (workloads, Traefik, cert-manager, CNPG, ...) but
+names core kinds one by one, so an app cannot create a `ResourceQuota` or `LimitRange` to lift its
+own namespace limits. A product chart that needs a kind outside it fails to sync until the kind or
+its group is added to the whitelist.
 
-Every child carries the
+**Runbook — add a new cluster-side workload:** add an `argo.yaml` next to its chart and push to
+`main`. A product app under `apps/` also needs its namespace added to the `product` project's
+`destinations`, the reviewed change that keeps an app out of `kube-system`. No one ever clicks
+"create application" in the UI.
+
+Every generated `Application` carries the
 <a href="https://argo-cd.readthedocs.io/en/stable/user-guide/app_deletion/#about-the-deletion-finalizer" target="_blank" rel="noopener">resources
-finalizer</a>, so deleting its entry cascades: ArgoCD deletes everything the app deployed before the
-`Application` itself, instead of orphaning it. It is the foreground variant, so a deletion stuck on
-a resource stays visible as an `Application` in the UI rather than failing silently. Two gotchas:
-the finalizer must be live before the entry is removed, so add it in an earlier sync for a new app;
-and keep a product app's namespace in the `product` `destinations` until its deletion completes.
-Removing a stateful app's entry deletes its data with it.
+finalizer</a> unless its `argo.yaml` sets `deleteResources: false`, so deleting it cascades: ArgoCD
+deletes everything the app deployed before the `Application` itself, instead of orphaning it. It is
+the foreground variant, so a deletion stuck on a resource stays visible in the UI rather than
+failing silently. Keep a product app's namespace in the `product` `destinations` until its deletion
+completes. Deleting a stateful app's `Application` deletes its data with it.
 
 ## Sync model
 
@@ -79,8 +111,8 @@ Removing a stateful app's entry deletes its data with it.
 
 Image-shipping apps use a
 <a href="https://argo-cd.readthedocs.io/en/stable/user-guide/multiple_sources/" target="_blank" rel="noopener">multi-source
-<code>Application</code></a>: the chart comes from this repo, and a values overlay
-(`$values/<app>/values.yaml`) comes from
+<code>Application</code></a>: the chart comes from this repo, and the values overlay its `argo.yaml`
+names in `manifestsValues` comes from
 <a href="https://github.com/kbntx-org/nexus-manifests" target="_blank" rel="noopener"><code>nexus-manifests</code></a>,
 a small repo CI commits image-tag bumps to (see [GitOps deploys](03-gitops-deploys.md)). A GitHub
 webhook triggers a sync within seconds of every `nexus-manifests` push.
@@ -116,11 +148,13 @@ is not used by any workflow.
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/argocd" target="_blank" rel="noopener"><code>platform/core/argocd/</code></a>
   — ArgoCD Helm chart wrapper, ingress, SSO + RBAC config
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/services/app-of-apps" target="_blank" rel="noopener"><code>platform/services/app-of-apps/</code></a>
-  — root chart declaring every child `Application`
+  — root chart declaring the projects, the admission policy and the `applications` `ApplicationSet`
 - <a href="https://github.com/kbntx-org/nexus/blob/main/platform/services/app-of-apps/values.yaml" target="_blank" rel="noopener"><code>platform/services/app-of-apps/values.yaml</code></a>
-  — the full catalog of cluster workloads
+  — the `applications` `ApplicationSet` template
+- <a href="https://github.com/kbntx-org/nexus/blob/main/.yaml-schemas/argo.schema.json" target="_blank" rel="noopener"><code>.yaml-schemas/argo.schema.json</code></a>
+  — the keys an `argo.yaml` can set
 - <a href="https://github.com/kbntx-org/nexus/blob/main/platform/services/app-of-apps/templates/validating-admission-policy.yaml" target="_blank" rel="noopener"><code>platform/services/app-of-apps/templates/validating-admission-policy.yaml</code></a>
-  — keeps `product` applications on `apps/` charts
+  — ties `product` to `apps/` charts and stops apps from moving into it
 - <a href="https://github.com/kbntx-org/nexus/blob/main/.github/workflows/renovate.yml" target="_blank" rel="noopener"><code>.github/workflows/renovate.yml</code></a>
   — scheduled Renovate pipeline
 - <a href="https://github.com/kbntx-org/nexus/blob/main/renovate.json" target="_blank" rel="noopener"><code>renovate.json</code></a>

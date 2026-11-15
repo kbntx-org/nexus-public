@@ -1,10 +1,10 @@
-{{- with .Values.productSourcePolicy }}
-{{- $allowedSource := printf "source.repoURL != %q || (has(source.path) && source.path.startsWith(%q) && !source.path.contains('..'))" .repository .pathPrefix }}
-{{- $message := printf "Applications in the %s project can only use %s charts under %s" .project .repository .pathPrefix }}
+{{- with .Values.applicationSourcePolicy }}
+{{- $repository := printf "^%s(\\.git)?/?$" (regexQuoteMeta .repository) }}
+{{- $message := printf "Applications in the %s project must use %s charts under %s, and only they can" .project .repository .pathPrefix }}
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicy
 metadata:
-  name: product-application-source
+  name: application-source
   annotations:
     argocd.argoproj.io/sync-wave: '-1'
 spec:
@@ -15,15 +15,22 @@ spec:
         apiVersions: ["*"]
         operations: ["CREATE", "UPDATE"]
         resources: ["applications"]
-  matchConditions:
-    - name: product-project
+  variables:
+    - name: inProject
       expression: object.spec.project == {{ .project | quote }}
-  validations:
     # AppProject sourceRepos only restricts repositories, so the path is checked here.
+    - name: repositorySources
+      expression: >-
+        (has(object.spec.sources) ? object.spec.sources : (has(object.spec.source) ? [object.spec.source] : []))
+        .filter(source, source.repoURL.lowerAscii().matches({{ $repository | quote }}))
+  validations:
     - expression: >-
-        !has(object.spec.source) || [object.spec.source].all(source, {{ $allowedSource }})
+        variables.repositorySources.all(source, has(source.path) && !source.path.contains('..')
+        && source.path.startsWith({{ .pathPrefix | quote }}) == variables.inProject)
       message: {{ $message }}
+    # An Application whose name is reused updates the existing one, so an argo.yaml under apps/
+    # copying a platform app's name would otherwise move that app into this project.
     - expression: >-
-        !has(object.spec.sources) || object.spec.sources.all(source, {{ $allowedSource }})
-      message: {{ $message }}
+        !variables.inProject || request.operation != 'UPDATE' || oldObject.spec.project == object.spec.project
+      message: Applications cannot move into the {{ .project }} project
 {{- end }}

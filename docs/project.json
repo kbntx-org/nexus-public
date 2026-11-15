@@ -4,9 +4,6 @@
   "projectType": "application",
   "sourceRoot": "docs",
   "tags": [],
-  "metadata": {
-    "manifestsValuesPath": "documentation/values.yaml"
-  },
   "targets": {
     "build-ci": {
       "executor": "nx:run-commands",

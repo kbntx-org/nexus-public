@@ -7,9 +7,6 @@
   "namedInputs": {
     "toolchain": ["miseToolchain"]
   },
-  "metadata": {
-    "manifestsValuesPath": "workspace/values.yaml"
-  },
   "targets": {
     "build-ci": {
       "executor": "nx:run-commands",

@@ -1,0 +1,7 @@
+# yaml-language-server: $schema=../../../.yaml-schemas/argo.schema.json
+app: cilium
+project: platform
+namespace: kube-system
+environments:
+  - env: prod
+serverSideApply: true

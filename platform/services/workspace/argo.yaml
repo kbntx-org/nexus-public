@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=../../../.yaml-schemas/argo.schema.json
+app: workspace
+project: platform
+environments:
+  - env: prod
+manifestsValues: workspace/values.yaml

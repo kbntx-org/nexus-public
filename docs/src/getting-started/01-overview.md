@@ -43,7 +43,7 @@ Ongoing work and planned improvements are tracked as
 ## References
 
 - <a href="https://github.com/kbntx-org/nexus/blob/main/platform/services/app-of-apps/values.yaml" target="_blank" rel="noopener"><code>platform/services/app-of-apps/values.yaml</code></a>
-  — every ArgoCD application deployed to the cluster
+  — the `ApplicationSet` that deploys every chart with an `argo.yaml`
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core" target="_blank" rel="noopener"><code>platform/core/</code></a>
   — cluster-level building blocks: networking, certificates, secrets, ingress, operators
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/kubernetes" target="_blank" rel="noopener"><code>platform/core/kubernetes/</code></a>

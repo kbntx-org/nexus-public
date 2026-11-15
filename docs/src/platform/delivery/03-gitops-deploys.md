@@ -47,9 +47,10 @@ ArgoCD auto-syncs the new commit within seconds.
 
 ## Which projects get a manifests bump
 
-A `build-ci` target makes a project a deploy target, but a manifests bump also needs a
-`manifestsValuesPath` in its `project.json` metadata: `deploy.yml` reads it per target and skips any
-project without one. A standalone base image with no Kubernetes workload of its own (the
+A `build-ci` target makes a project a deploy target, but a manifests bump also needs an `argo.yaml`
+under the project's root that sets `manifestsValues`: `deploy.yml` bumps the `nexus-manifests` file
+it names, the same file ArgoCD reads as the chart's overlay, so the two can't drift apart. A project
+without one is skipped. A standalone base image with no Kubernetes workload of its own (the
 <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/sysbox" target="_blank" rel="noopener">sysbox</a>
 image, for example) is built and pushed like any other project but has nothing for `nexus-manifests`
 to track.
@@ -110,7 +111,7 @@ why it exists.
 ## References
 
 - <a href="https://github.com/kbntx-org/nexus/blob/main/platform/services/app-of-apps/values.yaml" target="_blank" rel="noopener"><code>platform/services/app-of-apps/values.yaml</code></a>
-  — multi-source `Application` definitions for the image-shipping apps
+  — the `ApplicationSet` that turns `manifestsValues` into a multi-source `Application`
 - <a href="https://github.com/kbntx-org/nexus/blob/main/.github/workflows/checks.yml" target="_blank" rel="noopener"><code>.github/workflows/checks.yml</code></a>
   — entrypoint wiring affected/lint/test/build/deploy together
 - <a href="https://github.com/kbntx-org/nexus/blob/main/.github/workflows/affected.yml" target="_blank" rel="noopener"><code>.github/workflows/affected.yml</code></a>

@@ -21,7 +21,7 @@ recovery docs</a>). Pick the path that matches the damage:
 - `kubectl` access to the cluster over WARP (see
   [Traffic & Access](../platform/traffic/01-overview.md#private-access-via-warp)).
 - Write access to `main`: ArgoCD's `selfHeal` reverts any live change to a GitOps-managed resource,
-  so every change below goes through Git.
+  so every change below goes through Git, except pausing auto-sync.
 - The consumer's values: its `Cluster` name and database in its `postgres-cnpg.yaml`, and
   `backup.destinationPath` / `backup.endpointURL` in its `values.yaml`.
 - The point to restore to, if not the latest: an RFC 3339 timestamp **with a timezone**
@@ -88,9 +88,8 @@ recovery docs</a>). Pick the path that matches the damage:
 **This destroys the current database.** If you are not sure the backups hold what you need, run a
 side-by-side restore first.
 
-1. **Pause auto-sync** for the consumer's `Application`: remove its `syncPolicy.automated` block in
-   <a href="https://github.com/kbntx-org/nexus/blob/main/platform/services/app-of-apps/values.yaml" target="_blank" rel="noopener"><code>app-of-apps/values.yaml</code></a>
-   and push. Check in the ArgoCD UI that the app shows auto-sync disabled before going on.
+1. **Pause auto-sync** for the consumer's `Application` from the ArgoCD UI (app details, sync
+   policy, disable auto-sync). The `ApplicationSet` leaves it off until you turn it back on.
 2. If the original still runs, archive its last WAL with an on-demand backup and wait for
    `completed`:
 
@@ -124,8 +123,7 @@ side-by-side restore first.
 5. Sync the app from the ArgoCD UI. The cluster comes back from the backups under the same name and
    the deployment returns to its declared replicas. [Verify](#verify).
 6. Put back `bootstrap.initdb` in place of the recovery blocks (CNPG reads `bootstrap` only at
-   creation), keep the new `destinationPath`, restore the `automated` block in `app-of-apps`, and
-   push.
+   creation), keep the new `destinationPath`, push, and turn auto-sync back on from the ArgoCD UI.
 
 !!! warning "Not yet exercised"
 
@@ -172,7 +170,7 @@ kubectl exec -it -n <namespace> <cluster>-1 -- psql -U postgres -d <database> \
   — a consumer `Cluster` + `ScheduledBackup` pair to copy settings from
 - <a href="https://github.com/kbntx-org/nexus/blob/main/platform/services/n8n/values.yaml" target="_blank" rel="noopener"><code>platform/services/n8n/values.yaml</code></a>
   — `backup.destinationPath` and `backup.endpointURL` for one consumer
-- <a href="https://github.com/kbntx-org/nexus/blob/main/platform/services/app-of-apps/values.yaml" target="_blank" rel="noopener"><code>platform/services/app-of-apps/values.yaml</code></a>
-  — each `Application`'s sync policy
+- <a href="https://github.com/kbntx-org/nexus/blob/main/.yaml-schemas/argo.schema.json" target="_blank" rel="noopener"><code>.yaml-schemas/argo.schema.json</code></a>
+  — the keys each `Application` is generated from
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/cloudnative-pg" target="_blank" rel="noopener"><code>platform/core/cloudnative-pg/</code></a>
   — the operator chart

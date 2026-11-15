@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=../../../../../.yaml-schemas/argo.schema.json
+app: k3s-upgrades
+project: platform
+namespace: system-upgrade
+environments:
+  - env: prod

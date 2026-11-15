@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=../../../../.yaml-schemas/argo.schema.json
+app: kiln
+project: platform
+environments:
+  - env: prod
+manifestsValues: kiln/values.yaml

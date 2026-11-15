@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=../../../.yaml-schemas/argo.schema.json
+app: monitoring
+project: platform
+environments:
+  - env: prod
+serverSideApply: true

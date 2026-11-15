@@ -7,9 +7,6 @@
   "namedInputs": {
     "toolchain": ["goToolchain"]
   },
-  "metadata": {
-    "manifestsValuesPath": "cloudflare-controller/values.yaml"
-  },
   "targets": {
     "generate": {
       "executor": "nx:run-commands",

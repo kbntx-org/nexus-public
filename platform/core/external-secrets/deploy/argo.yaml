@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=../../../../.yaml-schemas/argo.schema.json
+app: external-secrets
+project: platform
+environments:
+  - env: prod
+serverSideApply: true

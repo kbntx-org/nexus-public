@@ -94,6 +94,12 @@ jobs:
             };
             const nxProject = (name) =>
               JSON.parse(run('pnpm', ['nx', 'show', 'project', name, '--json']));
+            const manifestsValuesPaths = (name) =>
+              run('git', ['ls-files', '--', `:(glob)${nxProject(name).root}/**/argo.yaml`])
+                .split('\n')
+                .filter(Boolean)
+                .map((argoFile) => run('yq', ['.manifestsValues // ""', argoFile]))
+                .filter(Boolean);
 
             const tag = process.env.TAG;
             const deployTargets = JSON.parse(process.env.DEPLOY_TARGETS);
@@ -103,19 +109,21 @@ jobs:
 
             const bumped = [];
             for (const project of deployTargets) {
-              const manifestsValuesPath = nxProject(project).metadata?.manifestsValuesPath;
-              if (!manifestsValuesPath) {
-                core.info(`Skipping ${project} (no manifestsValuesPath)`);
+              const valuesPaths = manifestsValuesPaths(project);
+              if (valuesPaths.length === 0) {
+                core.info(`Skipping ${project} (no argo.yaml with manifestsValues)`);
                 continue;
               }
-              const file = path.join(manifestsDir, manifestsValuesPath);
-              fs.mkdirSync(path.dirname(file), { recursive: true });
-              if (!fs.existsSync(file)) {
-                fs.writeFileSync(file, `image:\n  tag: ${tag}\n`);
-              } else {
-                run('yq', ['-i', '.image.tag = strenv(TAG)', file], { env: process.env });
+              for (const valuesPath of valuesPaths) {
+                const file = path.join(manifestsDir, valuesPath);
+                fs.mkdirSync(path.dirname(file), { recursive: true });
+                if (!fs.existsSync(file)) {
+                  fs.writeFileSync(file, `image:\n  tag: ${tag}\n`);
+                } else {
+                  run('yq', ['-i', '.image.tag = strenv(TAG)', file], { env: process.env });
+                }
+                bumped.push({ project, valuesPath });
               }
-              bumped.push({ project, valuesPath: manifestsValuesPath });
             }
 
             const lines = bumped.map(({ project }) => `- ${project}: ${tag}`);

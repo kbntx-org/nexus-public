@@ -8,9 +8,6 @@
   "namedInputs": {
     "toolchain": ["goToolchain", "nodeToolchain"]
   },
-  "metadata": {
-    "manifestsValuesPath": "kiln/values.yaml"
-  },
   "targets": {
     "lint": {
       "executor": "nx:run-commands",

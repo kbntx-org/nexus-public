@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=../../../../../.yaml-schemas/argo.schema.json
+app: system-upgrade-controller
+project: platform
+namespace: system-upgrade
+environments:
+  - env: prod

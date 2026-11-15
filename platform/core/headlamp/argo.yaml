@@ -1,0 +1,5 @@
+# yaml-language-server: $schema=../../../.yaml-schemas/argo.schema.json
+app: headlamp
+project: platform
+environments:
+  - env: prod

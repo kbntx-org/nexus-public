@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=../../../.yaml-schemas/argo.schema.json
+app: traefik-ingress
+project: platform
+environments:
+  - env: prod
+    valueFiles:
+      - values.yaml
+      - values.prod.yaml

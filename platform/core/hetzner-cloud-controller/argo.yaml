@@ -1,0 +1,6 @@
+# yaml-language-server: $schema=../../../.yaml-schemas/argo.schema.json
+app: hetzner-cloud-controller
+project: platform
+namespace: kube-system
+environments:
+  - env: prod
