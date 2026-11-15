@@ -3,9 +3,7 @@ min_version = "2026.9.1"
 [settings]
 lockfile = true
 locked = true
-minimum_release_age = "14d"
-# Go 1.27.3 and Node 24.22.1 drop trust in the distrusted eMudhra roots; remove once both are 14 days old.
-minimum_release_age_excludes = ["go", "node"]
+minimum_release_age = "3d"
 
 [tools]
 opentofu = "1.12.6"

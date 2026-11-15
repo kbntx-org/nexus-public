@@ -6,7 +6,7 @@
   "binarySource": "global",
   "prConcurrentLimit": 5,
   "prHourlyLimit": 0,
-  "minimumReleaseAge": "14 days",
+  "minimumReleaseAge": "3 days",
   "internalChecksFilter": "strict",
   "labels": ["dependencies"],
   "postUpdateOptions": ["pnpmDedupe"],

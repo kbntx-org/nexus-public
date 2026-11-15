@@ -128,6 +128,13 @@ dedicated GitHub App (token minted per run via
 <a href="https://github.com/actions/create-github-app-token" target="_blank" rel="noopener"><code>create-github-app-token</code></a>)
 instead of the default `GITHUB_TOKEN`.
 
+It runs every day at 04:00 UTC and only proposes releases at least 3 days old (`minimumReleaseAge`),
+which leaves time for a broken or malicious release to be pulled. Most minor and patch updates
+auto-merge once checks pass; majors, `0.x` minors and k3s wait for a human.
+
+mise (`minimum_release_age` in `mise.toml`) and pnpm (`minimumReleaseAge` in `pnpm-workspace.yaml`)
+apply the same 3-day age to manual installs, so a hand-added dependency cannot skip it either.
+
 The job installs <a href="https://mise.jdx.dev/" target="_blank" rel="noopener">mise</a>-managed
 tools via the same
 <a href="https://github.com/kbntx-org/nexus/blob/main/.github/actions/mise-install/action.yaml" target="_blank" rel="noopener"><code>mise-install</code></a>
