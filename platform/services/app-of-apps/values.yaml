@@ -59,8 +59,11 @@ argocd-apps:
         - group: traefik.io
           kind: '*'
 
+  # Keeps the root app from pruning these Applications while an ApplicationSet adopts them.
   applications:
     traefik-ingress:
+      additionalAnnotations:
+        argocd.argoproj.io/sync-options: Prune=false
       finalizers:
         - resources-finalizer.argocd.argoproj.io
       project: platform
@@ -83,6 +86,8 @@ argocd-apps:
           - CreateNamespace=true
 
     argocd:
+      additionalAnnotations:
+        argocd.argoproj.io/sync-options: Prune=false
       finalizers:
         - resources-finalizer.argocd.argoproj.io
       project: platform
@@ -101,6 +106,8 @@ argocd-apps:
           - CreateNamespace=true
 
     external-secrets:
+      additionalAnnotations:
+        argocd.argoproj.io/sync-options: Prune=false
       finalizers:
         - resources-finalizer.argocd.argoproj.io
       project: platform
@@ -120,6 +127,8 @@ argocd-apps:
           - ServerSideApply=true
 
     vault:
+      additionalAnnotations:
+        argocd.argoproj.io/sync-options: Prune=false
       finalizers:
         - resources-finalizer.argocd.argoproj.io
       project: platform
@@ -138,6 +147,8 @@ argocd-apps:
           - CreateNamespace=true
 
     cloudnative-pg:
+      additionalAnnotations:
+        argocd.argoproj.io/sync-options: Prune=false
       finalizers:
         - resources-finalizer.argocd.argoproj.io
       project: platform
@@ -157,6 +168,8 @@ argocd-apps:
           - ServerSideApply=true
 
     cloudflared:
+      additionalAnnotations:
+        argocd.argoproj.io/sync-options: Prune=false
       finalizers:
         - resources-finalizer.argocd.argoproj.io
       project: platform
@@ -175,6 +188,8 @@ argocd-apps:
           - CreateNamespace=true
 
     external-dns:
+      additionalAnnotations:
+        argocd.argoproj.io/sync-options: Prune=false
       finalizers:
         - resources-finalizer.argocd.argoproj.io
       project: platform
@@ -193,6 +208,8 @@ argocd-apps:
           - CreateNamespace=true
 
     cert-manager:
+      additionalAnnotations:
+        argocd.argoproj.io/sync-options: Prune=false
       finalizers:
         - resources-finalizer.argocd.argoproj.io
       project: platform
@@ -211,6 +228,8 @@ argocd-apps:
           - CreateNamespace=true
 
     cilium:
+      additionalAnnotations:
+        argocd.argoproj.io/sync-options: Prune=false
       finalizers:
         - resources-finalizer.argocd.argoproj.io
       project: platform
@@ -230,6 +249,8 @@ argocd-apps:
           - ServerSideApply=true
 
     hetzner-cloud-controller:
+      additionalAnnotations:
+        argocd.argoproj.io/sync-options: Prune=false
       finalizers:
         - resources-finalizer.argocd.argoproj.io
       project: platform
@@ -248,6 +269,8 @@ argocd-apps:
           - CreateNamespace=true
 
     sysbox:
+      additionalAnnotations:
+        argocd.argoproj.io/sync-options: Prune=false
       project: platform
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
@@ -264,6 +287,8 @@ argocd-apps:
           - CreateNamespace=true
 
     zot:
+      additionalAnnotations:
+        argocd.argoproj.io/sync-options: Prune=false
       project: default
       source:
         repoURL: https://github.com/kbntx-org/nexus.git
@@ -280,6 +305,8 @@ argocd-apps:
           - CreateNamespace=true
 
     monitoring:
+      additionalAnnotations:
+        argocd.argoproj.io/sync-options: Prune=false
       finalizers:
         - resources-finalizer.argocd.argoproj.io
       project: platform
@@ -299,6 +326,8 @@ argocd-apps:
           - ServerSideApply=true
 
     headlamp:
+      additionalAnnotations:
+        argocd.argoproj.io/sync-options: Prune=false
       finalizers:
         - resources-finalizer.argocd.argoproj.io
       project: platform
@@ -317,6 +346,8 @@ argocd-apps:
           - CreateNamespace=true
 
     system-upgrade-controller:
+      additionalAnnotations:
+        argocd.argoproj.io/sync-options: Prune=false
       finalizers:
         - resources-finalizer.argocd.argoproj.io
       project: platform
@@ -335,6 +366,8 @@ argocd-apps:
           - CreateNamespace=true
 
     k3s-upgrades:
+      additionalAnnotations:
+        argocd.argoproj.io/sync-options: Prune=false
       finalizers:
         - resources-finalizer.argocd.argoproj.io
       project: platform
@@ -353,6 +386,8 @@ argocd-apps:
           - CreateNamespace=true
 
     documentation:
+      additionalAnnotations:
+        argocd.argoproj.io/sync-options: Prune=false
       finalizers:
         - resources-finalizer.argocd.argoproj.io
       project: platform
@@ -378,6 +413,8 @@ argocd-apps:
           - CreateNamespace=true
 
     cloudflare-controller:
+      additionalAnnotations:
+        argocd.argoproj.io/sync-options: Prune=false
       finalizers:
         - resources-finalizer.argocd.argoproj.io
       project: platform
@@ -403,6 +440,8 @@ argocd-apps:
           - CreateNamespace=true
 
     n8n:
+      additionalAnnotations:
+        argocd.argoproj.io/sync-options: Prune=false
       finalizers:
         - resources-finalizer.argocd.argoproj.io
       project: platform
@@ -421,6 +460,8 @@ argocd-apps:
           - CreateNamespace=true
 
     atlantis:
+      additionalAnnotations:
+        argocd.argoproj.io/sync-options: Prune=false
       finalizers:
         - resources-finalizer.argocd.argoproj.io
       project: platform
@@ -439,6 +480,8 @@ argocd-apps:
           - CreateNamespace=true
 
     kiln:
+      additionalAnnotations:
+        argocd.argoproj.io/sync-options: Prune=false
       finalizers:
         - resources-finalizer.argocd.argoproj.io
       project: platform
@@ -464,6 +507,8 @@ argocd-apps:
           - CreateNamespace=true
 
     smelt:
+      additionalAnnotations:
+        argocd.argoproj.io/sync-options: Prune=false
       finalizers:
         - resources-finalizer.argocd.argoproj.io
       project: product
