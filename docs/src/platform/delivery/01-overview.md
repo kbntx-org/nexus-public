@@ -59,10 +59,11 @@ Auto-sync is the one setting the UI owns: turning it off on an `Application` sti
 `ApplicationSet` ignores that field once the `Application` exists. It is the incident switch, and a
 paused app shows as such in the UI instead of hiding in a git diff.
 
-Removing an `argo.yaml` does not delete its app: the `ApplicationSet` creates and updates
-`Application`s but never deletes one (`applicationsSync: create-update`), so a moved or broken file
-can't take a database with it. Decommissioning is deliberate: delete the file, then the
-`Application` from the ArgoCD UI.
+Removing an `argo.yaml`, or an entry of its `environments`, deletes its `Application`, and with it
+everything the app deployed unless `deleteResources` is `false`. Changing `app` is not a rename
+either: the old `Application` is deleted and a new one created, so a stateful app loses its data.
+Deleting the `ApplicationSet` itself deletes nothing (`preserveResourcesOnDeletion`): one bad edit
+of app-of-apps can't take the whole platform down.
 
 ### Projects
 

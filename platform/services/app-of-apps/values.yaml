@@ -81,8 +81,7 @@ argocd-apps:
         - jsonPointers:
             - /spec/syncPolicy/automated
       syncPolicy:
-        # Removing an argo.yaml never deletes the app or its data; decommissioning is deliberate.
-        applicationsSync: create-update
+        # Deleting the ApplicationSet itself leaves every app running instead of deleting them all.
         preserveResourcesOnDeletion: true
       # prod keeps the bare names the Applications had before the ApplicationSet adopted them.
       template:
