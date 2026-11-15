@@ -4,8 +4,9 @@ description: >
   enrolls it with a service token and waits until it is connected, so the rest of the job can reach
   the private network. Docker resolves through the runner's DNS too, so containers (the Buildx
   builder, for one) see private hostnames; connect before the Buildx builder is created, since it
-  restarts Docker. Disconnecting installs nothing and does nothing when WARP is not connected, so
-  it is safe in an always() step.
+  restarts Docker. Disconnecting deletes the device registration, so ephemeral runners don't pile
+  up in the Zero Trust device list; it installs nothing and does nothing when the runner is not
+  registered, so it is safe in an always() step.
 
 inputs:
   action:
@@ -104,11 +105,28 @@ runs:
       shell: bash
       env:
         COMMAND_TIMEOUT_SECONDS: '10'
+        RESTART_TIMEOUT_SECONDS: '30'
+        MANAGED_CONFIGURATION_PATH: /var/lib/cloudflare-warp/mdm.xml
       run: |
-        status=$(timeout "$COMMAND_TIMEOUT_SECONDS" warp-cli --accept-tos status 2>&1 || true)
-        if grep -q 'Status update: Connected' <<<"$status"; then
-          timeout "$COMMAND_TIMEOUT_SECONDS" warp-cli --accept-tos disconnect
-          echo "Disconnected from WARP"
+        if ! command -v warp-cli >/dev/null; then
+          echo "WARP is not installed, nothing to do"
+          exit 0
+        fi
+        # warp-cli refuses to delete a registration the managed configuration owns, and warp-svc
+        # reads that configuration only at startup, so it is removed and the service restarted.
+        sudo rm -f "$MANAGED_CONFIGURATION_PATH"
+        sudo systemctl restart warp-svc
+        deadline=$((SECONDS + RESTART_TIMEOUT_SECONDS))
+        until timeout "$COMMAND_TIMEOUT_SECONDS" warp-cli --accept-tos status >/dev/null 2>&1; do
+          if [ "$SECONDS" -ge "$deadline" ]; then
+            echo "::error::warp-svc did not come back within ${RESTART_TIMEOUT_SECONDS}s"
+            exit 1
+          fi
+          sleep 1
+        done
+        if timeout "$COMMAND_TIMEOUT_SECONDS" warp-cli --accept-tos registration show >/dev/null 2>&1; then
+          timeout "$COMMAND_TIMEOUT_SECONDS" warp-cli --accept-tos registration delete
+          echo "Deleted the WARP registration"
         else
-          echo "WARP is not connected, nothing to do"
+          echo "WARP is not registered, nothing to do"
         fi

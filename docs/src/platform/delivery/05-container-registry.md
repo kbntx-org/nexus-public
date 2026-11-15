@@ -75,7 +75,9 @@ bodies over 100 MB on the Free and Pro plans, and a layer is sent as a single re
 - **Pushes** — each project's `build-ci` command tags its image with the bare image name in zot. The
   build workflow connects the runner to WARP with a service token
   (`platform/core/warp/ci-access.tf`), then logs in as `ci` with the `ZOT_CI_USER` and
-  `ZOT_CI_PASSWORD` repository secrets. Pull requests connect and log in too, but don't push.
+  `ZOT_CI_PASSWORD` repository secrets. Pull requests connect and log in too, but don't push. The
+  job deletes its WARP registration at the end, even when it fails, because a runner never comes
+  back and a registration it leaves behind stays in the Zero Trust device list forever.
 - **Pulls** — the k3s role writes the `node` credentials into `registries.yaml` when
   `k3s_zot_password` is set (see
   [Run the cluster Ansible playbook](../../runbooks/02-run-the-cluster-ansible-playbook.md)), and
