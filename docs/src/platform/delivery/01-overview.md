@@ -85,10 +85,12 @@ reusing a platform app's name updates that `Application` instead of creating a n
 otherwise take it over. A CEL policy was chosen over an admission webhook because it runs inside the
 API server, with no server or certificate to operate.
 
-The `product` whitelist opens whole API groups (workloads, Traefik, cert-manager, CNPG, ...) but
-names core kinds one by one, so an app cannot create a `ResourceQuota` or `LimitRange` to lift its
-own namespace limits. A product chart that needs a kind outside it fails to sync until the kind or
-its group is added to the whitelist.
+The `product` whitelist opens whole API groups (core, workloads, Traefik, cert-manager, CNPG, ...)
+and a blacklist removes `ResourceQuota` and `LimitRange`, so an app cannot lift its own namespace
+limits. A kind outside the whitelist fails to sync and is also hidden from the app's resource tree,
+even when an operator created it: that is why the whole core group is open, or the Pods behind a
+`Deployment` would not show. A product chart that needs another group fails to sync until the group
+is added to the whitelist.
 
 **Runbook — add a new cluster-side workload:** add an `argo.yaml` next to its chart and push to
 `main`. A product app under `apps/` also needs its namespace added to the `product` project's

@@ -31,17 +31,11 @@ argocd-apps:
       destinations:
         - server: https://kubernetes.default.svc
           namespace: smelt
+      # Argo CD also hides the kinds a project doesn't permit from its resource tree, so the Pods
+      # behind a Deployment, Job or CNPG Cluster need the whole core group to show up.
       namespaceResourceWhitelist:
         - group: ''
-          kind: ConfigMap
-        - group: ''
-          kind: Secret
-        - group: ''
-          kind: Service
-        - group: ''
-          kind: ServiceAccount
-        - group: ''
-          kind: PersistentVolumeClaim
+          kind: '*'
         - group: apps
           kind: '*'
         - group: batch
@@ -58,6 +52,11 @@ argocd-apps:
           kind: '*'
         - group: traefik.io
           kind: '*'
+      namespaceResourceBlacklist:
+        - group: ''
+          kind: ResourceQuota
+        - group: ''
+          kind: LimitRange
 
   applicationsets:
     applications:
