@@ -63,7 +63,7 @@ catalogs:
       version: 6.1.2
     autoprefixer:
       specifier: ^10.4.21
-      version: 10.6.1
+      version: 10.6.2
     axios:
       specifier: ^1.7.7
       version: 1.20.0
@@ -176,7 +176,7 @@ importers:
         version: 6.1.2(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.1)(jiti@1.21.7)(less@4.9.0(supports-color@7.2.0))(sass-embedded@1.97.1)(sass@1.97.3)(terser@5.46.0)(yaml@2.9.0))
       autoprefixer:
         specifier: 'catalog:'
-        version: 10.6.1(postcss@8.5.31)
+        version: 10.6.2(postcss@8.5.31)
       glob:
         specifier: 'catalog:'
         version: 13.0.6
@@ -297,7 +297,7 @@ importers:
         version: 6.1.2(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.1)(jiti@1.21.7)(less@4.9.0(supports-color@8.1.1))(sass-embedded@1.97.1)(sass@1.97.3)(terser@5.46.0)(yaml@2.9.1))
       autoprefixer:
         specifier: 'catalog:'
-        version: 10.6.1(postcss@8.5.31)
+        version: 10.6.2(postcss@8.5.31)
       postcss:
         specifier: 'catalog:'
         version: 8.5.31
@@ -2571,8 +2571,8 @@ packages:
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
 
-  autoprefixer@10.6.1:
-    resolution: {integrity: sha512-cL1Qz6ADZhcEbny/8HPfe99J6HhNoYtpX2LFLIbhgGE7Q1hlQVkYFdetDN7Id3KiQxhDrHwzlHr/YQCnZ8+xSA==}
+  autoprefixer@10.6.2:
+    resolution: {integrity: sha512-VOw9/yGTGwPPgzFcODtcv6zhEPIeIWkRSe10L2ri2f5vZ7ID7lCt6jZzRF5/ubgOZ+szYydmEF5AYsA5jxX1tA==}
     engines: {node: ^10 || ^12 || >=14}
     hasBin: true
     peerDependencies:
@@ -6427,7 +6427,7 @@ snapshots:
 
   asynckit@0.4.0: {}
 
-  autoprefixer@10.6.1(postcss@8.5.31):
+  autoprefixer@10.6.2(postcss@8.5.31):
     dependencies:
       browserslist: 4.29.3
       caniuse-lite: 1.0.30001814
