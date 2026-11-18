@@ -4,8 +4,8 @@ version: 1.0.0
 
 dependencies:
   - name: hcloud-cloud-controller-manager
-    version: 1.39.2
+    version: 1.39.3
     repository: https://charts.hetzner.cloud
   - name: hcloud-csi
-    version: 2.24.1
+    version: 2.24.2
     repository: https://charts.hetzner.cloud
