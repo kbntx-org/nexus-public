@@ -3,7 +3,7 @@ module github.com/kbntx-org/nexus/platform/core/cloudflare-controller
 go 1.26.0
 
 require (
-	github.com/caarlos0/env/v11 v11.4.1
+	github.com/caarlos0/env/v11 v11.4.2
 	github.com/go-logr/logr v1.4.4
 	k8s.io/api v0.37.2
 	k8s.io/apimachinery v0.37.2
