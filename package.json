@@ -24,7 +24,6 @@
     "@typescript/native": "catalog:",
     "@vitejs/plugin-react": "catalog:",
     "autoprefixer": "catalog:",
-    "glob": "catalog:",
     "js-yaml": "catalog:",
     "nx": "catalog:",
     "oxfmt": "catalog:",
