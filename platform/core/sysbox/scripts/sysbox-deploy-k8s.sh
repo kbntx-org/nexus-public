@@ -950,8 +950,9 @@ function is_supported_k8s_version() {
 	if [[ "$ver" == "v1.32" ]] ||
 		[[ "$ver" == "v1.33" ]] ||
 		[[ "$ver" == "v1.34" ]] ||
+		[[ "$ver" == "v1.35" ]] ||
 		[[ "$ver" == "v1.36" ]] ||
-		[[ "$ver" == "v1.35" ]] ; then
+		[[ "$ver" == "v1.37" ]] ; then
 		return
 	fi
 

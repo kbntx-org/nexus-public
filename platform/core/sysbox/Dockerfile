@@ -104,7 +104,7 @@ COPY --from=sysbox-pkgr /src/k8s/scripts/sysbox-installer-helper.sh /opt/sysbox/
 COPY --from=sysbox-pkgr /src/k8s/scripts/sysbox-removal-helper.sh /opt/sysbox/scripts/sysbox-removal-helper.sh
 
 # Local copy of k8s/scripts/sysbox-deploy-k8s.sh @ SYSBOX_PKGR_REF, patched for:
-#  - k8s v1.36 support
+#  - k8s v1.36 and v1.37 support
 #  - k3s / RKE2 support: https://github.com/nestybox/sysbox-pkgr/pull/152
 COPY scripts/sysbox-deploy-k8s.sh /opt/sysbox/scripts/sysbox-deploy-k8s.sh
 COPY config/containerd-sysbox-dropin.toml /opt/sysbox/config/containerd-sysbox-dropin.toml
