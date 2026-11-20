@@ -1,7 +1,7 @@
 dependencies:
 - name: grafana
   repository: https://grafana-community.github.io/helm-charts
-  version: 13.7.0
+  version: 14.4.2
 - name: loki
   repository: https://grafana.github.io/helm-charts
   version: 7.6.0
@@ -13,6 +13,6 @@ dependencies:
   version: 4.6.1
 - name: prometheus-operator-crds
   repository: https://prometheus-community.github.io/helm-charts
-  version: 32.0.2
-digest: sha256:a606d6d62cc528e22a283c119462cbd17168b7c0bf17d176fcbe02e42478922d
-generated: "2026-11-20T00:19:52.767423701Z"
+  version: 33.0.2
+digest: sha256:6474eaabc9ab320d09d357154964f90c325d7e8225af390fd0d1f56e29aaeccb
+generated: "2026-11-20T01:15:36.809671967Z"
