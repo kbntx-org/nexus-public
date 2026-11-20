@@ -56,14 +56,8 @@ is a thin entrypoint; the real setup lives in
 <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/local" target="_blank" rel="noopener"><code>platform/core/local/</code></a>:
 `platform.tilt` for core infra (its `CORE_RESOURCES`, `OPTIONAL_RESOURCES` and `PERSISTED_ON_DOWN`
 lists are the source of truth), `apps.tilt` for product apps, `mcp.tilt` for the MCP servers AI
-agents use, and `lib.tilt` for the shared helpers. An app with a more involved setup (smelt, for
-example) keeps its own Tiltfile, included from `apps.tilt`.
-
-An app configured by one JSON file (smelt) commits `environment.base.json` with working local
-values. Secrets such as an API key go in a gitignored `environment.local.json` next to it; the
-Tiltfile deep-merges the two with `yq` and applies the result as the same `Secret` the app reads in
-production, so the app never knows which environment it runs in. Editing either file restarts the
-pod.
+agents use, and `lib.tilt` for the shared helpers. An app with a more involved setup keeps its own
+Tiltfile, included from `apps.tilt`.
 
 ## Getting started
 
@@ -141,9 +135,8 @@ apps and monitoring can also be enabled later from the Tilt UI.
 - **Cilium**: removing it would leave the cluster without pod networking.
 - **CloudNative-PG**: a CNPG `Cluster` deletes its PVCs when it is deleted, and unlike a
   `StatefulSet` that can't be turned off. An app chart whose local database should survive
-  `tilt down` annotates its `Cluster` with `helm.sh/resource-policy: keep` (smelt's does), and the
-  operator has to stay too: uninstalling it would take the kept `Cluster`, and its volumes, down
-  with it.
+  `tilt down` annotates its `Cluster` with `helm.sh/resource-policy: keep`, and the operator has to
+  stay too: uninstalling it would take the kept `Cluster`, and its volumes, down with it.
 
 To start from scratch, `mise run cluster recreate` rebuilds the cluster, registry and builder;
 `mise run cluster delete` removes them.

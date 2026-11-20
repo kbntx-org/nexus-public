@@ -97,9 +97,9 @@ Do not hard-code specifics that can be found in the repository itself:
   to the Ingress template that owns the hostname. In code samples, use placeholders
   (`my-app.example.com`) or environment variables (`${{ vars.ARGOCD_SERVER }}`)
 - **No enumerations of what currently exists** — never list every app, project, chart, or component
-  of a kind ("the smelt, documentation, and cloudflare-controller images"). Describe the category
-  the architecture actually acts on instead ("one image per deploy target"). A list like that is
-  wrong the day something is added, and it is exactly what the code already answers. A single named
+  of a kind ("the kiln, documentation, and cloudflare-controller images"). Describe the category the
+  architecture actually acts on instead ("one image per deploy target"). A list like that is wrong
+  the day something is added, and it is exactly what the code already answers. A single named
   example to illustrate a point is fine; an exhaustive roll-call is not.
 
 These details age badly and create maintenance burden. The docs are architectural — they explain how

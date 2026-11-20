@@ -18,7 +18,7 @@ their calls and leave an older image live after a newer commit has "deployed". I
 Instead, every deploy is a commit to a small, dumb git repo,
 <a href="https://github.com/kbntx-org/nexus-manifests" target="_blank" rel="noopener"><code>nexus-manifests</code></a>,
 that ArgoCD reads as a values overlay (see [Sync model](01-overview.md#sync-model)). It holds one
-tiny file per app (`smelt/values.yaml` → `image: { tag: <tag> }`, for example), no `Chart.yaml`, no
+tiny file per app (`kiln/values.yaml` → `image: { tag: <tag> }`, for example), no `Chart.yaml`, no
 templates. Writes to it are serialized, its history _is_ the deploy log, and rollback is
 `git revert` on this repo alone.
 

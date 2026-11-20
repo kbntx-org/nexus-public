@@ -47,7 +47,6 @@ catalog:
   zod: ^4.6.0
 
 packages:
-  - 'apps/smelt/frontend'
   - 'platform/services/kiln/client'
 
 allowBuilds:

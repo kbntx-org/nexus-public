@@ -40,11 +40,11 @@ Each deployed Helm chart has an `argo.yaml` next to its `Chart.yaml`, validated 
 <a href="https://github.com/kbntx-org/nexus/blob/main/.yaml-schemas/argo.schema.json" target="_blank" rel="noopener"><code>argo.schema.json</code></a>:
 
 ```yaml
-app: smelt # Application name, unique across the repo
-project: product # product under apps/, platform anywhere else
+app: kiln # Application name, unique across the repo
+project: platform # product under apps/, platform anywhere else
 environments:
   - env: prod
-manifestsValues: smelt/values.yaml # nexus-manifests file CI writes the image tag to
+manifestsValues: kiln/values.yaml # nexus-manifests file CI writes the image tag to
 ```
 
 The `ApplicationSet` generates one `Application` per entry of `environments`, so a chart's whole

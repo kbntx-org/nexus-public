@@ -41,10 +41,10 @@ ESO reconciles two CRDs: a `SecretStore`/`ClusterSecretStore` (how to reach Vaul
 `Secret` like any other, never knowing Vault is involved.
 
 **Templating is the strong point.** An `ExternalSecret`'s `target.template` reshapes Vault values
-into whatever `Secret` a consumer expects, not just a flat copy of the Vault keys. Smelt uses it to
-build the typed `kubernetes.io/basic-auth` `Secret` CloudNativePG needs from its Vault database keys
-(see
-<a href="https://github.com/kbntx-org/nexus/blob/main/apps/smelt/chart/templates/secrets.yaml" target="_blank" rel="noopener"><code>smelt/chart/templates/secrets.yaml</code></a>).
+into whatever `Secret` a consumer expects, not just a flat copy of the Vault keys. The monitoring
+chart uses it to build the typed `kubernetes.io/basic-auth` `Secret` CloudNativePG needs from its
+Vault database keys (see
+<a href="https://github.com/kbntx-org/nexus/blob/main/platform/core/monitoring/templates/secrets.yaml" target="_blank" rel="noopener"><code>monitoring/templates/secrets.yaml</code></a>).
 
 ### How ESO authenticates to Vault
 

@@ -20,8 +20,8 @@ never rebuilds the image.
 ## Architecture Standards
 
 Everything of the same kind must look the same: two NestJS backends, two Go backends or two charts
-share one structure, whatever the language or framework. Copy the closest existing example
-(`apps/smelt` is the reference) rather than inventing a new shape.
+share one structure, whatever the language or framework. Copy the closest existing example rather
+than inventing a new shape.
 
 - **Backends are a modular monolith**, organized by domain, never by technical layer. A domain owns
   its model, repository, service, controller and errors. Domains call each other only through

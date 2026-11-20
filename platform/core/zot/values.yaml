@@ -44,7 +44,6 @@ zot:
                   "cloudflare-controller",
                   "documentation",
                   "kiln",
-                  "smelt",
                   "sysbox-deploy-k8s",
                   "workspace"
                 ],
