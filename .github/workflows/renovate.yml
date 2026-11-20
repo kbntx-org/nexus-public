@@ -45,5 +45,5 @@ jobs:
           RENOVATE_AUTODISCOVER: 'false'
           RENOVATE_REPOSITORIES: kbntx-org/nexus
         run: |
-          npm install -g renovate@44.52.1
+          npm install -g renovate@44.247.1
           renovate
