@@ -45,5 +45,6 @@ jobs:
           RENOVATE_AUTODISCOVER: 'false'
           RENOVATE_REPOSITORIES: kbntx-org/nexus
         run: |
+          # renovate: datasource=npm depName=renovate
           npm install -g renovate@44.247.1
           renovate
