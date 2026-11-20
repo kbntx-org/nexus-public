@@ -49,6 +49,10 @@ zot:
                   "workspace"
                 ],
                 "keepTags": [{ "mostRecentlyPushedCount": 3 }]
+              },
+              {
+                "repositories": ["dockerhub/**", "ghcr/**"],
+                "keepTags": [{ "patterns": [".*"], "pulledWithin": "48h" }]
               }
             ]
           },
