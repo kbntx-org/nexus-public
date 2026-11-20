@@ -120,6 +120,23 @@ names in `manifestsValues` comes from
 a small repo CI commits image-tag bumps to (see [GitOps deploys](03-gitops-deploys.md)). A GitHub
 webhook triggers a sync within seconds of every `nexus-manifests` push.
 
+## Monitoring
+
+The **Argo CD - Applications** Grafana dashboard, shipped in
+<a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/argocd/dashboards" target="_blank" rel="noopener"><code>platform/core/argocd/dashboards/</code></a>,
+lists every `Application` with its sync status, health and whether auto-sync is on, then charts
+syncs, reconcile times, the repo server's git calls and the `ApplicationSet`. The auto-sync column
+is the one place a switch flipped in the UI shows up: the `ApplicationSet` ignores that field, so
+Git never reveals it.
+
+The application controller, repo server and `ApplicationSet` controller are scraped through the
+ServiceMonitors the upstream chart creates (see
+[Observability](../observability/01-overview.md#dashboards-datasources-and-scraping)). Each keeps
+only the series the dashboard queries, so a new panel on another Argo CD metric also needs that
+metric added to its component's `metricRelabelings` in `platform/core/argocd/values.yaml`. The
+reconcile and git duration histograms top out at 16s and 20s: a slower call shows at that ceiling,
+not its real duration.
+
 ## Dependency updates
 
 <a href="https://docs.renovatebot.com/" target="_blank" rel="noopener">Renovate</a> runs self-hosted

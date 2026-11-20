@@ -7,6 +7,14 @@ certificate:
 internalIngressTarget: 10.43.216.131
 argo-cd:
   controller:
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        metricRelabelings:
+          - sourceLabels: [__name__]
+            regex: argocd_app_info|argocd_app_sync_total|argocd_app_reconcile_(bucket|count|sum)
+            action: keep
     resources:
       requests:
         cpu: 150m
@@ -27,6 +35,14 @@ argo-cd:
         cpu: 15m
         memory: 60Mi
   repoServer:
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        metricRelabelings:
+          - sourceLabels: [__name__]
+            regex: argocd_git_request_total|argocd_git_request_duration_seconds_(bucket|count|sum)|argocd_git_(fetch|lsremote)_fail_total|argocd_repo_pending_request_total
+            action: keep
     # Git operations time out on large monorepos since v3.5.3 (https://github.com/argoproj/argo-cd/issues/29856);
     # keep the repo server on v3.5.2 until a fixed release ships.
     image:
@@ -36,6 +52,14 @@ argo-cd:
         cpu: 50m
         memory: 500Mi
   applicationSet:
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        metricRelabelings:
+          - sourceLabels: [__name__]
+            regex: argocd_appset_owned_applications|argocd_appset_reconcile_(bucket|count|sum)
+            action: keep
     resources:
       requests:
         cpu: 2m
