@@ -1,4 +1,4 @@
 [tools]
 go = "1.27.4"
-golangci-lint = "2.14.0"
-"go:golang.org/x/tools/gopls" = { version = "v0.23.0", depends = ["go"] }
+golangci-lint = "2.15.0"
+"go:golang.org/x/tools/gopls" = { version = "v0.24.0", depends = ["go"] }

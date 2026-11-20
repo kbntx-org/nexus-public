@@ -36,55 +36,55 @@ checksum = "sha256:178ab98950ac69ab25069307dc6ade79f3816e414cce95b4da166a115cde1
 url = "https://dl.google.com/go/go1.27.4.windows-amd64.zip"
 
 [[tools."go:golang.org/x/tools/gopls"]]
-version = "0.23.0"
+version = "0.24.0"
 backend = "go:golang.org/x/tools/gopls"
-specifiers = ["v0.23.0"]
+specifiers = ["v0.24.0"]
 
 [[tools.golangci-lint]]
-version = "2.14.0"
+version = "2.15.0"
 backend = "aqua:golangci/golangci-lint"
-specifiers = ["2.14.0"]
+specifiers = ["2.15.0"]
 
 [tools.golangci-lint."platforms.linux-arm64"]
-checksum = "sha256:ee7ec5f3453d15ddf106fae5a4d6c71737712348a979d1fe9cd52ec7ea299bae"
-url = "https://github.com/golangci/golangci-lint/releases/download/v2.14.0/golangci-lint-2.14.0-linux-arm64.tar.gz"
-url_api = "https://api.github.com/repos/golangci/golangci-lint/releases/assets/585813674"
+checksum = "sha256:b4d8f17068b35ee6060cc2f69a16fb48740d706fbba81661c318649c114a6998"
+url = "https://github.com/golangci/golangci-lint/releases/download/v2.15.0/golangci-lint-2.15.0-linux-arm64.tar.gz"
+url_api = "https://api.github.com/repos/golangci/golangci-lint/releases/assets/647132775"
 provenance = "github-attestations"
 
 [tools.golangci-lint."platforms.linux-arm64-musl"]
-checksum = "sha256:ee7ec5f3453d15ddf106fae5a4d6c71737712348a979d1fe9cd52ec7ea299bae"
-url = "https://github.com/golangci/golangci-lint/releases/download/v2.14.0/golangci-lint-2.14.0-linux-arm64.tar.gz"
-url_api = "https://api.github.com/repos/golangci/golangci-lint/releases/assets/585813674"
+checksum = "sha256:b4d8f17068b35ee6060cc2f69a16fb48740d706fbba81661c318649c114a6998"
+url = "https://github.com/golangci/golangci-lint/releases/download/v2.15.0/golangci-lint-2.15.0-linux-arm64.tar.gz"
+url_api = "https://api.github.com/repos/golangci/golangci-lint/releases/assets/647132775"
 provenance = "github-attestations"
 
 [tools.golangci-lint."platforms.linux-x64"]
-checksum = "sha256:ab90aeb7b066f92a33415b638a50fe5344bbb75a0d32ad30cc248d88f81032ab"
-url = "https://github.com/golangci/golangci-lint/releases/download/v2.14.0/golangci-lint-2.14.0-linux-amd64.tar.gz"
-url_api = "https://api.github.com/repos/golangci/golangci-lint/releases/assets/585813815"
+checksum = "sha256:9b7fe6a6bf6334b98decf8d86b11415ea7889afdabdd1959fdce23af2a9ebcea"
+url = "https://github.com/golangci/golangci-lint/releases/download/v2.15.0/golangci-lint-2.15.0-linux-amd64.tar.gz"
+url_api = "https://api.github.com/repos/golangci/golangci-lint/releases/assets/647132535"
 provenance = "github-attestations"
 
 [tools.golangci-lint."platforms.linux-x64-musl"]
-checksum = "sha256:ab90aeb7b066f92a33415b638a50fe5344bbb75a0d32ad30cc248d88f81032ab"
-url = "https://github.com/golangci/golangci-lint/releases/download/v2.14.0/golangci-lint-2.14.0-linux-amd64.tar.gz"
-url_api = "https://api.github.com/repos/golangci/golangci-lint/releases/assets/585813815"
+checksum = "sha256:9b7fe6a6bf6334b98decf8d86b11415ea7889afdabdd1959fdce23af2a9ebcea"
+url = "https://github.com/golangci/golangci-lint/releases/download/v2.15.0/golangci-lint-2.15.0-linux-amd64.tar.gz"
+url_api = "https://api.github.com/repos/golangci/golangci-lint/releases/assets/647132535"
 provenance = "github-attestations"
 
 [tools.golangci-lint."platforms.macos-arm64"]
-checksum = "sha256:5ef5f36a7147e91dc58ef9ef4d11bb7bad5ead0c76eb6c01327a73c641d1dcc3"
-url = "https://github.com/golangci/golangci-lint/releases/download/v2.14.0/golangci-lint-2.14.0-darwin-arm64.tar.gz"
-url_api = "https://api.github.com/repos/golangci/golangci-lint/releases/assets/585813591"
+checksum = "sha256:d1e409481a8ca846c4bc97e781eb5cb1bd5c23353a0b3977a1cbda1b1b6447d5"
+url = "https://github.com/golangci/golangci-lint/releases/download/v2.15.0/golangci-lint-2.15.0-darwin-arm64.tar.gz"
+url_api = "https://api.github.com/repos/golangci/golangci-lint/releases/assets/647132534"
 provenance = "github-attestations"
 
 [tools.golangci-lint."platforms.macos-x64"]
-checksum = "sha256:a5667c1c3536be1740133213e1e822bfb8f0d98ea12903174d6d5f635e4ed68d"
-url = "https://github.com/golangci/golangci-lint/releases/download/v2.14.0/golangci-lint-2.14.0-darwin-amd64.tar.gz"
-url_api = "https://api.github.com/repos/golangci/golangci-lint/releases/assets/585813755"
+checksum = "sha256:767b899a28285e88ded2823d5dcc4bc5ef681173eb2d80f029a7b17ee4ece3b8"
+url = "https://github.com/golangci/golangci-lint/releases/download/v2.15.0/golangci-lint-2.15.0-darwin-amd64.tar.gz"
+url_api = "https://api.github.com/repos/golangci/golangci-lint/releases/assets/647132753"
 provenance = "github-attestations"
 
 [tools.golangci-lint."platforms.windows-x64"]
-checksum = "sha256:b15f903d1649283a2ab6e8d2f0c317eaf1f9f6b3763950e7e8b7e72a43dd724f"
-url = "https://github.com/golangci/golangci-lint/releases/download/v2.14.0/golangci-lint-2.14.0-windows-amd64.zip"
-url_api = "https://api.github.com/repos/golangci/golangci-lint/releases/assets/585813793"
+checksum = "sha256:cd7ea6063c95de245e17e5246e42bdc14bb221792c429dbd239ab3a6ade6ca6a"
+url = "https://github.com/golangci/golangci-lint/releases/download/v2.15.0/golangci-lint-2.15.0-windows-amd64.zip"
+url_api = "https://api.github.com/repos/golangci/golangci-lint/releases/assets/647132900"
 provenance = "github-attestations"
 
 [[tools.node]]
@@ -121,48 +121,48 @@ checksum = "sha256:e612af99f626ab415ea225af6bce5c971feb448cb5cae250bb1c3fa50c5f7
 url = "https://nodejs.org/dist/v24.22.3/node-v24.22.3-win-x64.zip"
 
 [[tools.pnpm]]
-version = "12.7.0"
+version = "12.21.0"
 backend = "aqua:pnpm/pnpm"
-specifiers = ["12.7.0"]
+specifiers = ["12.21.0"]
 
 [tools.pnpm."platforms.linux-arm64"]
-checksum = "sha256:db39a3fc7969dcf3398ebf2f2090c62ba732e5a9887b96147a97134a1a779088"
-url = "https://github.com/pnpm/pnpm/releases/download/v12.7.0/pnpm-linux-arm64.tar.gz"
-url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/588119310"
+checksum = "sha256:6c5913a48c93b3a556b71c3bd9bf12c6bf9fbfbbbd2dcbd1d52a85c539751b9e"
+url = "https://github.com/pnpm/pnpm/releases/download/v12.21.0/pnpm-linux-arm64.tar.gz"
+url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/744357257"
 provenance = "github-attestations"
 
 [tools.pnpm."platforms.linux-arm64-musl"]
-checksum = "sha256:49b8d22e14120e716f735b7db9a03270ff8cc284f8d249e5f5bc34e26361b9ca"
-url = "https://github.com/pnpm/pnpm/releases/download/v12.7.0/pnpm-linux-arm64-musl.tar.gz"
-url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/588119304"
+checksum = "sha256:4faedaaa333b44d940ce5e38c223e829124affdbe5a6d3f694a69dd979a5a8d8"
+url = "https://github.com/pnpm/pnpm/releases/download/v12.21.0/pnpm-linux-arm64-musl.tar.gz"
+url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/744357263"
 provenance = "github-attestations"
 
 [tools.pnpm."platforms.linux-x64"]
-checksum = "sha256:68190c7d289efecd66ff088c93b9c5ec361989e8194239e004bd905403d3d3e5"
-url = "https://github.com/pnpm/pnpm/releases/download/v12.7.0/pnpm-linux-x64.tar.gz"
-url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/588119302"
+checksum = "sha256:84c4773bcf4a217f4083cd7b2a91e4cee6103cf42426c1282ef37d308f55a410"
+url = "https://github.com/pnpm/pnpm/releases/download/v12.21.0/pnpm-linux-x64.tar.gz"
+url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/744357264"
 provenance = "github-attestations"
 
 [tools.pnpm."platforms.linux-x64-musl"]
-checksum = "sha256:182029e912c5994fed1eaa715a38eb3c6ea4b42bcae770c52852a54862a13c1d"
-url = "https://github.com/pnpm/pnpm/releases/download/v12.7.0/pnpm-linux-x64-musl.tar.gz"
-url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/588119308"
+checksum = "sha256:6dbcd9ea8ed37b5acbe279159ad0ed3a4ac614f5d7ae62d5ba51d32a85a589d7"
+url = "https://github.com/pnpm/pnpm/releases/download/v12.21.0/pnpm-linux-x64-musl.tar.gz"
+url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/744357269"
 provenance = "github-attestations"
 
 [tools.pnpm."platforms.macos-arm64"]
-checksum = "sha256:82de6e7037fcfaab6a1ee9b6360e887723ad68389780810fa3e3a3540d6088ab"
-url = "https://github.com/pnpm/pnpm/releases/download/v12.7.0/pnpm-darwin-arm64.tar.gz"
-url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/588119307"
+checksum = "sha256:5c4d73018e00dd602531ce714625594fb693cbe110e6719df2b043b0ae62ab1a"
+url = "https://github.com/pnpm/pnpm/releases/download/v12.21.0/pnpm-darwin-arm64.tar.gz"
+url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/744357270"
 provenance = "github-attestations"
 
 [tools.pnpm."platforms.macos-x64"]
-checksum = "sha256:1b00a322af6da3f8820b8a6076bdf8fdfa7068e0d491d6c7425a16553396c432"
-url = "https://github.com/pnpm/pnpm/releases/download/v12.7.0/pnpm-darwin-x64.tar.gz"
-url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/588119309"
+checksum = "sha256:415c05ae4262c89b8f24ca58c693be5d969856ae909c086aa06996951fca30ea"
+url = "https://github.com/pnpm/pnpm/releases/download/v12.21.0/pnpm-darwin-x64.tar.gz"
+url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/744357251"
 provenance = "github-attestations"
 
 [tools.pnpm."platforms.windows-x64"]
-checksum = "sha256:40b9a24d55c7e839aa5fc8e814e995a1eb1778fc65f2f19cfa1c6f573a926944"
-url = "https://github.com/pnpm/pnpm/releases/download/v12.7.0/pnpm-win32-x64.zip"
-url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/588119297"
+checksum = "sha256:4fb64bb37e46c788309e0fd4ea93beb512546fdc7348121194fb704fbb72c09c"
+url = "https://github.com/pnpm/pnpm/releases/download/v12.21.0/pnpm-win32-x64.zip"
+url_api = "https://api.github.com/repos/pnpm/pnpm/releases/assets/744357265"
 provenance = "github-attestations"

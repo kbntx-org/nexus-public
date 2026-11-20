@@ -1,4 +1,4 @@
-FROM squidfunk/mkdocs-material:9.7.7 AS base
+FROM squidfunk/mkdocs-material:9.8.1 AS base
 
 RUN pip install \
       mkdocs-awesome-nav \

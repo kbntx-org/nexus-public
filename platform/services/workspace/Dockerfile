@@ -1,11 +1,11 @@
-# syntax=docker/dockerfile:1.27
+# syntax=docker/dockerfile:1.29
 
 FROM debian:trixie-slim
 
 ARG DOCKER_VERSION
 ARG MISE_VERSION
 # renovate: datasource=github-releases depName=coder/code-server
-ARG CODE_SERVER_VERSION=4.144.0
+ARG CODE_SERVER_VERSION=4.145.2
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates curl git iptables openssh-server sudo tmux xz-utils \
