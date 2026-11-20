@@ -72,6 +72,12 @@ private paths in the figure above). Two tunnels carry private traffic, each with
   keeps those ranges inside the tunnel through its split-tunnel excludes, and resolves
   cluster-internal domains against the cluster DNS through local-domain fallback.
 
+**Gotcha: WARP reaches Services directly, past the ingress.** A login that only sits on the
+`IngressRoute`, such as the oauth2-proxy in front of Headlamp, doesn't protect the `Service` behind
+it from WARP devices or other pods. A UI behind such a login also gets a `CiliumNetworkPolicy` that
+only lets its proxy in, and only lets Traefik reach the proxy; see
+<a href="https://github.com/kbntx-org/nexus/blob/main/platform/core/headlamp/templates/network-policy.yaml" target="_blank" rel="noopener"><code>headlamp/templates/network-policy.yaml</code></a>.
+
 **Gotcha: changing the bastion's config replaces the server.** Cloud-init only runs at creation. The
 floating IP keeps the gateway address stable, but every private node loses egress until the new
 server is up.
@@ -95,6 +101,8 @@ trusts.
   — the `Tunnel`/`AccessApplication`/`AccessPolicy` operator
 - <a href="https://github.com/kbntx-org/nexus/blob/main/platform/core/cloudflared/chart/templates/tunnel.yaml" target="_blank" rel="noopener"><code>platform/core/cloudflared/chart/templates/tunnel.yaml</code></a>
   — the cluster's own `Tunnel` resource (public ingress + private CIDR routes)
+- <a href="https://github.com/kbntx-org/nexus/blob/main/platform/core/headlamp/templates/network-policy.yaml" target="_blank" rel="noopener"><code>platform/core/headlamp/templates/network-policy.yaml</code></a>
+  — the policy that keeps an internal UI reachable only through its login proxy
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/external-dns" target="_blank" rel="noopener"><code>platform/core/external-dns/</code></a>
   — Cloudflare DNS record automation
 - <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/warp" target="_blank" rel="noopener"><code>platform/core/warp/</code></a>

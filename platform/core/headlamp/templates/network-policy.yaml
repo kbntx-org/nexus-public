@@ -1,0 +1,35 @@
+{{- if .Values.oauth2Proxy.enabled }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: headlamp
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: headlamp
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app: headlamp-oauth2-proxy
+      toPorts:
+        - ports:
+            - port: "4466"
+              protocol: TCP
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: headlamp-oauth2-proxy
+spec:
+  endpointSelector:
+    matchLabels:
+      app: headlamp-oauth2-proxy
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: traefik-ingress
+      toPorts:
+        - ports:
+            - port: "4180"
+              protocol: TCP
+{{- end }}
