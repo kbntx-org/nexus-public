@@ -50,14 +50,23 @@ manifestsValues: kiln/values.yaml # nexus-manifests file CI writes the image tag
 The `ApplicationSet` generates one `Application` per entry of `environments`, so a chart's whole
 deployment is described next to the chart instead of in a central list. `prod` keeps the bare `app`
 name and namespace; any other environment gets a `-<env>` suffix on both, so adding one never
-touches what prod runs. The remaining keys (`namespace`, per-environment `valueFiles`,
+touches what prod runs. The remaining keys (`namespace`, per-environment `valueFiles`, `autoSync`,
 `serverSideApply`, `deleteResources`) are described in the schema; the template reads nothing else,
 and the repositories and the cluster are fixed in it. The same file is meant to grow with the
 platform: new environments, and the promotion pipeline between them, derive from it.
 
-Auto-sync is the one setting the UI owns: turning it off on an `Application` sticks, because the
-`ApplicationSet` ignores that field once the `Application` exists. It is the incident switch, and a
-paused app shows as such in the UI instead of hiding in a git diff.
+Auto-sync is the one setting the UI can override: turning it off on an `Application` sticks, because
+the `ApplicationSet` ignores that field once the `Application` exists. It is the incident switch,
+one click instead of a commit, and the price is that Git no longer shows it. So the `ApplicationSet`
+also labels every `Application` `nexus/auto-sync` with what its `argo.yaml` declares, a field it
+does keep in sync, and the [Argo CD dashboard](#monitoring) lists every app whose live auto-sync
+differs from that label.
+
+An app whose live state is changed by hand on purpose sets `autoSync: false`, the workspace for
+example: it is created without auto-sync, pruning or self-heal and only syncs from the UI, so its
+deploys land in `nexus-manifests` but roll out only on a manual sync. For an existing app, changing
+`autoSync` only changes the label: the app shows as overridden until auto-sync is switched in the UI
+to match.
 
 Removing an `argo.yaml`, or an entry of its `environments`, deletes its `Application`, and with it
 everything the app deployed unless `deleteResources` is `false`. Changing `app` is not a rename
@@ -125,9 +134,11 @@ webhook triggers a sync within seconds of every `nexus-manifests` push.
 The **Argo CD - Applications** Grafana dashboard, shipped in
 <a href="https://github.com/kbntx-org/nexus/tree/main/platform/core/argocd/dashboards" target="_blank" rel="noopener"><code>platform/core/argocd/dashboards/</code></a>,
 lists every `Application` with its sync status, health and whether auto-sync is on, then charts
-syncs, reconcile times, the repo server's git calls and the `ApplicationSet`. The auto-sync column
-is the one place a switch flipped in the UI shows up: the `ApplicationSet` ignores that field, so
-Git never reveals it.
+syncs, reconcile times, the repo server's git calls and the `ApplicationSet`. **Auto-sync
+overridden** compares the live setting, `autosync_enabled` on `argocd_app_info`, with the
+`nexus/auto-sync` label the controller exports on `argocd_app_labels`: an app listed there was
+switched in the UI against its `argo.yaml`. Switch it back, or change `argo.yaml` if the override
+should stay. The same query can back an alert on overrides left on too long.
 
 The application controller, repo server and `ApplicationSet` controller are scraped through the
 ServiceMonitors the upstream chart creates (see

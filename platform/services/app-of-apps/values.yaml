@@ -94,11 +94,14 @@ argocd-apps:
       # The template only reads the argo.yaml keys listed in argo.schema.json.
       templatePatch: |
         {{- $valueFiles := dig "valueFiles" (list) . }}
-        {{- if dig "deleteResources" true . }}
+        {{- $autoSync := dig "autoSync" true . }}
         metadata:
+          labels:
+            nexus/auto-sync: {{ $autoSync | toString | quote }}
+          {{- if dig "deleteResources" true . }}
           finalizers:
             - resources-finalizer.argocd.argoproj.io
-        {{- end }}
+          {{- end }}
         spec:
           {{- with dig "manifestsValues" "" . }}
           sources:
@@ -121,9 +124,11 @@ argocd-apps:
             {{- end }}
           {{- end }}
           syncPolicy:
+            {{- if $autoSync }}
             automated:
               prune: true
               selfHeal: true
+            {{- end }}
             syncOptions:
               - CreateNamespace=true
               {{- if dig "serverSideApply" false . }}

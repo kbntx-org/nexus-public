@@ -4,3 +4,4 @@ project: platform
 environments:
   - env: prod
 manifestsValues: workspace/values.yaml
+autoSync: false

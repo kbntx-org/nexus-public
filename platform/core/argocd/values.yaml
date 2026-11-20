@@ -9,11 +9,15 @@ argo-cd:
   controller:
     metrics:
       enabled: true
+      applicationLabels:
+        enabled: true
+        labels:
+          - nexus/auto-sync
       serviceMonitor:
         enabled: true
         metricRelabelings:
           - sourceLabels: [__name__]
-            regex: argocd_app_info|argocd_app_sync_total|argocd_app_reconcile_(bucket|count|sum)
+            regex: argocd_app_info|argocd_app_labels|argocd_app_sync_total|argocd_app_reconcile_(bucket|count|sum)
             action: keep
     resources:
       requests:

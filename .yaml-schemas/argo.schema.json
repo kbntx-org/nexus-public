@@ -44,6 +44,11 @@
       "type": "string",
       "pattern": "^([a-z0-9][-a-z0-9]*/)*[a-z0-9][-a-z0-9.]*\\.yaml$"
     },
+    "autoSync": {
+      "description": "Sync automatically, pruning and self-healing. Set to false for an app whose live state is changed by hand and must not be reverted; it then syncs only from the ArgoCD UI.",
+      "type": "boolean",
+      "default": true
+    },
     "serverSideApply": {
       "description": "Sync with server-side apply, for charts whose resources exceed the client-side apply annotation size.",
       "type": "boolean",

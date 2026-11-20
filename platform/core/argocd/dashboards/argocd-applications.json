@@ -66,7 +66,7 @@
       "transparent": true,
       "options": {
         "mode": "markdown",
-        "content": "### Argo CD - Applications\nSync and health of every Argo CD Application, and the controllers behind them. An app stays **OutOfSync** when its live state differs from Git and nothing syncs it: the **Auto-sync** column shows which apps have auto-sync switched off, from Git or from the Argo CD UI. Failed syncs and git failures point at the cause; slow reconciles and requests waiting on the repository lock mean the repo server is the bottleneck. Pick a project and an application, or **All**; the reconcile, repo server and ApplicationSet panels cover the whole instance."
+        "content": "### Argo CD - Applications\nSync and health of every Argo CD Application, and the controllers behind them. An app stays **OutOfSync** when its live state differs from Git and nothing syncs it: the **Auto-sync** column shows which apps have auto-sync off, and **Auto-sync overridden** lists the ones switched in the Argo CD UI against their `argo.yaml`. Failed syncs and git failures point at the cause; slow reconciles and requests waiting on the repository lock mean the repo server is the bottleneck. Pick a project and an application, or **All**; the reconcile, repo server and ApplicationSet panels cover the whole instance."
       },
       "id": 1,
       "gridPos": {
@@ -251,8 +251,8 @@
     },
     {
       "type": "stat",
-      "title": "Auto-sync off",
-      "description": "Applications that sync only on demand. Git cannot show a switch flipped in the Argo CD UI; this can.",
+      "title": "Auto-sync overridden",
+      "description": "Applications whose auto-sync was switched in the Argo CD UI and no longer matches autoSync in their argo.yaml.",
       "datasource": {
         "type": "prometheus",
         "uid": "mimir"
@@ -264,7 +264,7 @@
             "type": "prometheus",
             "uid": "mimir"
           },
-          "expr": "count(argocd_app_info{project=~\"$project\", name=~\"$application\", autosync_enabled=\"false\"}) or vector(0)",
+          "expr": "count((max by (name, autosync_enabled) (argocd_app_info{project=~\"$project\", name=~\"$application\"}) unless on (name, autosync_enabled) label_replace(max by (name, label_nexus_auto_sync) (argocd_app_labels{project=~\"$project\", name=~\"$application\", label_nexus_auto_sync!=\"\"}), \"autosync_enabled\", \"$1\", \"label_nexus_auto_sync\", \"(.*)\")) and on (name) label_replace(max by (name, label_nexus_auto_sync) (argocd_app_labels{project=~\"$project\", name=~\"$application\", label_nexus_auto_sync!=\"\"}), \"autosync_enabled\", \"$1\", \"label_nexus_auto_sync\", \"(.*)\")) or vector(0)",
           "legendFormat": ""
         }
       ],
@@ -689,14 +689,150 @@
       }
     },
     {
-      "type": "row",
-      "title": "Syncs",
-      "collapsed": false,
-      "panels": [],
+      "type": "table",
+      "title": "Auto-sync overridden",
+      "description": "Applications whose live auto-sync differs from autoSync in their argo.yaml, usually the incident switch in the Argo CD UI. Switch it back in the UI, or change argo.yaml if the override should stay.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "mimir"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "mimir"
+          },
+          "expr": "((max by (name, autosync_enabled) (argocd_app_info{project=~\"$project\", name=~\"$application\"}) unless on (name, autosync_enabled) label_replace(max by (name, label_nexus_auto_sync) (argocd_app_labels{project=~\"$project\", name=~\"$application\", label_nexus_auto_sync!=\"\"}), \"autosync_enabled\", \"$1\", \"label_nexus_auto_sync\", \"(.*)\")) and on (name) label_replace(max by (name, label_nexus_auto_sync) (argocd_app_labels{project=~\"$project\", name=~\"$application\", label_nexus_auto_sync!=\"\"}), \"autosync_enabled\", \"$1\", \"label_nexus_auto_sync\", \"(.*)\")) * on (name) group_left (label_nexus_auto_sync) max by (name, label_nexus_auto_sync) (argocd_app_labels{project=~\"$project\", name=~\"$application\", label_nexus_auto_sync!=\"\"})",
+          "legendFormat": "",
+          "format": "table",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "Value": true
+            },
+            "indexByName": {
+              "name": 0,
+              "label_nexus_auto_sync": 1,
+              "autosync_enabled": 2
+            },
+            "renameByName": {
+              "name": "Application",
+              "label_nexus_auto_sync": "Auto-sync in Git",
+              "autosync_enabled": "Auto-sync live"
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto"
+          },
+          "noValue": "No override"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Auto-sync in Git"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "true": {
+                        "text": "On",
+                        "color": "green",
+                        "index": 0
+                      },
+                      "false": {
+                        "text": "Off",
+                        "color": "orange",
+                        "index": 1
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Auto-sync live"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "true": {
+                        "text": "On",
+                        "color": "green",
+                        "index": 0
+                      },
+                      "false": {
+                        "text": "Off",
+                        "color": "orange",
+                        "index": 1
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        }
+      },
       "id": 9,
       "gridPos": {
         "x": 0,
         "y": 18,
+        "w": 24,
+        "h": 6
+      }
+    },
+    {
+      "type": "row",
+      "title": "Syncs",
+      "collapsed": false,
+      "panels": [],
+      "id": 10,
+      "gridPos": {
+        "x": 0,
+        "y": 24,
         "w": 24,
         "h": 1
       }
@@ -748,10 +884,10 @@
           "sort": "desc"
         }
       },
-      "id": 10,
+      "id": 11,
       "gridPos": {
         "x": 0,
-        "y": 19,
+        "y": 25,
         "w": 12,
         "h": 8
       }
@@ -803,10 +939,10 @@
           "sort": "desc"
         }
       },
-      "id": 11,
+      "id": 12,
       "gridPos": {
         "x": 12,
-        "y": 19,
+        "y": 25,
         "w": 12,
         "h": 8
       }
@@ -857,10 +993,10 @@
           "sort": "desc"
         }
       },
-      "id": 12,
+      "id": 13,
       "gridPos": {
         "x": 0,
-        "y": 27,
+        "y": 33,
         "w": 12,
         "h": 8
       }
@@ -911,10 +1047,10 @@
           "sort": "desc"
         }
       },
-      "id": 13,
+      "id": 14,
       "gridPos": {
         "x": 12,
-        "y": 27,
+        "y": 33,
         "w": 12,
         "h": 8
       }
@@ -924,10 +1060,10 @@
       "title": "Reconciliation",
       "collapsed": false,
       "panels": [],
-      "id": 14,
+      "id": 15,
       "gridPos": {
         "x": 0,
-        "y": 35,
+        "y": 41,
         "w": 24,
         "h": 1
       }
@@ -987,10 +1123,10 @@
           "sort": "desc"
         }
       },
-      "id": 15,
+      "id": 16,
       "gridPos": {
         "x": 0,
-        "y": 36,
+        "y": 42,
         "w": 12,
         "h": 8
       }
@@ -1041,10 +1177,10 @@
           "sort": "desc"
         }
       },
-      "id": 16,
+      "id": 17,
       "gridPos": {
         "x": 12,
-        "y": 36,
+        "y": 42,
         "w": 12,
         "h": 8
       }
@@ -1054,10 +1190,10 @@
       "title": "Repo server",
       "collapsed": false,
       "panels": [],
-      "id": 17,
+      "id": 18,
       "gridPos": {
         "x": 0,
-        "y": 44,
+        "y": 50,
         "w": 24,
         "h": 1
       }
@@ -1108,10 +1244,10 @@
           "sort": "desc"
         }
       },
-      "id": 18,
+      "id": 19,
       "gridPos": {
         "x": 0,
-        "y": 45,
+        "y": 51,
         "w": 12,
         "h": 8
       }
@@ -1162,10 +1298,10 @@
           "sort": "desc"
         }
       },
-      "id": 19,
+      "id": 20,
       "gridPos": {
         "x": 12,
-        "y": 45,
+        "y": 51,
         "w": 12,
         "h": 8
       }
@@ -1226,10 +1362,10 @@
           "sort": "desc"
         }
       },
-      "id": 20,
+      "id": 21,
       "gridPos": {
         "x": 0,
-        "y": 53,
+        "y": 59,
         "w": 12,
         "h": 8
       }
@@ -1280,10 +1416,10 @@
           "sort": "desc"
         }
       },
-      "id": 21,
+      "id": 22,
       "gridPos": {
         "x": 12,
-        "y": 53,
+        "y": 59,
         "w": 12,
         "h": 8
       }
@@ -1293,10 +1429,10 @@
       "title": "ApplicationSet",
       "collapsed": false,
       "panels": [],
-      "id": 22,
+      "id": 23,
       "gridPos": {
         "x": 0,
-        "y": 61,
+        "y": 67,
         "w": 24,
         "h": 1
       }
@@ -1347,10 +1483,10 @@
           "sort": "desc"
         }
       },
-      "id": 23,
+      "id": 24,
       "gridPos": {
         "x": 0,
-        "y": 62,
+        "y": 68,
         "w": 12,
         "h": 8
       }
@@ -1401,10 +1537,10 @@
           "sort": "desc"
         }
       },
-      "id": 24,
+      "id": 25,
       "gridPos": {
         "x": 12,
-        "y": 62,
+        "y": 68,
         "w": 12,
         "h": 8
       }
