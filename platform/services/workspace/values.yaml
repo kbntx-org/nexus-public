@@ -3,6 +3,7 @@ image:
   tag: latest
 
 ingressHost: workspace.kbntx.com
+t3IngressHost: t3.kbntx.com
 internalIngressTarget: 10.43.216.131
 
 certificate:

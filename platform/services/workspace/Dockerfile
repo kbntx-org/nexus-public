@@ -6,6 +6,8 @@ ARG DOCKER_VERSION
 ARG MISE_VERSION
 # renovate: datasource=github-releases depName=coder/code-server
 ARG CODE_SERVER_VERSION=4.145.2
+# renovate: datasource=github-releases depName=pingdotgg/t3code
+ARG T3_CODE_VERSION=0.1.10
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates curl git iptables libatomic1 openssh-server sudo tmux xz-utils \
@@ -15,6 +17,16 @@ RUN curl -fsSL "https://download.docker.com/linux/static/stable/$(uname -m)/dock
     | tar -xz --strip-components=1 -C /usr/local/bin
 
 RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version "${CODE_SERVER_VERSION}"
+
+RUN archive="t3-${T3_CODE_VERSION}-linux-$(uname -m | sed -e s/aarch64/arm64/ -e s/x86_64/x64/).tar.gz" \
+    && release_url="https://github.com/pingdotgg/t3code/releases/download/v${T3_CODE_VERSION}" \
+    && cd /tmp \
+    && curl -fsSLO "${release_url}/${archive}" \
+    && curl -fsSL "${release_url}/SHA256SUMS" | grep " \*\?${archive}$" | sha256sum --check - \
+    && mkdir -p /opt/t3 \
+    && tar -xzf "${archive}" -C /opt/t3 --strip-components=1 \
+    && ln -s /opt/t3/t3 /usr/local/bin/t3 \
+    && rm "${archive}"
 
 RUN curl -fsSL https://mise.run | MISE_INSTALL_PATH=/usr/local/bin/mise MISE_VERSION="v${MISE_VERSION}" sh \
     && echo 'eval "$(mise activate bash)"' >> /etc/bash.bashrc

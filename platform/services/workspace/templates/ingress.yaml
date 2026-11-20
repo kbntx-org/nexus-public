@@ -13,6 +13,11 @@ spec:
       services:
         - name: workspace
           port: 80
+    - match: Host(`{{ .Values.t3IngressHost }}`)
+      kind: Rule
+      services:
+        - name: workspace
+          port: 3773
   {{- if .Values.certificate.enabled }}
   tls:
     secretName: workspace-tls

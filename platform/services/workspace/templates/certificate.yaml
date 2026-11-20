@@ -10,4 +10,5 @@ spec:
     kind: ClusterIssuer
   dnsNames:
     - {{ .Values.ingressHost }}
+    - {{ .Values.t3IngressHost }}
 {{- end }}

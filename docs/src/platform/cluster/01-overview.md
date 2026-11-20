@@ -36,9 +36,13 @@ What the diagram doesn't show is why:
   containers survive a pod restart (otherwise Sysbox keeps them on the node's disk and deletes them
   with the pod), and a `tmux` session started over SSH keeps its files across restarts. A key-only
   SSH server, on a non-default port and with its keys coming from Vault, is reachable over WARP
-  through the Service's cluster DNS name. Docker's daemon starts from the image's entrypoint, and
-  Compose and Buildx come from `mise.toml`, symlinked into the Docker CLI plugins folder by the
-  bootstrap. Any other machine with mise (a Colima VM, for example) gets them the same way:
+  through the Service's cluster DNS name. Next to code-server, the bootstrap runs a
+  <a href="https://github.com/pingdotgg/t3code" target="_blank" rel="noopener">T3 Code</a> server,
+  reachable over WARP on its own host, that drives the same Claude Code login from the T3 Code
+  mobile and web apps; `t3 pair` in the workspace prints the one-time code that pairs a device.
+  Docker's daemon starts from the image's entrypoint, and Compose and Buildx come from `mise.toml`,
+  symlinked into the Docker CLI plugins folder by the bootstrap. Any other machine with mise (a
+  Colima VM, for example) gets them the same way:
 
   ```sh
   mkdir -p ~/.docker/cli-plugins

@@ -3,6 +3,8 @@ set -euo pipefail
 
 repository_url=https://github.com/kbntx-org/nexus.git
 port=8080
+t3_port=3773
+t3_restart_delay_seconds=5
 
 ssh_directory="${HOME}/.ssh"
 ssh_host_key="${ssh_directory}/ssh_host_ed25519_key"
@@ -29,5 +31,12 @@ mise install
 mkdir -p "${HOME}/.docker/cli-plugins"
 ln -sf "$(mise which docker-compose)" "${HOME}/.docker/cli-plugins/docker-compose"
 ln -sf "$(mise which docker-buildx)" "${HOME}/.docker/cli-plugins/docker-buildx"
+
+(
+  while true; do
+    t3 serve --host 0.0.0.0 --port "${t3_port}" --no-browser || true
+    sleep "${t3_restart_delay_seconds}"
+  done
+) &
 
 exec code-server --bind-addr "0.0.0.0:${port}" --auth password "${CHECKOUT_PATH}"
