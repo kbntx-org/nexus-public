@@ -74,8 +74,9 @@ terminal connected to it.
 
 The VM is defined by
 <a href="https://github.com/kbntx-org/nexus/blob/main/platform/core/local/colima.yaml" target="_blank" rel="noopener"><code>platform/core/local/colima.yaml</code></a>:
-its size, no host mounts, and a boot script that installs Sysbox. Colima reads its configuration
-from its profile directory, so copy the file there before the first start:
+its size, no host mounts, and boot scripts that install Sysbox and `libatomic1`, which the Node.js
+binaries need. Colima reads its configuration from its profile directory, so copy the file there
+before the first start (and again, followed by `colima restart`, after it changes):
 
 ```bash
 mkdir -p ~/.colima/default

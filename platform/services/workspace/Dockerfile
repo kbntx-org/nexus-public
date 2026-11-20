@@ -8,7 +8,7 @@ ARG MISE_VERSION
 ARG CODE_SERVER_VERSION=4.145.2
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends ca-certificates curl git iptables openssh-server sudo tmux xz-utils \
+    && apt-get install -y --no-install-recommends ca-certificates curl git iptables libatomic1 openssh-server sudo tmux xz-utils \
     && rm -rf /var/lib/apt/lists/*
 
 RUN curl -fsSL "https://download.docker.com/linux/static/stable/$(uname -m)/docker-${DOCKER_VERSION}.tgz" \

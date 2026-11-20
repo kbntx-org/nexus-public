@@ -43,6 +43,14 @@ provision:
         mkswap /swapfile
       fi
       swapon --show | grep -q /swapfile || swapon /swapfile
+  - mode: system
+    script: |
+      #!/bin/sh
+      set -eu
+      # The Node.js 26 Linux binaries that mise installs link against libatomic.
+      dpkg -s libatomic1 >/dev/null 2>&1 && exit 0
+      DEBIAN_FRONTEND=noninteractive apt-get update
+      DEBIAN_FRONTEND=noninteractive apt-get install -y libatomic1
   - mode: after-boot
     script: |
       #!/bin/sh
