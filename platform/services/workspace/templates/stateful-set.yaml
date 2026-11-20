@@ -45,6 +45,8 @@ spec:
           env:
             - name: CHECKOUT_PATH
               value: /home/workspace/nexus
+            - name: MISE_GLOBAL_CONFIG_FILE
+              value: $(CHECKOUT_PATH)/mise.toml
             - name: PASSWORD
               valueFrom:
                 secretKeyRef:
