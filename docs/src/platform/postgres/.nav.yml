@@ -1,0 +1,6 @@
+title: Postgres
+
+nav:
+  - Design: design.md
+  - How to: how-to.md
+  - Restore a backup: restore-a-backup.md

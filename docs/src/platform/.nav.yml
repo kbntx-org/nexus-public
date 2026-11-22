@@ -1,9 +1,27 @@
 title: Platform
 
 nav:
-  - cluster
-  - traffic
-  - delivery
-  - databases
-  - secrets
-  - observability
+  - Developer environment:
+      - local-environment
+      - workspace
+  - Build & deploy:
+      - ci
+      - argocd
+      - deploys
+      - container-registry
+      - renovate
+  - Compute:
+      - kubernetes
+      - cilium
+      - sysbox
+  - Network & access:
+      - cloudflare
+      - traefik
+  - Data:
+      - postgres
+  - Secrets:
+      - vault
+  - Observability:
+      - grafana
+  - Infrastructure as code:
+      - opentofu

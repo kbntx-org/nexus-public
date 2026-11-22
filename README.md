@@ -36,12 +36,12 @@ platform/core/local/local.sh create   # install the tools, create the local kind
 mise run dev docs                     # start an app on top of core infra → http://docs.localhost
 ```
 
-[Local development](https://docs.kbntx.com/getting-started/02-local-development/) covers creating
-the VM, trusting the local certificate authority on the host, tear-down and gotchas.
+[Local environment](https://docs.kbntx.com/platform/local-environment/how-to/) covers creating the
+VM, trusting the local certificate authority on the host, tear-down and gotchas.
 
 ## Documentation
 
-Design decisions, how each part of the platform fits together, gotchas and runbooks live at
+Each tool has a Design page (what it is, why, how it fits) and a How to page (tasks) at
 [docs.kbntx.com](https://docs.kbntx.com).
 
 ## License

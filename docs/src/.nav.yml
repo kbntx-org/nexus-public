@@ -1,6 +1,5 @@
 nav:
   - getting-started
   - platform
-  - runbooks
 
 ignore: index.md

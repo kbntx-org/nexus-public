@@ -66,7 +66,9 @@ pnpm nx affected -t format-check test
 Both `format:check` runs are needed: `--libs-and-apps` covers files that belong to an nx project,
 the plain run covers the rest of the git diff (root `AGENTS.md`, for example). A formatting failure
 in CI means this check was skipped. Linting is left to CI. Update the docs for any feature you add,
-change or remove.
+change or remove: the tool's Design page for how it works and why, its How to page for what a reader
+does (see [`docs/AGENTS.md`](docs/AGENTS.md)). The docs site is public: admin-only tooling stays out
+of it, with its setup notes in the PR description.
 
 A user-facing change is also checked in a browser: start the app with Tilt's `playwright-mcp`
 resource (`mise run dev <app> playwright-mcp`) and use the `playwright` MCP server to smoke test the
