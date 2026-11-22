@@ -12,3 +12,6 @@ certificate:
 storage:
   storageClass: hcloud-volumes
   size: 20Gi
+
+networkPolicy:
+  enabled: true

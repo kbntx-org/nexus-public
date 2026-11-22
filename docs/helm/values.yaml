@@ -8,3 +8,6 @@ ingressHosts:
 
 certificate:
   enabled: true
+
+networkPolicy:
+  enabled: true

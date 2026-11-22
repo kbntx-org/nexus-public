@@ -44,3 +44,6 @@ traefik:
           User-Agent: keep
           X-Forwarded-For: keep
           CF-IPCountry: keep
+
+networkPolicy:
+  enabled: true

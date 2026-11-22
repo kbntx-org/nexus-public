@@ -1,0 +1,48 @@
+{{- if .Values.networkPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: traefik
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: traefik
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: cloudflared
+      ports:
+        - port: 8443
+          protocol: TCP
+    # The internal entrypoint serves in-cluster callers of internal hostnames (vault.kbntx.com), and
+    # nodes pulling from registry.kbntx.com over the host network.
+    - ports:
+        - port: {{ .Values.internalWebPort | default 8010 }}
+          protocol: TCP
+        - port: {{ .Values.internalSecurePort | default 8011 }}
+          protocol: TCP
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+    # The API server listens on the host network, which only a port-only rule matches on every CNI.
+    - ports:
+        - port: 6443
+          protocol: TCP
+    # Routes point at services in every namespace; each backend's own policy decides what it accepts.
+    - to:
+        - namespaceSelector: {}
+{{- end }}

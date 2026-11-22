@@ -74,13 +74,44 @@ private paths in the figure above). Two tunnels carry private traffic, each with
 
 **Gotcha: WARP reaches Services directly, past the ingress.** A login that only sits on the
 `IngressRoute`, such as the oauth2-proxy in front of Headlamp, doesn't protect the `Service` behind
-it from WARP devices or other pods. A UI behind such a login also gets a `CiliumNetworkPolicy` that
-only lets its proxy in, and only lets Traefik reach the proxy; see
+it from WARP devices or other pods. A UI behind such a login also gets a network policy that only
+lets its proxy in, and only lets Traefik reach the proxy; see
 <a href="https://github.com/kbntx-org/nexus/blob/main/platform/core/headlamp/templates/network-policy.yaml" target="_blank" rel="noopener"><code>headlamp/templates/network-policy.yaml</code></a>.
 
 **Gotcha: changing the bastion's config replaces the server.** Cloud-init only runs at creation. The
 floating IP keeps the gateway address stable, but every private node loses egress until the new
 server is up.
+
+## Network policies
+
+Every chart with a workload outside `kube-system` ships a `templates/network-policy.yaml`, turned on
+by `networkPolicy.enabled` (off in `values.local.yaml`, because Tilt deploys into other namespaces
+than prod). Each policy lists both `Ingress` and `Egress` in `policyTypes`, so a pod accepts and
+sends only what its policy allows:
+
+- **Ingress** comes from the `traefik-ingress` namespace on the container port for routed apps, from
+  `cloudflared` for what WARP devices reach directly (databases, SSH), and from the same namespace
+  for multi-pod apps. A policy without an `ingress` key denies all ingress.
+- **Egress** always allows DNS to `kube-dns`, then only the in-cluster peers and internet ports the
+  workload needs. "The internet" is an `ipBlock` of every address minus the private and link-local
+  ranges, so no pod reaches the VPC, the bastion or the Hetzner metadata endpoint through it.
+
+They are standard
+<a href="https://kubernetes.io/docs/concepts/services-networking/network-policies/" target="_blank" rel="noopener"><code>NetworkPolicy</code></a>
+objects, not `CiliumNetworkPolicy`, so they behave the same under Cilium in prod and under kindnet
+in kind, where Cilium can't run (it needs BPF privileges a Sysbox container lacks). Two
+consequences:
+
+- **Host-network peers are matched by port alone.** The API server, the kubelet or a node pulling
+  through Traefik have node IPs, which an `ipBlock` only matches on Cilium with
+  `policyCIDRMatchMode: nodes`. A rule with `ports` and no `to`/`from` matches them on every CNI, at
+  the cost of not pinning the address.
+- **There is no deny rule.** Policies only add allows, so a second policy selecting the same pod
+  widens what it reaches. Keep one policy per pod.
+
+Hubble shows what a policy drops in prod:
+`hubble observe --verdict DROPPED --namespace <namespace>`, or the `hubble_drop_total` and
+`hubble_policy_verdicts_total` metrics in Grafana.
 
 ## SSH to a node
 

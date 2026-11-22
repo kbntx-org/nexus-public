@@ -3,3 +3,7 @@ backup:
 
 certificate:
   enabled: false
+
+# Tilt deploys into other namespaces than prod (default, traefik), which the policies would block.
+networkPolicy:
+  enabled: false

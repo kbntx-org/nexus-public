@@ -58,8 +58,7 @@
       "Bash(cat *.tfvars*)",
       "Bash(cat *vars.yaml*)",
       "Bash(cat *vars.*.yaml*)",
-      "Bash(cat *env.yaml*)",
-      "Bash(kubectl *)"
+      "Bash(cat *env.yaml*)"
     ]
   }
 }

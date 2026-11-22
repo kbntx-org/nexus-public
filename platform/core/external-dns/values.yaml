@@ -24,3 +24,6 @@ external-dns:
     - --service-type-filter=ClusterIP
     - --managed-record-types=A
     - --managed-record-types=CNAME
+
+networkPolicy:
+  enabled: true

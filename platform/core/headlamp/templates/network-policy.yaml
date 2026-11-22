@@ -1,35 +1,98 @@
-{{- if .Values.oauth2Proxy.enabled }}
-apiVersion: cilium.io/v2
-kind: CiliumNetworkPolicy
+{{- if .Values.networkPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
 metadata:
   name: headlamp
 spec:
-  endpointSelector:
+  podSelector:
     matchLabels:
       app.kubernetes.io/name: headlamp
+  policyTypes:
+    - Ingress
+    - Egress
   ingress:
-    - fromEndpoints:
-        - matchLabels:
-            app: headlamp-oauth2-proxy
-      toPorts:
-        - ports:
-            - port: "4466"
-              protocol: TCP
+    - from:
+        {{- if .Values.oauth2Proxy.enabled }}
+        - podSelector:
+            matchLabels:
+              app: headlamp-oauth2-proxy
+        {{- else }}
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: traefik-ingress
+        {{- end }}
+      ports:
+        - port: 4466
+          protocol: TCP
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+    # The API server listens on the host network, which only a port-only rule matches on every CNI.
+    - ports:
+        - port: 6443
+          protocol: TCP
+{{- if .Values.oauth2Proxy.enabled }}
 ---
-apiVersion: cilium.io/v2
-kind: CiliumNetworkPolicy
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
 metadata:
   name: headlamp-oauth2-proxy
 spec:
-  endpointSelector:
+  podSelector:
     matchLabels:
       app: headlamp-oauth2-proxy
+  policyTypes:
+    - Ingress
+    - Egress
   ingress:
-    - fromEndpoints:
-        - matchLabels:
-            io.kubernetes.pod.namespace: traefik-ingress
-      toPorts:
-        - ports:
-            - port: "4180"
-              protocol: TCP
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: traefik-ingress
+      ports:
+        - port: 4180
+          protocol: TCP
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: headlamp
+      ports:
+        - port: 4466
+          protocol: TCP
+    # GitHub OAuth and the organization and team membership checks.
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+              - 10.0.0.0/8
+              - 172.16.0.0/12
+              - 192.168.0.0/16
+              - 169.254.0.0/16
+      ports:
+        - port: 443
+          protocol: TCP
+{{- end }}
 {{- end }}

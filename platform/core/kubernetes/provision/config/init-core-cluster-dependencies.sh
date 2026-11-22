@@ -62,7 +62,9 @@ export KUBECONFIG="/etc/rancher/k3s/k3s.yaml"
 # Install cilium from repo chart
 install_chart_repos "${CHARTS_DIR}/cilium"
 helm dependency build "${CHARTS_DIR}/cilium"
-helm install cilium "${CHARTS_DIR}/cilium" -n kube-system
+# The ServiceMonitor CRD only arrives with monitoring; Argo CD turns the Hubble one back on.
+helm install cilium "${CHARTS_DIR}/cilium" -n kube-system \
+  --set 'cilium.hubble.metrics.serviceMonitor.enabled=false'
 
 echo "Waiting for Cilium to be ready..."
 kubectl -n kube-system rollout status daemonset/cilium --timeout=180s
@@ -83,7 +85,8 @@ helm install argocd "${CHARTS_DIR}/argocd" -n argocd --create-namespace \
   --set 'global.tolerations[0].key=node-role.kubernetes.io/control-plane' \
   --set 'global.tolerations[0].operator=Exists' \
   --set 'global.tolerations[0].effect=NoSchedule' \
-  --set 'argo-cd.configs.cm.admin\.enabled=true'
+  --set 'argo-cd.configs.cm.admin\.enabled=true' \
+  --set 'networkPolicy.enabled=false'
 
 echo "Waiting for ArgoCD to be ready..."
 kubectl -n argocd wait --for=condition=available deployment/argocd-server --timeout=300s || true

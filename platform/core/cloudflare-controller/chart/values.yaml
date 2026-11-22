@@ -7,3 +7,6 @@ replicas: 1
 externalDNS:
   enabled: true
   labelFilter: external-dns/enabled=true
+
+networkPolicy:
+  enabled: true

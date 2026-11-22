@@ -95,9 +95,6 @@ certificate authority. It is idempotent: re-run it (`mise run cluster create` on
 installed) after a pinned version bump. Tilt's `watch-ingresses` resource reissues that certificate
 whenever a new hostname appears, so a new app needs no re-bootstrap.
 
-kind's own CNI and kube-proxy are disabled, so no pod schedules until Tilt installs Cilium; pods
-stuck in `Pending` right after a bootstrap are expected.
-
 **3. Trust the certificate authority (host)**
 
 The bootstrap's `mkcert -install` trusts the CA inside the VM only, but the browser runs on the
@@ -132,7 +129,6 @@ apps and monitoring can also be enabled later from the Tilt UI.
 
 `tilt down` removes everything except the resources in `PERSISTED_ON_DOWN`:
 
-- **Cilium**: removing it would leave the cluster without pod networking.
 - **CloudNative-PG**: a CNPG `Cluster` deletes its PVCs when it is deleted, and unlike a
   `StatefulSet` that can't be turned off. An app chart whose local database should survive
   `tilt down` annotates its `Cluster` with `helm.sh/resource-policy: keep`, and the operator has to

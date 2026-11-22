@@ -14,6 +14,15 @@ cilium:
         - 10.42.0.0/16
   hubble:
     enabled: true
+    metrics:
+      enabled:
+        - dns
+        - drop
+        - flow
+        - policy
+      serviceMonitor:
+        enabled: true
+        interval: 60s
     relay:
       enabled: true
     ui:

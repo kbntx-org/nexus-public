@@ -109,3 +109,6 @@ zot:
           }
         }
       }
+
+networkPolicy:
+  enabled: true

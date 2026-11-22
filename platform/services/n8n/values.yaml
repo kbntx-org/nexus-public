@@ -14,3 +14,6 @@ backup:
   enabled: true
   destinationPath: s3://nexus-database-backups/n8n-cnpg
   endpointURL: https://2bde0126da63a3a9c94029d14ea380db.eu.r2.cloudflarestorage.com
+
+networkPolicy:
+  enabled: true

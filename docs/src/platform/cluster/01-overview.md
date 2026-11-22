@@ -91,8 +91,9 @@ In the order they show up on fresh VMs:
 - **<a href="https://cilium.io/" target="_blank" rel="noopener">Cilium</a>** goes first, before even
   the cloud controller, because nothing schedules without a CNI. k3s runs with
   `disable-kube-proxy: true` and `disable-network-policy: true` so Cilium's eBPF dataplane replaces
-  kube-proxy (better performance) and enforces `NetworkPolicy`/`CiliumNetworkPolicy` natively,
-  instead of running a CNI plus a separate proxy layer.
+  kube-proxy (better performance) and enforces `NetworkPolicy` natively, instead of running a CNI
+  plus a separate proxy layer. Charts stick to the standard kind so the same policies hold locally;
+  see [Network policies](../traffic/01-overview.md#network-policies).
 
 - **<a href="https://github.com/hetznercloud/hcloud-cloud-controller-manager" target="_blank" rel="noopener">Hetzner
   Cloud Controller Manager</a>** integrates nodes with Hetzner (metadata, cleanup when a server is

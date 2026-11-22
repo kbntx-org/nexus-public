@@ -6,43 +6,21 @@ update_settings(max_parallel_updates=6)
 
 default_registry(REGISTRY_REF)
 
-CORE_RESOURCES = ['cilium', 'vault', 'external-secrets', 'traefik', 'metrics-server-repo', 'metrics-server', 'cloudnative-pg', 'rustfs', 'watch-ingresses', 'headlamp']
+CORE_RESOURCES = ['vault', 'external-secrets', 'traefik', 'metrics-server-repo', 'metrics-server', 'cloudnative-pg', 'rustfs', 'watch-ingresses', 'headlamp']
 OPTIONAL_RESOURCES = ['monitoring']
-PERSISTED_ON_DOWN = ['cloudnative-pg', 'cilium']
+PERSISTED_ON_DOWN = ['cloudnative-pg']
 
 bootstrap_kubernetes(DOCKER_CONTEXT)
-
-# ── Cilium (CNI + kube-proxy replacement; kind's own CNI/kube-proxy are off, ──
-# ── see local.sh, so nothing else can schedule until this is installed) ────
-if config.tilt_subcommand != 'down':
-  KUBE_APISERVER_HOST = str(local(
-    "docker inspect --format='{{ .NetworkSettings.Networks.kind.IPAddress }}' kind-control-plane",
-    quiet=True,
-  )).strip()
-else:
-  KUBE_APISERVER_HOST = ''
-
-helm_chart_deps(root_path('platform/core/cilium'))
-helm_resource(
-  'cilium',
-  root_path('platform/core/cilium'),
-  namespace='kube-system',
-  flags=[
-    '--values', root_path('platform/core/cilium/values.local.yaml'),
-    '--set-string', 'cilium.k8sServiceHost=' + KUBE_APISERVER_HOST,
-    '--set-string', 'cilium.k8sServicePort=6443',
-  ],
-  deps=[root_path('platform/core/cilium')],
-  labels=['2-Infra'],
-  links=[link('http://hubble.localhost', 'hubble.localhost')],
-)
 
 helm_chart_deps(root_path('platform/core/external-secrets/deploy'))
 helm_resource(
   'external-secrets',
   root_path('platform/core/external-secrets/deploy'),
   namespace='external-secrets',
-  flags=['--create-namespace'],
+  flags=[
+    '--create-namespace',
+    '--values', root_path('platform/core/external-secrets/deploy/values.local.yaml'),
+  ],
   deps=[root_path('platform/core/external-secrets')],
   labels=['2-Infra'],
 )
@@ -136,7 +114,10 @@ helm_resource(
   'cloudnative-pg',
   root_path('platform/core/cloudnative-pg'),
   namespace='cloudnative-pg',
-  flags=['--create-namespace'],
+  flags=[
+    '--create-namespace',
+    '--values', root_path('platform/core/cloudnative-pg/values.local.yaml'),
+  ],
   deps=[root_path('platform/core/cloudnative-pg')],
   labels=['2-Infra'],
 )

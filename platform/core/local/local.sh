@@ -118,8 +118,6 @@ nodes:
 networking:
   podSubnet: "${POD_SUBNET}"
   serviceSubnet: "${SERVICE_SUBNET}"
-  disableDefaultCNI: true
-  kubeProxyMode: "none"
 kubeadmConfigPatches:
   - |
     kind: KubeletConfiguration

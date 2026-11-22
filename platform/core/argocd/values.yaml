@@ -113,3 +113,6 @@ argo-cd:
       server.dex.server.strict.tls: false
       dexserver.disable.tls: 'true'
       reposerver.repo.cache.expiration: '1h'
+
+networkPolicy:
+  enabled: true
