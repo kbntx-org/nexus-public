@@ -28,10 +28,3 @@ lima = "2.3.0"
 [tasks."lock:update"]
 run = "mise lock && mise install"
 
-[tasks."cluster"]
-description = "Manage the local kind cluster, registry, and buildx builder (create|delete|recreate)"
-run = "bash platform/core/local/local.sh \"${1:?Usage: mise run cluster <create|delete|recreate>}\""
-
-[tasks."dev"]
-description = "tilt up an app alongside core infra (docs|kiln)"
-run = "tilt up -- \"${1:?Usage: mise run dev <docs|kiln>}\""

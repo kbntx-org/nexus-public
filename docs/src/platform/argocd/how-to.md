@@ -19,8 +19,9 @@ environments:
 manifestsValues: my-app/values.yaml # only for an app CI builds an image for; created on first deploy
 ```
 
-A product app under `apps/` also needs its namespace in the `product` project's `destinations`, and
-a kind outside its whitelist needs its API group added, both in
+A product app under `apps/` needs a namespace the `product` project's `destinations` allow (set
+`namespace` in `argo.yaml` if the app name doesn't match), and a kind outside its whitelist needs
+its API group added, both in
 <a href="https://github.com/kbntx-org/nexus/blob/main/platform/services/app-of-apps/values.yaml" target="_blank" rel="noopener"><code>app-of-apps/values.yaml</code></a>.
 The other keys (`namespace`, `valueFiles`, `autoSync`, `serverSideApply`, `deleteResources`) are
 described in the schema.
@@ -29,8 +30,7 @@ described in the schema.
 
 Removing its `argo.yaml` (or an environment) deletes the app and everything it deployed. Renaming
 `app` deletes it and creates a new one. For a stateful app, set `deleteResources: false` first and
-merge that, or back up its data. Keep a product app's namespace in `destinations` until the deletion
-has finished.
+merge that, or back up its data.
 
 ## Pause auto-sync during an incident
 
@@ -42,8 +42,8 @@ still has to be switched in the UI to match.
 
 ## Debug a sync
 
-- **Sync fails with a permission error on a product app:** its namespace isn't in `destinations`, or
-  the kind isn't whitelisted.
+- **Sync fails with a permission error on a product app:** its namespace isn't allowed by
+  `destinations`, or the kind isn't whitelisted.
 - **Sync fails with "metadata.annotations: Too long":** set `serverSideApply: true`.
 - **A deletion hangs:** a resource is stuck on its own finalizer; it shows in the app's resource
   tree.

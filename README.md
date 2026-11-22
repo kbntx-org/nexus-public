@@ -33,7 +33,7 @@ VM:
 
 ```sh
 platform/core/local/local.sh create   # install the tools, create the local kind cluster
-mise run dev docs                     # start an app on top of core infra → http://docs.localhost
+tilt up -- docs                       # start an app on top of core infra → https://docs.localhost
 ```
 
 [Local environment](https://docs.kbntx.com/platform/local-environment/how-to/) covers creating the

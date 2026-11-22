@@ -22,10 +22,10 @@ admission policy and one `ApplicationSet` that generates an `Application` per en
 `argo.yaml` in the repository. Bootstrapping the platform is one sync of the root. `prod` keeps the
 bare app name and namespace; any other environment adds `-<env>` to both.
 
-| Project    | Holds                       | Permissions                                                               |
-| ---------- | --------------------------- | ------------------------------------------------------------------------- |
-| `platform` | Every chart outside `apps/` | Any namespace and resource, cluster-scoped included                       |
-| `product`  | Charts under `apps/`        | Its listed namespaces, whitelisted kinds, no `ResourceQuota`/`LimitRange` |
+| Project    | Holds                       | Permissions                                                                                 |
+| ---------- | --------------------------- | ------------------------------------------------------------------------------------------- |
+| `platform` | Every chart outside `apps/` | Any namespace and resource, cluster-scoped included                                         |
+| `product`  | Charts under `apps/`        | The namespaces its `destinations` allow, whitelisted kinds, no `ResourceQuota`/`LimitRange` |
 
 Apps that ship an image use a multi-source `Application`: the chart from this repository, plus the
 values file named by `manifestsValues` from

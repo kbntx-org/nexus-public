@@ -33,6 +33,16 @@ grafana:
       secretKeyRef:
         name: monitoring-secret
         key: postgresPassword
+    GF_AUTH_GITHUB_CLIENT_ID:
+      secretKeyRef:
+        name: monitoring-secret
+        key: githubClientId
+        optional: true
+    GF_AUTH_GITHUB_CLIENT_SECRET:
+      secretKeyRef:
+        name: monitoring-secret
+        key: githubClientSecret
+        optional: true
   grafana.ini:
     server:
       domain: grafana.kbntx.com
@@ -40,6 +50,11 @@ grafana:
     auth:
       disable_login: true
       disable_login_form: true
+    auth.github:
+      enabled: true
+      allow_sign_up: true
+      allowed_organizations: kbntx-org
+      role_attribute_path: "contains(groups[*], '@kbntx-org/platform') && 'Admin' || 'Viewer'"
     database:
       type: postgres
       host: grafana-postgres-cnpg-rw:5432

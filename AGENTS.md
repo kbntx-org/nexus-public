@@ -71,7 +71,7 @@ does (see [`docs/AGENTS.md`](docs/AGENTS.md)). The docs site is public: admin-on
 of it, with its setup notes in the PR description.
 
 A user-facing change is also checked in a browser: start the app with Tilt's `playwright-mcp`
-resource (`mise run dev <app> playwright-mcp`) and use the `playwright` MCP server to smoke test the
+resource (`tilt up -- <app> playwright-mcp`) and use the `playwright` MCP server to smoke test the
 feature as a user would (click through the flow, fill and submit its forms, confirm the network
 requests succeed and the console is clean) and screenshot it at desktop and phone widths.
 

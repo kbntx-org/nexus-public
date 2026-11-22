@@ -60,14 +60,21 @@
       "groupName": "opentofu"
     },
     {
-      "matchFileNames": ["platform/core/kubernetes/upgrades/plans/values.yaml"],
+      "matchFileNames": [
+        "platform/core/kubernetes/upgrades/plans/values.yaml",
+        "platform/core/kubernetes/configuration/group_vars/all.yml"
+      ],
       "matchUpdateTypes": ["minor", "major"],
       "enabled": false
     },
     {
-      "matchFileNames": ["platform/core/kubernetes/upgrades/plans/values.yaml"],
+      "matchFileNames": [
+        "platform/core/kubernetes/upgrades/plans/values.yaml",
+        "platform/core/kubernetes/configuration/group_vars/all.yml"
+      ],
       "matchUpdateTypes": ["patch"],
-      "automerge": false
+      "automerge": false,
+      "groupName": "k3s"
     }
   ],
   "customManagers": [
@@ -83,6 +90,13 @@
       "fileMatch": ["^platform/core/kubernetes/upgrades/plans/values\\.yaml$"],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\s+k3sVersion:\\s*(?<currentValue>\\S+)"
+      ]
+    },
+    {
+      "customType": "regex",
+      "fileMatch": ["^platform/core/kubernetes/configuration/group_vars/all\\.yml$"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\s+k3s_version:\\s*(?<currentValue>\\S+)"
       ]
     },
     {

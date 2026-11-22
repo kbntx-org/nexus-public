@@ -2,9 +2,9 @@
 title: Grafana
 ---
 
-Grafana shows every metric and log of the platform. In production it is reachable over WARP;
-locally, start `monitoring` in Tilt (`tilt up -- monitoring`) and log in with the seeded `admin` /
-`admin`.
+Grafana shows every metric and log of the platform. In production it is reachable over WARP, with
+GitHub login: `kbntx-org` members get Viewer, the `platform` team Admin; locally, start `monitoring`
+in Tilt (`tilt up -- monitoring`) and log in with the seeded `admin` / `admin`.
 
 ## Add a dashboard
 

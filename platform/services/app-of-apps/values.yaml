@@ -30,7 +30,7 @@ argocd-apps:
         - https://github.com/kbntx-org/nexus-manifests.git
       destinations:
         - server: https://kubernetes.default.svc
-          namespace: smelt
+          namespace: product-*
       # Argo CD also hides the kinds a project doesn't permit from its resource tree, so the Pods
       # behind a Deployment, Job or CNPG Cluster need the whole core group to show up.
       namespaceResourceWhitelist:
@@ -46,7 +46,13 @@ argocd-apps:
           kind: '*'
         - group: cert-manager.io
           kind: '*'
+        - group: cloudflare.kbntx.com
+          kind: '*'
         - group: external-secrets.io
+          kind: '*'
+        - group: monitoring.coreos.com
+          kind: '*'
+        - group: networking.k8s.io
           kind: '*'
         - group: postgresql.cnpg.io
           kind: '*'

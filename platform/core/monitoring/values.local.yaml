@@ -26,6 +26,9 @@ grafana:
     auth:
       disable_login: false
       disable_login_form: false
+    # The dev Vault has no GitHub OAuth app, so log in with the seeded admin user.
+    auth.github:
+      enabled: false
 
 loki:
   deploymentMode: SingleBinary
