@@ -7,7 +7,7 @@ ARG MISE_VERSION
 # renovate: datasource=github-releases depName=coder/code-server
 ARG CODE_SERVER_VERSION=4.145.2
 # renovate: datasource=github-releases depName=pingdotgg/t3code
-ARG T3_CODE_VERSION=0.1.10
+ARG T3_CODE_VERSION=0.1.11
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates curl git iptables libatomic1 openssh-server sudo tmux xz-utils \
