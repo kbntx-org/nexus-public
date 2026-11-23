@@ -12,7 +12,7 @@ tilt = "0.37.9"
 kubectl = "1.37.2"
 mkcert = "1.4.4"
 github-cli = "2.104.0"
-claude-code = "2.1.328"
+claude-code = "2.1.329"
 docker-cli = "29.10.0"
 docker-compose = "v5.7.2"
 "github:docker/buildx" = { version = "0.39.0", bin = "docker-buildx" }
