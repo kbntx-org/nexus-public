@@ -5,7 +5,7 @@ FROM debian:trixie-slim
 ARG DOCKER_VERSION
 ARG MISE_VERSION
 # renovate: datasource=github-releases depName=coder/code-server
-ARG CODE_SERVER_VERSION=4.145.2
+ARG CODE_SERVER_VERSION=4.146.0
 # renovate: datasource=github-releases depName=pingdotgg/t3code
 ARG T3_CODE_VERSION=0.1.11
 
